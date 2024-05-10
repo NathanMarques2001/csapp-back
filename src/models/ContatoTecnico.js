@@ -1,4 +1,4 @@
-class ContratoTecnico {
+class ContatoTecnico {
   constructor(id, id_contrato, conteudo, data_criacao) {
     this._id = id;
     this._id_contrato = id_contrato;

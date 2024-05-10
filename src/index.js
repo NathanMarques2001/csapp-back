@@ -1,4 +1,4 @@
-const customExpress = require('./config/CustomExpress');
+const customExpress = require('../config/CustomExpress');
 const port = 3000;
 
 const custom = customExpress();
