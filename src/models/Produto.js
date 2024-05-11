@@ -1,18 +1,13 @@
-class Produto {
-  constructor(id, nome) {
-    this._id = id;
-    this._nome = nome;
-  }
+const { Model, DataTypes } = require('sequelize');
 
-  get id() {
-    return this._id;
-  }
-
-  get nome() {
-    return this._nome;
-  }
-
-  set nome(nome) {
-    this._nome = nome;
+class Produto extends Model {
+  static init(sequelize) {
+    super.init({
+      nome: DataTypes.STRING
+    }, {
+      sequelize
+    });
   }
 }
+
+module.exports = Produto;
