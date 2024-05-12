@@ -1,6 +1,30 @@
 const Usuario = require('../models/Usuario.js');
+const bcrypt = require('bcryptjs');
 
 module.exports = {
+  async login(req, res) {
+    const { email, senha } = req.body;
+
+    const usuario = await Usuario.findOne({ where: { email: email } });
+
+    if (!usuario) {
+      return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
+    }
+
+    if (!bcrypt.compareSync(senha, usuario.senha)) {
+      return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
+    }
+
+    await Usuario.update({ logado: true }, { where: { id: usuario.id } });
+
+    usuario.senha = undefined;
+
+    return res.status(200).send({
+      message: 'Usuário logado com sucesso!',
+      usuario
+    });
+  },
+
   async index(req, res) {
     const { id } = req.params;
 
