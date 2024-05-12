@@ -3,21 +3,9 @@ const ContatoTecnicoController = require('../controllers/ContatoTecnicoControlle
 const router = express.Router();
 
 router.get('/', ContatoTecnicoController.indexAll);
-
-router.get('/:id', (req, res) => {
-  return res.send('CONTATOS TÉCNICOS DO contato COM ID: ' + req.params.id);
-});
-
-router.post('/', (req, res) => {
-  return res.send('CONTATO TÉCNICO CRIADO');
-});
-
-router.put('/:id', (req, res) => {
-  return res.send('CONTATO TÉCNICO ATUALIZADO COM ID: ' + req.params.id);
-});
-
-router.delete('/:id', (req, res) => {
-  return res.send('CONTATO TÉCNICO DELETADO COM ID: ' + req.params.id);
-});
+router.get('/:id', ContatoTecnicoController.index);
+router.post('/', ContatoTecnicoController.store);
+router.put('/:id', ContatoTecnicoController.update);
+router.delete('/:id', ContatoTecnicoController.delete);
 
 module.exports = router;

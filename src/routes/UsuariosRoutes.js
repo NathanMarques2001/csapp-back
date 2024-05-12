@@ -3,21 +3,9 @@ const UsuarioController = require('../controllers/UsuarioController.js');
 const router = express.Router();
 
 router.get('/', UsuarioController.indexAll);
-
-router.get('/:id', (req, res) => {
-  return res.send('USUÁRIO COM ID: ' + req.params.id);
-});
-
-router.post('/', (req, res) => {
-  return res.send('USUÁRIO CRIADO');
-});
-
-router.put('/:id', (req, res) => {
-  return res.send('USUÁRIO ATUALIZADO COM ID: ' + req.params.id);
-});
-
-router.delete('/:id', (req, res) => {
-  return res.send('USUÁRIO DELETADO COM ID: ' + req.params.id);
-});
+router.get('/:id', UsuarioController.index);
+router.post('/', UsuarioController.store);
+router.put('/:id', UsuarioController.update);
+router.delete('/:id', UsuarioController.delete);
 
 module.exports = router;
