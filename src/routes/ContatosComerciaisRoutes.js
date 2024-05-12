@@ -1,7 +1,9 @@
 const express = require('express');
 const ContatoComercialController = require('../controllers/ContatoComercialController.js');
 const router = express.Router();
+const authMiddleware = require('../middlewares/auth.js');
 
+router.use(authMiddleware);
 router.get('/', ContatoComercialController.indexAll);
 router.get('/:id_contrato', ContatoComercialController.index);
 router.post('/', ContatoComercialController.store);
