@@ -11,10 +11,6 @@ module.exports = {
         autoIncrement: true,
         allowNull: false
       },
-      data_criacao: {
-        type: Sequelize.DATE,
-        allowNull: false
-      },
       id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -34,6 +30,14 @@ module.exports = {
       alteracao: {
         type: Sequelize.STRING,
         allowNull: false
+      },
+      created_at: {
+        allowNull: false,
+        type: Sequelize.DATE
+      },
+      updated_at: {
+        allowNull: false,
+        type: Sequelize.DATE
       }
     });
 

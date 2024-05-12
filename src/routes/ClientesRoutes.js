@@ -1,9 +1,8 @@
 const express = require('express');
+const ClienteController = require('../controllers/ClienteController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS CLIENTES');
-});
+router.get('/', ClienteController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('CLIENTE COM ID: ' + req.params.id);

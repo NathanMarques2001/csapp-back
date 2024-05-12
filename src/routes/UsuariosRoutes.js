@@ -1,9 +1,8 @@
 const express = require('express');
+const UsuarioController = require('../controllers/UsuarioController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS USUÁRIOS');
-});
+router.get('/', UsuarioController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('USUÁRIO COM ID: ' + req.params.id);

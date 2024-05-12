@@ -5,7 +5,8 @@ class Fabricante extends Model {
     super.init({
       nome: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'fabricantes'
     });
   }
 }

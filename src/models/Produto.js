@@ -5,7 +5,8 @@ class Produto extends Model {
     super.init({
       nome: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'produtos'
     });
   }
 }

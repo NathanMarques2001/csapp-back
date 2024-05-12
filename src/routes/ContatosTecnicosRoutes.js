@@ -1,9 +1,8 @@
 const express = require('express');
+const ContatoTecnicoController = require('../controllers/ContatoTecnicoController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS CONTATOS TÉCNICOS');
-});
+router.get('/', ContatoTecnicoController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('CONTATOS TÉCNICOS DO contato COM ID: ' + req.params.id);

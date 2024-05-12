@@ -25,7 +25,8 @@ class Cliente extends Model {
       gestor_financeiro_telefone_1: DataTypes.STRING,
       gestor_financeiro_telefone_2: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'clientes'
     });
   }
 }

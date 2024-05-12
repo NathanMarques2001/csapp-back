@@ -1,9 +1,8 @@
 const express = require('express');
+const FatosImportantesController = require('../controllers/FatosImportantesController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS FATOS IMPORTANTES');
-});
+router.get('/', FatosImportantesController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('FATOS IMPORTANTES DO CONTRATO COM ID: ' + req.params.id);

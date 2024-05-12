@@ -7,7 +7,8 @@ class Log extends Model {
       id_contrato: DataTypes.INTEGER,
       alteracao: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'logs'
     });
   }
 }

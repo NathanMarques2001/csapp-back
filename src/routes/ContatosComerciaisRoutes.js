@@ -1,9 +1,8 @@
 const express = require('express');
+const ContatoComercialController = require('../controllers/ContatoComercialController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS CONTATOS COMERCIAIS');
-});
+router.get('/', ContatoComercialController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('CONTATOS COMERCIAIS DO CONTRATO COM ID: ' + req.params.id);

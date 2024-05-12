@@ -1,9 +1,8 @@
 const express = require('express');
+const ProdutoController = require('../controllers/ProdutoController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS PRODUTOS');
-});
+router.get('/', ProdutoController.indexAll);
 
 router.post('/', (req, res) => {
   return res.send('PRODUTO CRIADO');

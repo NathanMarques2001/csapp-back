@@ -1,9 +1,8 @@
 const express = require('express');
+const ContratoController = require('../controllers/ContratoController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS CONTRATOS');
-});
+router.get('/', ContratoController.indexAll);
 
 router.get('/:id', (req, res) => {
   return res.send('CONTRATO COM ID: ' + req.params.id);

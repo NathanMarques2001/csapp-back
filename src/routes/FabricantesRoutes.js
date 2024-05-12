@@ -1,9 +1,8 @@
 const express = require('express');
+const FabricanteController = require('../controllers/FabricanteController.js');
 const router = express.Router();
 
-router.get('/', (req, res) => {
-  return res.send('TODOS OS FABRICANTES');
-});
+router.get('/', FabricanteController.indexAll);
 
 router.post('/', (req, res) => {
   return res.send('FABRICANTE CRIADO');

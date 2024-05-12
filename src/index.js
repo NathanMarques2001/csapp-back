@@ -1,3 +1,4 @@
+require('./database');
 const express = require('express');
 const usuarioRoutes = require('./routes/UsuariosRoutes.js');
 const produtoRoutes = require('./routes/ProdutosRoutes.js');

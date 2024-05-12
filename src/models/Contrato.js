@@ -16,7 +16,8 @@ class Contrato extends Model {
       email_envio: DataTypes.STRING,
       descricao: DataTypes.TEXT
     }, {
-      sequelize
+      sequelize,
+      tableName: 'contratos'
     });
   }
 }

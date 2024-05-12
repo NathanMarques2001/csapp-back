@@ -6,7 +6,8 @@ class ContatoTecnico extends Model {
       id_contrato: DataTypes.INTEGER,
       conteudo: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'contatos_tecnicos'
     });
   }
 }

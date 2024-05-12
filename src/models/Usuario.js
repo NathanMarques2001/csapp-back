@@ -8,7 +8,8 @@ class Usuario extends Model {
       tipo: DataTypes.STRING,
       senha: DataTypes.STRING
     }, {
-      sequelize
+      sequelize,
+      tableName: 'usuarios'
     });
   }
 }
