@@ -4,9 +4,9 @@ module.exports = {
   async index(req, res) {
     const { id_contrato } = req.params;
 
-    const contatosTecnicos = await ContatoTecnico.findByPk(id_contrato);
+    const contatosTecnicos = await ContatoTecnico.findAll({ where: { id_contrato: id_contrato } });
 
-    if (!contatosTecnicos) {
+    if (contatosTecnicos.length == 0) {
       return res.status(404).send({ message: `Nenhum contato tecnico cadastrado no contrato com id ${id_contrato}!` });
     }
 

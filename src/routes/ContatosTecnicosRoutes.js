@@ -3,7 +3,7 @@ const ContatoTecnicoController = require('../controllers/ContatoTecnicoControlle
 const router = express.Router();
 
 router.get('/', ContatoTecnicoController.indexAll);
-router.get('/:id', ContatoTecnicoController.index);
+router.get('/:id_contrato', ContatoTecnicoController.index);
 router.post('/', ContatoTecnicoController.store);
 router.put('/:id', ContatoTecnicoController.update);
 router.delete('/:id', ContatoTecnicoController.delete);
