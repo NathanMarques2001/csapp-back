@@ -17,7 +17,9 @@ module.exports = {
         references: {
           model: 'clientes',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       id_produto: {
         type: Sequelize.INTEGER,
@@ -25,7 +27,9 @@ module.exports = {
         references: {
           model: 'produtos',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       faturado: {
         type: Sequelize.BOOLEAN,

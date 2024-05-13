@@ -1,9 +1,5 @@
-'use strict';
-
-/** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-
     return queryInterface.createTable('contatos_comerciais', {
       id: {
         type: Sequelize.INTEGER,
@@ -17,7 +13,9 @@ module.exports = {
         references: {
           model: 'contratos',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       conteudo: {
         type: Sequelize.STRING,
@@ -32,12 +30,9 @@ module.exports = {
         type: Sequelize.DATE
       }
     });
-
   },
 
   async down(queryInterface, Sequelize) {
-
     return queryInterface.dropTable('contatos_comerciais');
-
   }
 };

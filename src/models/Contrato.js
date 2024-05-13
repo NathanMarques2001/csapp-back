@@ -20,6 +20,15 @@ class Contrato extends Model {
       tableName: 'contratos'
     });
   }
+
+  static associate(models) {
+    this.hasMany(models.ContatoComercial, { foreignKey: 'id_contrato', as: 'contatos_comerciais' });
+    this.hasMany(models.ContatoTecnico, { foreignKey: 'id_contrato', as: 'contatos_tecnicos' });
+    this.hasMany(models.Log, { foreignKey: 'id_contrato', as: 'logs' });
+    this.hasMany(models.FatosImportantes, { foreignKey: 'id_contrato', as: 'fatos_importantes' });
+    this.belongsTo(models.Cliente, { foreignKey: 'id_cliente', as: 'clientes' });
+    this.belongsTo(models.Produto, { foreignKey: 'id_produto', as: 'produtos' });
+  }
 }
 
 module.exports = Contrato;

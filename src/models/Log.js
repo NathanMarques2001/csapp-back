@@ -11,6 +11,12 @@ class Log extends Model {
       tableName: 'logs'
     });
   }
+
+  static associate(models) {
+    this.belongsTo(models.Usuario, { foreignKey: 'id_usuario', as: 'usuarios' });
+    this.belongsTo(models.Contrato, { foreignKey: 'id_contrato', as: 'contratos' });
+  }
+  
 }
 
 module.exports = Log;

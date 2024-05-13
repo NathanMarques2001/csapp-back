@@ -22,4 +22,14 @@ ContatoTecnico.init(connection);
 ContatoComercial.init(connection);
 Cliente.init(connection);
 
+Usuario.associate(connection.models);
+Produto.associate(connection.models);
+Log.associate(connection.models);
+FatosImportantes.associate(connection.models);
+Fabricante.associate(connection.models);
+Contrato.associate(connection.models);
+ContatoTecnico.associate(connection.models);
+ContatoComercial.associate(connection.models);
+Cliente.associate(connection.models);
+
 module.exports = connection;

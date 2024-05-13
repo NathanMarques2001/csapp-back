@@ -29,6 +29,11 @@ class Cliente extends Model {
       tableName: 'clientes'
     });
   }
+
+  static associate(models) {
+    this.hasMany(models.Contrato, { foreignKey: 'id_cliente', as: 'contratos' });
+  }
+
 }
 
 module.exports = Cliente;

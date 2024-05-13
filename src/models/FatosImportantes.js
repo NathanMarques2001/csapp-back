@@ -10,6 +10,11 @@ class FatosImportantes extends Model {
       tableName: 'fatos_importantes'
     });
   }
+
+  static associate(models) {
+    this.belongsTo(models.Contrato, { foreignKey: 'id_contrato', as: 'contratos' });
+  }
+
 }
 
 module.exports = FatosImportantes;

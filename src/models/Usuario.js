@@ -20,6 +20,11 @@ class Usuario extends Model {
       }
     });
   }
+
+  static associate(models) {
+    this.hasMany(models.Log, { foreignKey: 'id_usuario', as: 'logs' });
+  }
+  
 }
 
 module.exports = Usuario;

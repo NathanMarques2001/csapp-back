@@ -17,7 +17,9 @@ module.exports = {
         references: {
           model: 'usuarios',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       id_contrato: {
         type: Sequelize.INTEGER,
@@ -25,7 +27,9 @@ module.exports = {
         references: {
           model: 'contratos',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       alteracao: {
         type: Sequelize.STRING,

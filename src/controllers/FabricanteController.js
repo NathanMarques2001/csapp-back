@@ -2,52 +2,72 @@ const Fabricante = require('../models/Fabricante');
 
 module.exports = {
   async indexAll(req, res) {
-    const fabricantes = await Fabricante.findAll();
+    try {
+      const fabricantes = await Fabricante.findAll();
 
-    if (fabricantes.length == 0) {
-      return res.status(404).send({ message: 'Nenhum fabricante cadastrado!' });
+      if (fabricantes.length == 0) {
+        return res.status(404).send({ message: 'Nenhum fabricante cadastrado!' });
+      }
+
+      return res.status(200).send({ fabricantes });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os fabricantes.' });
     }
-
-    return res.status(200).send({ fabricantes });
   },
 
   async store(req, res) {
-    const { nome } = req.body;
+    try {
+      const { nome } = req.body;
 
-    const fabricante = await Fabricante.create({ nome });
+      const fabricante = await Fabricante.create({ nome });
 
-    return res.status(201).send({
-      message: 'Fabricante criado com sucesso!',
-      fabricante
-    });
+      return res.status(201).send({
+        message: 'Fabricante criado com sucesso!',
+        fabricante
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao criar o fabricante.' });
+    }
   },
 
   async update(req, res) {
-    const { nome } = req.body;
-    const { id } = req.params;
+    try {
+      const { nome } = req.body;
+      const { id } = req.params;
 
-    const fabricante = await Fabricante.findByPk(id);
+      const fabricante = await Fabricante.findByPk(id);
 
-    if (!fabricante) {
-      return res.status(404).send({ message: 'Fabricante não encontrado!' });
+      if (!fabricante) {
+        return res.status(404).send({ message: 'Fabricante não encontrado!' });
+      }
+
+      await Fabricante.update({ nome }, { where: { id: id } });
+
+      return res.status(200).send({ message: 'Fabricante atualizado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o fabricante.' });
     }
-
-    Fabricante.update({ nome }, { where: { id: id } });
-
-    return res.status(200).send({ message: 'Fabricante atualizado com sucesso!' });
   },
 
   async delete(req, res) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const fabricante = await Fabricante.findByPk(id);
+      const fabricante = await Fabricante.findByPk(id);
 
-    if (!fabricante) {
-      return res.status(404).send({ message: 'Fabricante não encontrado!' });
+      if (!fabricante) {
+        return res.status(404).send({ message: 'Fabricante não encontrado!' });
+      }
+
+      await Fabricante.destroy({ where: { id: id } });
+
+      return res.status(200).send({ message: 'Fabricante deletado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o fabricante.' });
     }
-
-    Fabricante.destroy({ where: { id: id } });
-
-    return res.status(200).send({ message: 'Fabricante deletado com sucesso!' });
   }
 }

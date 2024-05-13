@@ -17,7 +17,9 @@ module.exports = {
         references: {
           model: 'contratos',
           key: 'id'
-        }
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       conteudo: {
         type: Sequelize.STRING,

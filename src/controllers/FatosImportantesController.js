@@ -1,65 +1,97 @@
 const FatosImportantes = require('../models/FatosImportantes');
+const Contrato = require('../models/Contrato');
 
 module.exports = {
   async index(req, res) {
-    const { id_contrato } = req.params;
+    try {
+      const { id_contrato } = req.params;
 
-    const fatosImportantes = await FatosImportantes.findAll({ where: { id_contrato: id_contrato } });
+      const contrato = await Contrato.findByPk(id_contrato, {
+        include: { association: 'fatos_importantes' }
+      });
 
-    if (fatosImportantes.length == 0) {
-      return res.status(404).send({ message: `Nenhum fato importante cadastrado no contrato com id ${id_contrato}!` });
+      if (!contrato) {
+        return res.status(404).send({ message: 'Contrato não encontrado!' });
+      }
+
+      if (contrato.fatos_importantes.length == 0) {
+        return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
+      }
+
+      return res.status(200).send({ fatos_importantes: contrato.fatos_importantes });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Erro ao buscar os fatos importantes.' });
     }
-
-    return res.status(200).send({ fatosImportantes });
   },
 
   async indexAll(req, res) {
-    const fatosImportantes = await FatosImportantes.findAll();
+    try {
+      const fatosImportantes = await FatosImportantes.findAll();
 
-    if (fatosImportantes.length == 0) {
-      return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
+      if (fatosImportantes.length == 0) {
+        return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
+      }
+
+      return res.status(200).send({ fatosImportantes });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os fatos importantes.' });
     }
-
-    return res.status(200).send({ fatosImportantes });
   },
 
   async store(req, res) {
-    const { id_contrato, conteudo } = req.body;
+    try {
+      const { id_contrato, conteudo } = req.body;
 
-    const fatoImportante = await FatosImportantes.create({ id_contrato, conteudo });
+      const fatoImportante = await FatosImportantes.create({ id_contrato, conteudo });
 
-    return res.status(201).send({
-      message: 'Fato importante criado com sucesso!',
-      fatoImportante
-    });
+      return res.status(201).send({
+        message: 'Fato importante criado com sucesso!',
+        fatoImportante
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao criar o fato importante.' });
+    }
   },
 
   async update(req, res) {
-    const { conteudo } = req.body;
-    const { id } = req.params;
+    try {
+      const { conteudo } = req.body;
+      const { id } = req.params;
 
-    const fatoImportante = await FatosImportantes.findByPk(id);
+      const fatoImportante = await FatosImportantes.findByPk(id);
 
-    if (!fatoImportante) {
-      return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      if (!fatoImportante) {
+        return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      }
+
+      await FatosImportantes.update({ conteudo }, { where: { id: id } });
+
+      return res.status(200).send({ message: 'Fato importante atualizado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o fato importante.' });
     }
-
-    FatosImportantes.update({ conteudo }, { where: { id: id } });
-
-    return res.status(200).send({ message: 'Fato importante atualizado com sucesso!' });
   },
 
   async delete(req, res) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const fatoImportante = await FatosImportantes.findByPk(id);
+      const fatoImportante = await FatosImportantes.findByPk(id);
 
-    if (!fatoImportante) {
-      return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      if (!fatoImportante) {
+        return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      }
+
+      await FatosImportantes.destroy({ where: { id: id } });
+
+      return res.status(200).send({ message: 'Fato importante deletado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o fato importante.' });
     }
-
-    FatosImportantes.destroy({ where: { id: id } });
-
-    return res.status(200).send({ message: 'Fato importante deletado com sucesso!' });
   }
 }

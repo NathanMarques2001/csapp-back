@@ -7,9 +7,15 @@ class ContatoComercial extends Model {
       conteudo: DataTypes.STRING
     }, {
       sequelize,
+      modelName: 'ContatoComercial',
       tableName: 'contatos_comerciais'
     });
   }
+
+  static associate(models) {
+    this.belongsTo(models.Contrato, { foreignKey: 'id_contrato', as: 'contratos' });
+  }
+  
 }
 
 module.exports = ContatoComercial;

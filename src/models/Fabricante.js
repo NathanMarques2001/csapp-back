@@ -9,6 +9,11 @@ class Fabricante extends Model {
       tableName: 'fabricantes'
     });
   }
+
+  static associate(models) {
+    this.hasMany(models.Produto, { foreignKey: 'id_fabricante', as: 'produtos' });
+  }
+  
 }
 
 module.exports = Fabricante;

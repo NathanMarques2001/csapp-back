@@ -10,6 +10,11 @@ class ContatoTecnico extends Model {
       tableName: 'contatos_tecnicos'
     });
   }
+
+  static associate(models) {
+    this.belongsTo(models.Contrato, { foreignKey: 'id_contrato', as: 'contratos' });
+  }
+  
 }
 
 module.exports = ContatoTecnico;

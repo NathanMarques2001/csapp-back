@@ -1,6 +1,5 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
-
 const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
 
@@ -12,89 +11,119 @@ function gerarToken(params = {}) {
 
 module.exports = {
   async login(req, res) {
-    const { email, senha } = req.body;
+    try {
+      const { email, senha } = req.body;
 
-    const usuario = await Usuario.findOne({ where: { email: email } });
+      const usuario = await Usuario.findOne({ where: { email: email } });
 
-    if (!usuario) {
-      return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
+      if (!usuario) {
+        return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
+      }
+
+      if (!bcrypt.compareSync(senha, usuario.senha)) {
+        return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
+      }
+
+      await Usuario.update({ logado: true }, { where: { id: usuario.id } });
+
+      usuario.senha = undefined;
+
+      const token = gerarToken({ id: usuario.id });
+
+      return res.status(200).send({
+        message: 'Usuário logado com sucesso!',
+        usuario, token
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao fazer login.' });
     }
-
-    if (!bcrypt.compareSync(senha, usuario.senha)) {
-      return res.status(404).send({ message: 'E-mail ou senha incorretos!' });
-    }
-
-    await Usuario.update({ logado: true }, { where: { id: usuario.id } });
-
-    usuario.senha = undefined;
-
-    const token = gerarToken({ id: usuario.id });
-
-    return res.status(200).send({
-      message: 'Usuário logado com sucesso!',
-      usuario, token
-    });
   },
 
   async index(req, res) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const usuario = await Usuario.findByPk(id);
+      const usuario = await Usuario.findByPk(id);
 
-    if (!usuario) {
-      return res.status(404).send({ message: 'Usuário não encontrado!' });
+      if (!usuario) {
+        return res.status(404).send({ message: 'Usuário não encontrado!' });
+      }
+
+      return res.status(200).send({ usuario });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar o usuário.' });
     }
-
-    return res.status(200).send({ usuario });
   },
 
   async indexAll(req, res) {
-    const usuarios = await Usuario.findAll();
+    try {
+      const usuarios = await Usuario.findAll();
 
-    if (usuarios.length == 0) {
-      return res.status(404).send({ message: 'Nenhum usuário cadastrado!' });
+      if (usuarios.length == 0) {
+        return res.status(404).send({ message: 'Nenhum usuário cadastrado!' });
+      }
+
+      return res.status(200).send({ usuarios });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os usuários.' });
     }
-
-    return res.status(200).send({ usuarios });
   },
 
   async store(req, res) {
-    const { nome, email, tipo, senha } = req.body;
+    try {
+      const { nome, email, tipo, senha } = req.body;
 
-    const usuario = await Usuario.create({ nome, email, tipo, senha });
+      const usuario = await Usuario.create({ nome, email, tipo, senha });
 
-    return res.status(201).send({
-      message: 'Usuário criado com sucesso!',
-      usuario
-    });
+      return res.status(201).send({
+        message: 'Usuário criado com sucesso!',
+        usuario
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao criar o usuário.' });
+    }
   },
 
   async update(req, res) {
-    const { nome, email, tipo, senha } = req.body;
-    const { id } = req.params;
+    try {
+      const { nome, email, tipo, senha } = req.body;
+      const { id } = req.params;
 
-    const usuario = await Usuario.findByPk(id);
+      const usuario = await Usuario.findByPk(id);
 
-    if (!usuario) {
-      return res.status(404).send({ message: 'Usuário não encontrado!' });
+      if (!usuario) {
+        return res.status(404).send({ message: 'Usuário não encontrado!' });
+      }
+
+      await Usuario.update({ nome, email, tipo, senha }, { where: { id: id } });
+
+      return res.status(200).send({ message: 'Usuário atualizado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o usuário.' });
     }
-
-    Usuario.update({ nome, email, tipo, senha }, { where: { id: id } });
-
-    return res.status(200).send({ message: 'Usuário atualizado com sucesso!' });
   },
 
   async delete(req, res) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const usuario = await Usuario.findByPk(id);
+      const usuario = await Usuario.findByPk(id);
 
-    if (!usuario) {
-      return res.status(404).send({ message: 'Usuário não encontrado!' });
+      if (!usuario) {
+        return res.status(404).send({ message: 'Usuário não encontrado!' });
+      }
+
+      await Usuario.destroy({ where: { id: id } });
+
+      return res.status(200).send({ message: 'Usuário deletado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o usuário.' });
     }
-
-    Usuario.destroy({ where: { id: id } });
-
-    return res.status(200).send({ message: 'Usuário deletado com sucesso!' });
   }
 }

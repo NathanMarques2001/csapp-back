@@ -2,52 +2,72 @@ const Produto = require('../models/Produto');
 
 module.exports = {
   async indexAll(req, res) {
-    const produtos = await Produto.findAll();
+    try {
+      const produtos = await Produto.findAll();
 
-    if (produtos.length == 0) {
-      return res.status(404).send({ message: 'Nenhum produto cadastrado!' });
+      if (produtos.length == 0) {
+        return res.status(404).send({ message: 'Nenhum produto cadastrado!' });
+      }
+
+      return res.status(200).send({ produtos });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os produtos.' });
     }
-
-    return res.status(200).send({ produtos });
   },
 
   async store(req, res) {
-    const { nome } = req.body;
+    try {
+      const { nome, id_fabricante } = req.body;
 
-    const produto = await Produto.create({ nome });
+      const produto = await Produto.create({ nome, id_fabricante });
 
-    return res.status(201).send({
-      message: 'Produto criado com sucesso!',
-      produto
-    });
+      return res.status(201).send({
+        message: 'Produto criado com sucesso!',
+        produto
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao criar o produto.' });
+    }
   },
 
   async update(req, res) {
-    const { nome } = req.body;
-    const { id } = req.params;
+    try {
+      const { nome } = req.body;
+      const { id } = req.params;
 
-    const produto = await Produto.findByPk(id);
+      const produto = await Produto.findByPk(id);
 
-    if (!produto) {
-      return res.status(404).send({ message: 'Produto não encontrado!' });
+      if (!produto) {
+        return res.status(404).send({ message: 'Produto não encontrado!' });
+      }
+
+      await Produto.update({ nome }, { where: { id: id } });
+
+      return res.status(200).send({ message: 'Produto atualizado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o produto.' });
     }
-
-    Produto.update({ nome }, { where: { id: id } });
-
-    return res.status(200).send({ message: 'Produto atualizado com sucesso!' });
   },
 
   async delete(req, res) {
-    const { id } = req.params;
+    try {
+      const { id } = req.params;
 
-    const produto = await Produto.findByPk(id);
+      const produto = await Produto.findByPk(id);
 
-    if (!produto) {
-      return res.status(404).send({ message: 'Produto não encontrado!' });
+      if (!produto) {
+        return res.status(404).send({ message: 'Produto não encontrado!' });
+      }
+
+      await Produto.destroy({ where: { id: id } });
+
+      return res.status(200).send({ message: 'Produto deletado com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o produto.' });
     }
-
-    Produto.destroy({ where: { id: id } });
-
-    return res.status(200).send({ message: 'Produto deletado com sucesso!' });
   }
 }

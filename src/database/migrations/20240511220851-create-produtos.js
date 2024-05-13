@@ -15,6 +15,16 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false
       },
+      id_fabricante: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'fabricantes',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
+      },
       created_at: {
         allowNull: false,
         type: Sequelize.DATE
