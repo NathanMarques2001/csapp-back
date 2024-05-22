@@ -6,15 +6,69 @@ class Contrato extends Model {
       id_cliente: DataTypes.INTEGER,
       id_produto: DataTypes.INTEGER,
       faturado: DataTypes.BOOLEAN,
-      dia_vencimento: DataTypes.INTEGER,
+      dia_vencimento: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          isDate: true,
+          isFuture(value) {
+            if (new Date(value) <= new Date()) {
+              throw new Error('O dia de vencimento deve ser uma data futura.');
+            }
+          },
+        },
+      },
       indice_reajuste: DataTypes.FLOAT,
-      proximo_reajuste: DataTypes.DATE,
+      proximo_reajuste: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate: {
+          isDate: true,
+          isFuture(value) {
+            if (new Date(value) <= new Date()) {
+              throw new Error('A data do próximo reajuste deve ser uma data futura.');
+            }
+          },
+        },
+      },
       status: DataTypes.STRING,
-      duracao: DataTypes.INTEGER,
-      valor_mensal: DataTypes.DECIMAL(10, 2),
-      quantidade: DataTypes.INTEGER,
-      email_envio: DataTypes.STRING,
-      descricao: DataTypes.TEXT
+      duracao: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: {
+            args: [0],
+            msg: 'A duração não pode ser menor que zero.',
+          },
+        },
+      },
+      valor_mensal: {
+        type: DataTypes.DECIMAL(10, 2),
+        allowNull: false,
+        validate: {
+          min: {
+            args: [0],
+            msg: 'O valor mensal não pode ser menor que zero.',
+          },
+        },
+      },
+      quantidade: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+          min: {
+            args: [0],
+            msg: 'A quantidade não pode ser menor que zero.',
+          },
+        },
+      },
+      email_envio: {
+        type: DataTypes.STRING,
+        validate: {
+          isEmail: true,
+        },
+      },
+      descricao: DataTypes.TEXT,
     }, {
       sequelize,
       tableName: 'contratos'
