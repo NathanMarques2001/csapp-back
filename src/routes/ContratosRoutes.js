@@ -3,7 +3,7 @@ const ContratoController = require('../controllers/ContratoController.js');
 const router = express.Router();
 const authMiddleware = require('../middlewares/auth.js');
 
-router.use(authMiddleware);
+// router.use(authMiddleware);
 router.get('/', ContratoController.indexAll);
 router.get('/:id', ContratoController.index);
 router.post('/', ContratoController.store);

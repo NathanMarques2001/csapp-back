@@ -21,7 +21,8 @@ class Usuario extends Model {
           isEmail: {
             msg: 'O e-mail fornecido não é válido.'
           }
-        }
+        },
+        unique: true
       },
       tipo: DataTypes.STRING,
       senha: DataTypes.STRING,

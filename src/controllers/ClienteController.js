@@ -1,146 +1,88 @@
 const Cliente = require('../models/Cliente');
 
-function Validate(cpf) {
-  let cpfValido = 0;
-  resto = 0;
-  //Se os caracteres do cpf forem iguais incrementa
-  for (let i = 0; i < cpf.length; i++) {
-      if (cpf[i] === cpf[i + 1]) {
-          cpfValido++;
-      }
+function validateCPF(cpf) {
+  cpf = cpf.replaceAll(".", "").replace("-", "");
+
+  if (cpf.length !== 11) {
+    console.log("FORMATO DE CPF INVALIDO!");
+    return false;
   }
-  if (cpfValido === 10 || cpf.length > 11) {
-      console.log("FORMATO DE CPF INVALIDO!");
-      return false;
-  } else {
-      //Armazena o cpf no formato int
-      const finalCpf = parseInt(cpf.join(''));
-      let arrMult = [10, 9, 8, 7, 6, 5, 4, 3, 2];
-      let digito;
-      let soma = 0;
 
-      //Retira os dois ultimos digitos
-      cpf.pop();
-      cpf.pop();
-
-      //multiplica os valores de 10 a 2 pelos 9 primeiros digitos do cpf
-      for (let i = 0; i < cpf.length; i++) {
-          soma += arrMult[i] * cpf[i];
-      }
-      resto = soma % 11;
-
-      if (resto >= 2) {
-          digito = 11 - resto;
-      } else {
-          digito = 0;
-      }
-
-      //Adiciona os calculos no final do array do cpf
-      cpf.push(digito);
-
-      //Adiciona o valor 11 no começo do array de multiplicações
-      arrMult.unshift(11);
-      soma = 0;
-
-      //A partir daqui faz a mesma coisa que anteriormente
-      for (let i = 0; i < cpf.length; i++) {
-          soma += arrMult[i] * cpf[i];
-      }
-      resto = soma % 11;
-
-      if (resto >= 2) {
-          digito = 11 - resto;
-      } else {
-          digito = 0;
-      }
-
-      cpf.push(digito);
-
-      //Formata o array de cpf e salva na variavel como int
-      const reformatCpf = parseInt(cpf.join(''));
-
-      //Se o numero resultado de todas as operações anteriores
-      //for igual ao cpf salvo no começo da função o cpf é valido
-      if (reformatCpf === finalCpf) {
-          return true;
-      }
-      return false;
+  if (/^(\d)\1+$/.test(cpf)) {
+    console.log("FORMATO DE CPF INVALIDO!");
+    return false;
   }
+
+  const cpfArray = cpf.split('').map(Number);
+
+  function calcularDigito(cpfParcial, pesos) {
+    const soma = cpfParcial.reduce((acc, digit, idx) => acc + digit * pesos[idx], 0);
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
+  const pesos1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
+  const pesos2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
+
+  const primeiroDigito = calcularDigito(cpfArray.slice(0, 9), pesos1);
+  const segundoDigito = calcularDigito(cpfArray.slice(0, 9).concat(primeiroDigito), pesos2);
+
+  return primeiroDigito === cpfArray[9] && segundoDigito === cpfArray[10];
 }
 
-function validatCNPJ(cnpj) {
-  const multiplyArray = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-  let resto = 0;
 
-  if (cnpj.length == 14) {
-      const finalCnpj = parseInt(cnpj.join(''));
-      let digito;
-      let soma = 0;
+function validateCNPJ(cnpj) {
+  cnpj = cnpj.replaceAll(".", "").replaceAll("/", "").replace("-", "");
 
-      cnpj.pop();
-      cnpj.pop();
-
-      for (let i = 0; i < cnpj.length; i++) {
-          soma += multiplyArray[i] * cnpj[i];
-      }
-      resto = soma % 11;
-
-      if (resto >= 2) {
-          digito = 11 - resto;
-      } else {
-          digito = 0;
-      }
-
-      cnpj.push(digito);
-
-      multiplyArray.unshift(6);
-      soma = 0;
-
-      for (let i = 0; i < cnpj.length; i++) {
-          soma += multiplyArray[i] * cnpj[i];
-      }
-      resto = soma % 11;
-
-      if (resto >= 2) {
-          digito = 11 - resto;
-      } else {
-          digito = 0;
-      }
-
-      cnpj.push(digito);
-
-      const reformatCnpj = parseInt(cnpj.join(''));
-
-      if (reformatCnpj == finalCnpj) {
-       
-          return true;
-      } else {
-         return false
-      }
+  if (cnpj.length !== 14) {
+    console.log("FORMATO DE CNPJ INVALIDO!");
+    return false;
   }
+
+  if (/^(\d)\1+$/.test(cnpj)) {
+    console.log("FORMATO DE CNPJ INVALIDO!");
+    return false;
+  }
+
+  const cnpjArray = cnpj.split('').map(Number);
+
+  function calcularDigito(cnpjParcial, pesos) {
+    const soma = cnpjParcial.reduce((acc, digit, idx) => acc + digit * pesos[idx], 0);
+    const resto = soma % 11;
+    return resto < 2 ? 0 : 11 - resto;
+  }
+
+  const pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+  const pesos2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
+
+  const primeiroDigito = calcularDigito(cnpjArray.slice(0, 12), pesos1);
+  const segundoDigito = calcularDigito(cnpjArray.slice(0, 12).concat(primeiroDigito), pesos2);
+
+  return primeiroDigito === cnpjArray[12] && segundoDigito === cnpjArray[13];
 }
+
 
 function validateCPFOrCNPJ(cpf_cnpj, res) {
+  cpf_cnpj = cpf_cnpj.replaceAll(".", "").replaceAll("/", "").replace("-", "");
+
   if (cpf_cnpj.length === 11) {
-      // Se for CPF, valida
-      if (!validateCPF(cpf_cnpj)) {
-          return res.status(400).send({ message: 'CPF inválido!' });
-      }
+    if (!validateCPF(cpf_cnpj)) {
+      return res.status(400).send({ message: 'CPF inválido!' });
+    }
   } else if (cpf_cnpj.length === 14) {
-      // Se for CNPJ, valida
-      if (!validateCNPJ(cpf_cnpj)) {
-          return res.status(400).send({ message: 'CNPJ inválido!' });
-      }
+    if (!validateCNPJ(cpf_cnpj)) {
+      return res.status(400).send({ message: 'CNPJ inválido!' });
+    }
   } else {
-      // Se não for nem CPF nem CNPJ válido
-      return res.status(400).send({ message: 'CPF/CNPJ inválido!' });
+    return res.status(400).send({ message: 'CPF/CNPJ inválido!' });
   }
 }
+
 
 
 module.exports = {
   async index(req, res) {
-    
+
     try {
       const { id } = req.params;
 
@@ -176,9 +118,9 @@ module.exports = {
     try {
       const { nome, cpf_cnpj, relacionamento, nps, seguimento, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
 
-       // Chama a função para validar CPF ou CNPJ
-       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
-       if (validationError) return validationError;
+      // Chama a função para validar CPF ou CNPJ
+      const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
+      if (validationError) return validationError;
 
       const cliente = await Cliente.create({ nome, cpf_cnpj, relacionamento, nps, seguimento, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
 
@@ -205,7 +147,7 @@ module.exports = {
 
       // Chama a função para validar CPF ou CNPJ
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
-       if (validationError) return validationError;
+      if (validationError) return validationError;
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
       await Cliente.update({ nome, cpf_cnpj, relacionamento, nps, seguimento, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 }, { where: { id: id } });

@@ -83,6 +83,9 @@ module.exports = {
         usuario
       });
     } catch (error) {
+      if(error.name == 'SequelizeUniqueConstraintError') {
+        return res.status(400).send({ message: 'E-mail já cadastrado!' });
+      }
       console.error(error);
       return res.status(500).send({ message: 'Ocorreu um erro ao criar o usuário.' });
     }
