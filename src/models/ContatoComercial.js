@@ -4,7 +4,7 @@ class ContatoComercial extends Model {
   static init(sequelize) {
     super.init({
       id_contrato: DataTypes.INTEGER,
-      conteudo: DataTypes.STRING
+      conteudo: DataTypes.TEXT
     }, {
       sequelize,
       modelName: 'ContatoComercial',
