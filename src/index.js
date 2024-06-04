@@ -10,7 +10,7 @@ const contatosTecnicosRoutes = require('./routes/ContatosTecnicosRoutes.js');
 const contatosComerciaisRoutes = require('./routes/ContatosComerciaisRoutes.js');
 const clienteRoutes = require('./routes/ClientesRoutes.js');
 
-const port = 3000;
+const port = 8080;
 const app = express();
 
 app.use(express.json());
