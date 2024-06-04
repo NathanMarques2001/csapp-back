@@ -5,7 +5,7 @@ class Log extends Model {
     super.init({
       id_usuario: DataTypes.INTEGER,
       id_contrato: DataTypes.INTEGER,
-      alteracao: DataTypes.STRING
+      alteracao: DataTypes.TEXT
     }, {
       sequelize,
       tableName: 'logs'
