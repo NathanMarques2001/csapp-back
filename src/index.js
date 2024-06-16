@@ -1,5 +1,6 @@
 require('./database');
 const express = require('express');
+const cors = require('cors');
 const usuarioRoutes = require('./routes/UsuariosRoutes.js');
 const produtoRoutes = require('./routes/ProdutosRoutes.js');
 const logsRoutes = require('./routes/LogsRoutes.js');
@@ -14,6 +15,7 @@ const port = 8080;
 const app = express();
 
 app.use(express.json());
+app.use(cors());
 app.use('/usuarios', usuarioRoutes);
 app.use('/produtos', produtoRoutes);
 app.use('/logs', logsRoutes);

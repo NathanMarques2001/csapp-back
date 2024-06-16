@@ -7,16 +7,8 @@ class Contrato extends Model {
       id_produto: DataTypes.INTEGER,
       faturado: DataTypes.BOOLEAN,
       dia_vencimento: {
-        type: DataTypes.DATEONLY,
+        type: DataTypes.INTEGER,
         allowNull: false,
-        validate: {
-          isDate: true,
-          isFuture(value) {
-            if (new Date(value) <= new Date()) {
-              throw new Error('O dia de vencimento deve ser uma data futura.');
-            }
-          },
-        },
       },
       indice_reajuste: DataTypes.FLOAT,
       proximo_reajuste: {
