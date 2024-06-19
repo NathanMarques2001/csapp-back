@@ -18,6 +18,23 @@ module.exports = {
     }
   },
 
+  async indexClient(req, res) {
+    try {
+      const { id } = req.params;
+
+      const contratos = await Contrato.findAll({ where: { id_cliente: id } });
+
+      if (contratos.length == 0) {
+        return res.status(404).send({ message: 'Nenhum contrato cadastrado!' });
+      }
+
+      return res.status(200).send({ contratos });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os contratos.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const contratos = await Contrato.findAll();

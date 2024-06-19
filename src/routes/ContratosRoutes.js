@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/auth.js');
 // router.use(authMiddleware);
 router.get('/', ContratoController.indexAll);
 router.get('/:id', ContratoController.index);
+router.get('/usuario/:id', ContratoController.indexClient);
 router.post('/', ContratoController.store);
 router.put('/:id', ContratoController.update);
 router.delete('/:id', ContratoController.delete);
