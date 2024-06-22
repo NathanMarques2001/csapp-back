@@ -12,24 +12,14 @@ const Cliente = require('../models/Cliente');
 
 const connection = new sequelize(dbConfig);
 
-Usuario.init(connection);
-Produto.init(connection);
-Log.init(connection);
-FatosImportantes.init(connection);
-Fabricante.init(connection);
-Contrato.init(connection);
-ContatoTecnico.init(connection);
-ContatoComercial.init(connection);
-Cliente.init(connection);
+const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente];
 
-Usuario.associate(connection.models);
-Produto.associate(connection.models);
-Log.associate(connection.models);
-FatosImportantes.associate(connection.models);
-Fabricante.associate(connection.models);
-Contrato.associate(connection.models);
-ContatoTecnico.associate(connection.models);
-ContatoComercial.associate(connection.models);
-Cliente.associate(connection.models);
+tables.forEach(table => {
+  table.init(connection);
+});
+
+tables.forEach(table => {
+  table.associate(connection.models);
+});
 
 module.exports = connection;
