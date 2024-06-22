@@ -16,15 +16,15 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
-app.use('/usuarios', usuarioRoutes);
-app.use('/produtos', produtoRoutes);
-app.use('/logs', logsRoutes);
-app.use('/fatos-importantes', fatosImportantesRoutes);
-app.use('/fabricantes', fabricantesRoutes);
-app.use('/contratos', contratosRoutes);
-app.use('/contatos-tecnicos', contatosTecnicosRoutes);
-app.use('/contatos-comerciais', contatosComerciaisRoutes);
-app.use('/clientes', clienteRoutes);
+app.use('api/usuarios', usuarioRoutes);
+app.use('api/produtos', produtoRoutes);
+app.use('api/logs', logsRoutes);
+app.use('api/fatos-importantes', fatosImportantesRoutes);
+app.use('api/fabricantes', fabricantesRoutes);
+app.use('api/contratos', contratosRoutes);
+app.use('api/contatos-tecnicos', contatosTecnicosRoutes);
+app.use('api/contatos-comerciais', contatosComerciaisRoutes);
+app.use('api/clientes', clienteRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);
