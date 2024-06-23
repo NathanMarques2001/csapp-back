@@ -5,6 +5,7 @@ const authMiddleware = require('../middlewares/auth.js');
 
 router.use(authMiddleware);
 router.get('/', ProdutoController.indexAll);
+router.get('/:id', ProdutoController.index);
 router.post('/', ProdutoController.store);
 router.put('/:id', ProdutoController.update);
 router.delete('/:id', ProdutoController.delete);

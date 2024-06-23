@@ -1,6 +1,23 @@
 const Produto = require('../models/Produto');
 
 module.exports = {
+  async index(req, res) {
+    try {
+      const { id } = req.params;
+
+      const produto = await Produto.findByPk(id);
+
+      if (!produto) {
+        return res.status(404).send({ message: `Nenhum produto cadastrado com id ${id}!` });
+      }
+
+      return res.status(200).send({ produto });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar o produto.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const produtos = await Produto.findAll();
@@ -34,7 +51,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome } = req.body;
+      const { nome, id_fabricante } = req.body;
       const { id } = req.params;
 
       const produto = await Produto.findByPk(id);
@@ -43,7 +60,7 @@ module.exports = {
         return res.status(404).send({ message: 'Produto não encontrado!' });
       }
 
-      await Produto.update({ nome }, { where: { id: id } });
+      await Produto.update({ nome, id_fabricante }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Produto atualizado com sucesso!' });
     } catch (error) {
