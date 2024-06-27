@@ -59,21 +59,9 @@ class Cliente extends Model {
       },
       gestor_contratos_telefone_1: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       },
       gestor_contratos_telefone_2: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       },
       gestor_chamados_nome: DataTypes.STRING,
       gestor_chamados_email: {
@@ -94,21 +82,9 @@ class Cliente extends Model {
       },
       gestor_chamados_telefone_1: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       },
       gestor_chamados_telefone_2: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       },
       gestor_financeiro_nome: DataTypes.STRING,
       gestor_financeiro_email: {
@@ -129,21 +105,9 @@ class Cliente extends Model {
       },
       gestor_financeiro_telefone_1: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       },
       gestor_financeiro_telefone_2: {
         type: DataTypes.STRING,
-        validate: {
-          isMobilePhone: {
-            options: ['pt-BR'],
-            msg: 'Telefone inválido'
-          }
-        }
       }
     }, {
       sequelize,

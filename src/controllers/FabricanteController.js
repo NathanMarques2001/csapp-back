@@ -1,6 +1,23 @@
 const Fabricante = require('../models/Fabricante');
 
 module.exports = {
+  async index(req, res) {
+    try {
+      const { id } = req.params;
+
+      const fabricante = await Fabricante.findByPk(id);
+
+      if (!fabricante) {
+        return res.status(404).send({ message: 'Fabricante não encontrado!' });
+      }
+
+      return res.status(200).send({ fabricante });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar o fabricante.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const fabricantes = await Fabricante.findAll();
