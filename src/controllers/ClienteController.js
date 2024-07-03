@@ -132,8 +132,7 @@ module.exports = {
         return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
       }
       
-      const now = new Date();
-      const data_criacao = formatDate(now);
+      const data_criacao = formatDate(new Date());
 
       const cliente = await Cliente.create({ nome, cpf_cnpj, relacionamento, nps, seguimento, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
 

@@ -6,6 +6,10 @@ class Contrato extends Model {
       id_cliente: DataTypes.INTEGER,
       id_produto: DataTypes.INTEGER,
       faturado: DataTypes.BOOLEAN,
+      faturado_por: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
       dia_vencimento: {
         type: DataTypes.INTEGER,
         allowNull: false,
