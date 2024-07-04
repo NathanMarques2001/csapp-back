@@ -1,24 +1,24 @@
+const Cliente = require('../models/Cliente');
 const ContatoComercial = require('../models/ContatoComercial');
-const Contrato = require('../models/Contrato');
 
 module.exports = {
   async index(req, res) {
     try {
-      const { id_contrato } = req.params;
+      const { id_cliente } = req.params;
 
-      const contrato = await Contrato.findByPk(id_contrato, {
+      const cliente = await Cliente.findByPk(id_cliente, {
         include: { association: 'contatos_comerciais' }
       });
 
-      if (!contrato) {
-        return res.status(404).send({ message: 'Contrato não encontrado!' });
+      if (!cliente) {
+        return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (contrato.contatos_comerciais.length == 0) {
+      if (cliente.contatos_comerciais.length == 0) {
         return res.status(404).send({ message: 'Nenhum contato comercial cadastrado!' });
       }
 
-      return res.status(200).send({ contatos_comerciais: contrato.contatos_comerciais });
+      return res.status(200).send({ contatos_comerciais: cliente.contatos_comerciais });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Erro ao buscar os contatos comerciais.' });
@@ -42,9 +42,9 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { id_contrato, conteudo } = req.body;
+      const { id_cliente, conteudo } = req.body;
 
-      const contatoComercial = await ContatoComercial.create({ id_contrato, conteudo });
+      const contatoComercial = await ContatoComercial.create({ id_cliente, conteudo });
       return res.status(201).send({
         message: 'Contato comercial criado com sucesso!',
         contatoComercial

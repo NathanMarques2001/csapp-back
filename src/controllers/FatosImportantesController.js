@@ -1,24 +1,24 @@
 const FatosImportantes = require('../models/FatosImportantes');
-const Contrato = require('../models/Contrato');
+const Cliente = require('../models/Cliente');
 
 module.exports = {
   async index(req, res) {
     try {
-      const { id_contrato } = req.params;
+      const { id_cliente } = req.params;
 
-      const contrato = await Contrato.findByPk(id_contrato, {
+      const cliente = await Cliente.findByPk(id_cliente, {
         include: { association: 'fatos_importantes' }
       });
 
-      if (!contrato) {
-        return res.status(404).send({ message: 'Contrato não encontrado!' });
+      if (!cliente) {
+        return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (contrato.fatos_importantes.length == 0) {
+      if (cliente.fatos_importantes.length == 0) {
         return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
       }
 
-      return res.status(200).send({ fatos_importantes: contrato.fatos_importantes });
+      return res.status(200).send({ fatos_importantes: cliente.fatos_importantes });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Erro ao buscar os fatos importantes.' });
@@ -42,9 +42,9 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { id_contrato, conteudo } = req.body;
+      const { id_cliente, conteudo } = req.body;
 
-      const fatoImportante = await FatosImportantes.create({ id_contrato, conteudo });
+      const fatoImportante = await FatosImportantes.create({ id_cliente, conteudo });
 
       return res.status(201).send({
         message: 'Fato importante criado com sucesso!',

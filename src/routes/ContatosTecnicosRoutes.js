@@ -5,7 +5,7 @@ const authMiddleware = require('../middlewares/auth.js');
 
 router.use(authMiddleware);
 router.get('/', ContatoTecnicoController.indexAll);
-router.get('/:id_contrato', ContatoTecnicoController.index);
+router.get('/:id_cliente', ContatoTecnicoController.index);
 router.post('/', ContatoTecnicoController.store);
 router.put('/:id', ContatoTecnicoController.update);
 router.delete('/:id', ContatoTecnicoController.delete);

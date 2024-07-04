@@ -117,6 +117,9 @@ class Cliente extends Model {
 
   static associate(models) {
     this.hasMany(models.Contrato, { foreignKey: 'id_cliente', as: 'contratos' });
+    this.hasMany(models.ContatoComercial, { foreignKey: 'id_cliente', as: 'contatos_comerciais' });
+    this.hasMany(models.ContatoTecnico, { foreignKey: 'id_cliente', as: 'contatos_tecnicos' });
+    this.hasMany(models.FatosImportantes, { foreignKey: 'id_cliente', as: 'fatos_importantes' });
   }
 
 }

@@ -1,24 +1,24 @@
+const Cliente = require('../models/Cliente');
 const ContatoTecnico = require('../models/ContatoTecnico');
-const Contrato = require('../models/Contrato');
 
 module.exports = {
   async index(req, res) {
     try {
-      const { id_contrato } = req.params;
+      const { id_cliente } = req.params;
 
-      const contrato = await Contrato.findByPk(id_contrato, {
+      const cliente = await Cliente.findByPk(id_cliente, {
         include: { association: 'contatos_tecnicos' }
       });
 
-      if (!contrato) {
-        return res.status(404).send({ message: 'Contrato não encontrado!' });
+      if (!cliente) {
+        return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (contrato.contatos_tecnicos.length == 0) {
+      if (cliente.contatos_tecnicos.length == 0) {
         return res.status(404).send({ message: 'Nenhum contato técnico cadastrado!' });
       }
 
-      return res.status(200).send({ contatos_tecnicos: contrato.contatos_tecnicos });
+      return res.status(200).send({ contatos_tecnicos: cliente.contatos_tecnicos });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Erro ao buscar os contatos técnicos.' });
@@ -42,9 +42,9 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { id_contrato, conteudo } = req.body;
+      const { id_cliente, conteudo } = req.body;
 
-      const contatoTecnico = await ContatoTecnico.create({ id_contrato, conteudo });
+      const contatoTecnico = await ContatoTecnico.create({ id_cliente, conteudo });
 
       return res.status(201).send({
         message: 'Contato técnico criado com sucesso!',

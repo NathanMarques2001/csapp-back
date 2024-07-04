@@ -3,7 +3,7 @@ const { Model, DataTypes } = require('sequelize');
 class FatosImportantes extends Model {
   static init(sequelize) {
     super.init({
-      id_contrato: DataTypes.INTEGER,
+      id_cliente: DataTypes.INTEGER,
       conteudo: DataTypes.STRING
     }, {
       sequelize,
@@ -12,7 +12,7 @@ class FatosImportantes extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Contrato, { foreignKey: 'id_contrato', as: 'contratos' });
+    this.belongsTo(models.Cliente, { foreignKey: 'id_cliente', as: 'clientes' });
   }
 
 }
