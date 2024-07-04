@@ -4,8 +4,12 @@ const jwt = require('jsonwebtoken');
 const authConfig = require('../config/auth.json');
 
 function gerarToken(params = {}) {
+  const expireAt = new Date();
+  expireAt.setHours(6, 0, 0, 0); // Define a expiração para as 6h da manhã do dia seguinte
+  expireAt.setDate(expireAt.getDate() + 1);
+
   return jwt.sign(params, authConfig.secret, {
-    expiresIn: 86400
+    expiresIn: Math.floor(expireAt.getTime() / 1000) - Math.floor(Date.now() / 1000)
   });
 }
 
