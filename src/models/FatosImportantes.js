@@ -3,8 +3,14 @@ const { Model, DataTypes } = require('sequelize');
 class FatosImportantes extends Model {
   static init(sequelize) {
     super.init({
-      id_cliente: DataTypes.INTEGER,
-      conteudo: DataTypes.STRING
+      id_cliente: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      conteudo: {
+        type: DataTypes.TEXT,
+        allowNull: false
+      }
     }, {
       sequelize,
       tableName: 'fatos_importantes'

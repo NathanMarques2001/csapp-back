@@ -13,7 +13,8 @@ module.exports = {
       },
       nome: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       id_fabricante: {
         type: Sequelize.INTEGER,

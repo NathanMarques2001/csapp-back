@@ -3,9 +3,18 @@ const { Model, DataTypes } = require('sequelize');
 class Contrato extends Model {
   static init(sequelize) {
     super.init({
-      id_cliente: DataTypes.INTEGER,
-      id_produto: DataTypes.INTEGER,
-      faturado: DataTypes.BOOLEAN,
+      id_cliente: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      id_produto: {
+        type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      faturado: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false
+      },
       faturado_por: {
         type: DataTypes.STRING,
         allowNull: false,
@@ -14,7 +23,10 @@ class Contrato extends Model {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      indice_reajuste: DataTypes.FLOAT,
+      indice_reajuste: {
+        type: DataTypes.FLOAT,
+        allowNull: false
+      },
       proximo_reajuste: {
         type: DataTypes.DATEONLY,
         allowNull: false,
@@ -27,7 +39,10 @@ class Contrato extends Model {
           },
         },
       },
-      status: DataTypes.STRING,
+      status: {
+        type: DataTypes.STRING,
+        allowNull: false
+      },
       duracao: {
         type: DataTypes.INTEGER,
         allowNull: false,

@@ -13,7 +13,8 @@ module.exports = {
       },
       nome: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       created_at: {
         allowNull: false,
@@ -28,8 +29,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-
     return queryInterface.dropTable('fabricantes');
-
   }
 };

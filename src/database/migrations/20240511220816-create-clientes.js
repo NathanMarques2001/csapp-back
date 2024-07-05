@@ -11,23 +11,35 @@ module.exports = {
         autoIncrement: true,
         allowNull: false
       },
-      nome: {
+      razao_social: {
+        type: Sequelize.STRING,
+        allowNull: false,
+        unique: true
+      },
+      nome_fantasia: {
         type: Sequelize.STRING,
         allowNull: false
       },
       cpf_cnpj: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: false,
+        unique: true
       },
       relacionamento: {
-        type: Sequelize.STRING,
-        allowNull: false
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'usuarios',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'CASCADE'
       },
       nps: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
-      seguimento: {
+      segmento: {
         type: Sequelize.STRING,
         allowNull: false
       },
@@ -53,7 +65,7 @@ module.exports = {
       },
       gestor_contratos_telefone_2: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       gestor_chamados_nome: {
         type: Sequelize.STRING,
@@ -73,7 +85,7 @@ module.exports = {
       },
       gestor_chamados_telefone_2: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       gestor_financeiro_nome: {
         type: Sequelize.STRING,
@@ -93,7 +105,7 @@ module.exports = {
       },
       gestor_financeiro_telefone_2: {
         type: Sequelize.STRING,
-        allowNull: false
+        allowNull: true
       },
       created_at: {
         allowNull: false,

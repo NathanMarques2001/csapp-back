@@ -11,18 +11,18 @@ module.exports = {
         autoIncrement: true,
         allowNull: false
       },
-      id_contrato: {
+      id_cliente: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'contratos',
+          model: 'clientes',
           key: 'id'
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
       conteudo: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
       },
       created_at: {

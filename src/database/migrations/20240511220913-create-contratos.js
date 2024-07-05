@@ -35,12 +35,16 @@ module.exports = {
         type: Sequelize.BOOLEAN,
         allowNull: false
       },
+      faturado_por: {
+        type: Sequelize.STRING,
+        allowNull: false
+      },
       dia_vencimento: {
         type: Sequelize.INTEGER,
         allowNull: false
       },
       indice_reajuste: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.FLOAT,
         allowNull: false
       },
       proximo_reajuste: {

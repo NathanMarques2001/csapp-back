@@ -32,7 +32,7 @@ module.exports = {
         onDelete: 'CASCADE'
       },
       alteracao: {
-        type: Sequelize.STRING,
+        type: Sequelize.TEXT,
         allowNull: false
       },
       created_at: {

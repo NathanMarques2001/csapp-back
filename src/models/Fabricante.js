@@ -3,7 +3,11 @@ const { Model, DataTypes } = require('sequelize');
 class Fabricante extends Model {
   static init(sequelize) {
     super.init({
-      nome: DataTypes.STRING
+      nome: {
+        type: DataTypes.STRING,
+        allowNull: false,
+        unique: true
+      }
     }, {
       sequelize,
       tableName: 'fabricantes'
@@ -13,7 +17,7 @@ class Fabricante extends Model {
   static associate(models) {
     this.hasMany(models.Produto, { foreignKey: 'id_fabricante', as: 'produtos' });
   }
-  
+
 }
 
 module.exports = Fabricante;
