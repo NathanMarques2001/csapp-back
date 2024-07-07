@@ -30,7 +30,7 @@ class Cliente extends Model {
         allowNull: false,
         unique: true
       },
-      relacionamento: {
+      id_usuario: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },

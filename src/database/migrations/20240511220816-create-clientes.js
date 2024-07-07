@@ -25,7 +25,7 @@ module.exports = {
         allowNull: false,
         unique: true
       },
-      relacionamento: {
+      id_usuario: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
