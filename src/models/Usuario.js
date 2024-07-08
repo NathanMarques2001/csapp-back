@@ -40,6 +40,11 @@ class Usuario extends Model {
         beforeCreate: (usuario) => {
           const salt = bcrypt.genSaltSync();
           usuario.senha = bcrypt.hashSync(usuario.senha, salt);
+        },
+        beforeUpdate: (usuario) => {
+          console.log('Senha modificada, encriptando...');
+          const salt = bcrypt.genSaltSync();
+          usuario.senha = bcrypt.hashSync(usuario.senha, salt);
         }
       }
     });

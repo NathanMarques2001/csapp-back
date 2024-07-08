@@ -99,21 +99,30 @@ module.exports = {
     try {
       const { nome, email, tipo, senha } = req.body;
       const { id } = req.params;
-
+  
       const usuario = await Usuario.findByPk(id);
-
+  
       if (!usuario) {
         return res.status(404).send({ message: 'Usuário não encontrado!' });
       }
-
-      await Usuario.update({ nome, email, tipo, senha }, { where: { id: id } });
-
+  
+      usuario.nome = nome;
+      usuario.email = email;
+      usuario.tipo = tipo;
+  
+      if (senha) {
+        usuario.senha = senha;
+      }
+  
+      await usuario.save();
+  
       return res.status(200).send({ message: 'Usuário atualizado com sucesso!' });
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o usuário.' });
     }
-  },
+  }
+  ,
 
   async delete(req, res) {
     try {
