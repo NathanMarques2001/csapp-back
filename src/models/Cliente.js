@@ -52,6 +52,7 @@ class Cliente extends Model {
         type: DataTypes.STRING,
         allowNull: false
       },
+      tipo: DataTypes.STRING,
       data_criacao: {
         type: DataTypes.DATE,
         allowNull: false,
@@ -76,7 +77,6 @@ class Cliente extends Model {
       },
       gestor_contratos_nascimento: {
         type: DataTypes.DATE,
-        allowNull: false,
         validate: {
           isDate: {
             msg: 'Data de nascimento inválida'
@@ -87,16 +87,10 @@ class Cliente extends Model {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      gestor_contratos_telefone_2: {
-        type: DataTypes.STRING,
-      },
-      gestor_chamados_nome: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      gestor_contratos_telefone_2: DataTypes.STRING,
+      gestor_chamados_nome: DataTypes.STRING,
       gestor_chamados_email: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: {
           isEmail: {
             msg: 'Email inválido'
@@ -105,27 +99,17 @@ class Cliente extends Model {
       },
       gestor_chamados_nascimento: {
         type: DataTypes.DATE,
-        allowNull: false,
         validate: {
           isDate: {
             msg: 'Data de nascimento inválida'
           }
         }
       },
-      gestor_chamados_telefone_1: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      gestor_chamados_telefone_2: {
-        type: DataTypes.STRING,
-      },
-      gestor_financeiro_nome: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
+      gestor_chamados_telefone_1: DataTypes.STRING,
+      gestor_chamados_telefone_2: DataTypes.STRING,
+      gestor_financeiro_nome: DataTypes.STRING,
       gestor_financeiro_email: {
         type: DataTypes.STRING,
-        allowNull: false,
         validate: {
           isEmail: {
             msg: 'Email inválido'
@@ -134,20 +118,14 @@ class Cliente extends Model {
       },
       gestor_financeiro_nascimento: {
         type: DataTypes.DATE,
-        allowNull: false,
         validate: {
           isDate: {
             msg: 'Data de nascimento inválida'
           }
         }
       },
-      gestor_financeiro_telefone_1: {
-        type: DataTypes.STRING,
-        allowNull: false,
-      },
-      gestor_financeiro_telefone_2: {
-        type: DataTypes.STRING,
-      }
+      gestor_financeiro_telefone_1: DataTypes.STRING,
+      gestor_financeiro_telefone_2: DataTypes.STRING
     }, {
       sequelize,
       tableName: 'clientes'

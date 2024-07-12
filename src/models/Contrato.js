@@ -65,18 +65,11 @@ class Contrato extends Model {
       },
       quantidade: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         validate: {
           min: {
             args: [0],
             msg: 'A quantidade não pode ser menor que zero.',
           },
-        },
-      },
-      email_envio: {
-        type: DataTypes.STRING,
-        validate: {
-          isEmail: true,
         },
       },
       descricao: DataTypes.TEXT,
