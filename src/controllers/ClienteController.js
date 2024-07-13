@@ -1,5 +1,4 @@
 const Cliente = require('../models/Cliente');
-const Contrato = require('../models/Contrato');
 
 function validateCPF(cpf) {
   cpf = cpf.replaceAll(".", "").replace("-", "");
@@ -90,59 +89,6 @@ function formatDate(date) {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-async function classifyCustomers(id) {
-  let tipo = "";
-  let clientesPorFaturamento = [];
-
-  try {
-    const clientes = await Cliente.findAll();
-
-    if (clientes.length <= 30) {
-      tipo = "top 30";
-      await Cliente.update({ tipo }, { where: { id: id } });
-      console.log('Cliente atualizado com sucesso!');
-    } else {
-      for (let i = 0; i < clientes.length; i++) {
-        const contratos = await Contrato.findAll({ where: { id_cliente: clientes[i].id } });
-      }
-    }
-
-    /*
-    TOP 30
-    A - R$ 3.000,00 até o TOP 30
-    B - R$ 2.999,99 até R$ 1.000,00
-    C - Abaixo de R$ 1.000,00
-     */
-
-    // Se precisar processar contratos, descomente a linha abaixo e adicione a lógica necessária
-    // 
-
-  } catch (error) {
-    console.error('Erro ao atualizar o cliente:', error);
-  }
-}
-
-function quickSort(arr) {
-  if (arr.length <= 1) {
-    return arr;
-  }
-
-  const pivot = arr[Math.floor(arr.length / 2)];
-  const left = [];
-  const right = [];
-
-  for (let i = 0; i < arr.length; i++) {
-    if (i === Math.floor(arr.length / 2)) continue;
-    if (arr[i].valor < pivot.valor) {
-      left.push(arr[i]);
-    } else {
-      right.push(arr[i]);
-    }
-  }
-
-  return quickSort(left).concat(pivot, quickSort(right));
-}
-
 module.exports = {
   async index(req, res) {
 
@@ -185,7 +131,7 @@ module.exports = {
       if (validationError) return validationError;
 
       const data_criacao = formatDate(new Date());
-      const tipo = "";
+      const tipo = "c";
 
       const cliente = await Cliente.create({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, segmento, tipo, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
 

@@ -36,7 +36,6 @@ class Cliente extends Model {
       },
       nps: {
         type: DataTypes.INTEGER,
-        allowNull: false,
         validate: {
           min: {
             args: [0],
@@ -75,55 +74,20 @@ class Cliente extends Model {
           }
         }
       },
-      gestor_contratos_nascimento: {
-        type: DataTypes.DATE,
-        validate: {
-          isDate: {
-            msg: 'Data de nascimento inválida'
-          }
-        }
-      },
+      gestor_contratos_nascimento: DataTypes.STRING,
       gestor_contratos_telefone_1: {
         type: DataTypes.STRING,
         allowNull: false,
       },
       gestor_contratos_telefone_2: DataTypes.STRING,
       gestor_chamados_nome: DataTypes.STRING,
-      gestor_chamados_email: {
-        type: DataTypes.STRING,
-        validate: {
-          isEmail: {
-            msg: 'Email inválido'
-          }
-        }
-      },
-      gestor_chamados_nascimento: {
-        type: DataTypes.DATE,
-        validate: {
-          isDate: {
-            msg: 'Data de nascimento inválida'
-          }
-        }
-      },
+      gestor_chamados_email: DataTypes.STRING,
+      gestor_chamados_nascimento: DataTypes.STRING,
       gestor_chamados_telefone_1: DataTypes.STRING,
       gestor_chamados_telefone_2: DataTypes.STRING,
       gestor_financeiro_nome: DataTypes.STRING,
-      gestor_financeiro_email: {
-        type: DataTypes.STRING,
-        validate: {
-          isEmail: {
-            msg: 'Email inválido'
-          }
-        }
-      },
-      gestor_financeiro_nascimento: {
-        type: DataTypes.DATE,
-        validate: {
-          isDate: {
-            msg: 'Data de nascimento inválida'
-          }
-        }
-      },
+      gestor_financeiro_email: DataTypes.STRING,
+      gestor_financeiro_nascimento: DataTypes.STRING,
       gestor_financeiro_telefone_1: DataTypes.STRING,
       gestor_financeiro_telefone_2: DataTypes.STRING
     }, {

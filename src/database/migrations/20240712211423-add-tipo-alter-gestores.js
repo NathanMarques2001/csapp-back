@@ -10,22 +10,12 @@ module.exports = {
 
     await queryInterface.changeColumn('clientes', 'gestor_contratos_email', {
       type: Sequelize.STRING,
-      allowNull: false,
-      validate: {
-        isEmail: {
-          msg: 'Email inválido'
-        }
-      }
+      allowNull: false
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_contratos_nascimento', {
-      type: Sequelize.DATE,
-      allowNull: true,
-      validate: {
-        isDate: {
-          msg: 'Data de nascimento inválida'
-        }
-      }
+      type: Sequelize.STRING,
+      allowNull: true
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_contratos_telefone_1', {
@@ -45,22 +35,12 @@ module.exports = {
 
     await queryInterface.changeColumn('clientes', 'gestor_chamados_email', {
       type: Sequelize.STRING,
-      allowNull: true,
-      validate: {
-        isEmail: {
-          msg: 'Email inválido'
-        }
-      }
+      allowNull: true
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_chamados_nascimento', {
-      type: Sequelize.DATE,
-      allowNull: true,
-      validate: {
-        isDate: {
-          msg: 'Data de nascimento inválida'
-        }
-      }
+      type: Sequelize.STRING,
+      allowNull: true
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_chamados_telefone_1', {
@@ -80,22 +60,12 @@ module.exports = {
 
     await queryInterface.changeColumn('clientes', 'gestor_financeiro_email', {
       type: Sequelize.STRING,
-      allowNull: true,
-      validate: {
-        isEmail: {
-          msg: 'Email inválido'
-        }
-      }
+      allowNull: true
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_financeiro_nascimento', {
-      type: Sequelize.DATE,
-      allowNull: true,
-      validate: {
-        isDate: {
-          msg: 'Data de nascimento inválida'
-        }
-      }
+      type: Sequelize.STRING,
+      allowNull: true
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_financeiro_telefone_1', {
@@ -111,6 +81,12 @@ module.exports = {
     // Adiciona a coluna 'tipo'
     await queryInterface.addColumn('clientes', 'tipo', {
       type: Sequelize.STRING,
+      allowNull: true
+    });
+
+    // Permite nulo na coluna 'nps'
+    await queryInterface.changeColumn('clientes', 'nps', {
+      type: Sequelize.INTEGER,
       allowNull: true
     });
   },
@@ -131,7 +107,7 @@ module.exports = {
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_contratos_nascimento', {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false
     });
 
@@ -156,7 +132,7 @@ module.exports = {
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_chamados_nascimento', {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false
     });
 
@@ -181,7 +157,7 @@ module.exports = {
     });
 
     await queryInterface.changeColumn('clientes', 'gestor_financeiro_nascimento', {
-      type: Sequelize.DATE,
+      type: Sequelize.STRING,
       allowNull: false
     });
 
@@ -193,6 +169,12 @@ module.exports = {
     await queryInterface.changeColumn('clientes', 'gestor_financeiro_telefone_2', {
       type: Sequelize.STRING,
       allowNull: true
+    });
+
+    // Reverte a alteração na coluna 'nps'
+    await queryInterface.changeColumn('clientes', 'nps', {
+      type: Sequelize.INTEGER,
+      allowNull: false
     });
   }
 };

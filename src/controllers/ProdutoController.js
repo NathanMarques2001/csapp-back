@@ -20,7 +20,9 @@ module.exports = {
 
   async indexAll(req, res) {
     try {
-      const produtos = await Produto.findAll();
+      const produtos = await Produto.findAll({
+        order: [['nome', 'ASC']]
+      });
 
       if (produtos.length == 0) {
         return res.status(404).send({ message: 'Nenhum produto cadastrado!' });
