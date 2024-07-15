@@ -27,6 +27,7 @@ class Contrato extends Model {
         type: DataTypes.FLOAT,
         allowNull: false
       },
+      nome_indice: DataTypes.STRING,
       proximo_reajuste: {
         type: DataTypes.DATEONLY,
         allowNull: false,

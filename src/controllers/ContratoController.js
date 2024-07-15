@@ -92,9 +92,9 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao } = req.body;
+      const { id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao } = req.body;
 
-      const contrato = await Contrato.create({ id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao });
+      const contrato = await Contrato.create({ id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao });
 
       await classifyCustomers();
 
@@ -110,7 +110,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao } = req.body;
+      const { id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao } = req.body;
       const { id } = req.params;
 
       const contrato = await Contrato.findByPk(id);
@@ -119,7 +119,7 @@ module.exports = {
         return res.status(404).send({ message: 'Contrato não encontrado!' });
       }
 
-      await Contrato.update({ id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao }, { where: { id: id } });
+      await Contrato.update({ id_cliente, id_produto, faturado, faturado_por, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Contrato atualizado com sucesso!' });
     } catch (error) {
