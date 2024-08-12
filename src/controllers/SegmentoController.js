@@ -20,7 +20,9 @@ module.exports = {
 
   async indexAll(req, res) {
     try {
-      const segmentos = await Segmento.findAll();
+      const segmentos = await Segmento.findAll({
+        order: [['nome', 'ASC']]
+      });
 
       if (segmentos.length == 0) {
         return res.status(404).send({ message: 'Nenhum segmento cadastrado!' });

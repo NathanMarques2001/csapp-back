@@ -20,7 +20,9 @@ module.exports = {
 
   async indexAll(req, res) {
     try {
-      const fabricantes = await Fabricante.findAll();
+      const fabricantes = await Fabricante.findAll({
+        order: [['nome', 'ASC']]
+      });
 
       if (fabricantes.length == 0) {
         return res.status(404).send({ message: 'Nenhum fabricante cadastrado!' });

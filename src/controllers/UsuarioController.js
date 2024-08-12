@@ -63,7 +63,9 @@ module.exports = {
 
   async indexAll(req, res) {
     try {
-      const usuarios = await Usuario.findAll();
+      const usuarios = await Usuario.findAll({
+        order: [['nome', 'ASC']]
+      });
 
       if (usuarios.length == 0) {
         return res.status(404).send({ message: 'Nenhum usuário cadastrado!' });

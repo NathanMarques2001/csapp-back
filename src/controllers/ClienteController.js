@@ -110,7 +110,9 @@ module.exports = {
 
   async indexAll(req, res) {
     try {
-      const clientes = await Cliente.findAll();
+      const clientes = await Cliente.findAll({
+        order: [['nome_fantasia', 'ASC']]
+      });
 
       if (clientes.length == 0) {
         return res.status(404).send({ message: 'Nenhum cliente cadastrado!' });
