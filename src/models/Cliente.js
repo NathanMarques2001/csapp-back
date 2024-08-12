@@ -52,8 +52,7 @@ class Cliente extends Model {
       },
       status: {
         type: DataTypes.ENUM,
-        values: ['ativo', 'inativo'],
-        allowNull: false
+        values: ['ativo', 'inativo']
       },
       tipo: DataTypes.STRING,
       data_criacao: {

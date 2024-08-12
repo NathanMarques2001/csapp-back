@@ -3,16 +3,13 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.changeColumn('contratos', 'status', {
+    await queryInterface.addColumn('segmentos', 'status', {
       type: Sequelize.ENUM('ativo', 'inativo'),
       defaultValue: 'ativo'
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.changeColumn('contratos', 'status', {
-      type: Sequelize.STRING,
-      allowNull: false
-    });
+    await queryInterface.removeColumn('segmentos', 'status');
   }
 };

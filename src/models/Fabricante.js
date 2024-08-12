@@ -10,8 +10,7 @@ class Fabricante extends Model {
       },
       status: {
         type: DataTypes.ENUM,
-        values: ['ativo', 'inativo'],
-        allowNull: false
+        values: ['ativo', 'inativo']
       }
     }, {
       sequelize,
