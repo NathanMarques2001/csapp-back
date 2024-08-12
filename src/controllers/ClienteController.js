@@ -183,9 +183,10 @@ module.exports = {
     }
   },
 
-  async delete(req, res) {
+  async activateOrInactivate(req, res) {
     try {
       const { id } = req.params;
+      const { status } = req.body;
 
       const cliente = await Cliente.findByPk(id);
 
@@ -193,12 +194,35 @@ module.exports = {
         return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      Cliente.destroy({ where: { id: id } });
+      if (status !== 'ativo' && status !== 'inativo') {
+        return res.status(400).send({ message: 'Status inválido!' });
+      }
 
-      return res.status(200).send({ message: 'Cliente deletado com sucesso!' });
+      await Cliente.update({ status }, { where: { id: id } });
+
+      return res.status(200).send({ message: `Cliente ${status === 'ativo' ? 'ativado' : 'inativado'} com sucesso!` });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o cliente.' });
+      return res.status(500).send({ message: 'Ocorreu um erro ao ativar/inativar o cliente.' });
     }
   }
+
+  // async delete(req, res) {
+  //   try {
+  //     const { id } = req.params;
+
+  //     const cliente = await Cliente.findByPk(id);
+
+  //     if (!cliente) {
+  //       return res.status(404).send({ message: 'Cliente não encontrado!' });
+  //     }
+
+  //     Cliente.destroy({ where: { id: id } });
+
+  //     return res.status(200).send({ message: 'Cliente deletado com sucesso!' });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).send({ message: 'Ocorreu um erro ao deletar o cliente.' });
+  //   }
+  // }
 }

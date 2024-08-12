@@ -1,5 +1,4 @@
 const { Model, DataTypes } = require('sequelize');
-const { isEmail, isDate, isMobilePhone } = require('validator');
 
 class Cliente extends Model {
   static init(sequelize) {
@@ -49,6 +48,11 @@ class Cliente extends Model {
       },
       id_segmento: {
         type: DataTypes.INTEGER,
+        allowNull: false
+      },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['ativo', 'inativo'],
         allowNull: false
       },
       tipo: DataTypes.STRING,

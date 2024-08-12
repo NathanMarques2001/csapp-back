@@ -71,22 +71,26 @@ module.exports = {
     }
   },
 
-  async delete(req, res) {
-    try {
-      const { id } = req.params;
-
-      const produto = await Produto.findByPk(id);
-
-      if (!produto) {
-        return res.status(404).send({ message: 'Produto não encontrado!' });
-      }
-
-      await Produto.destroy({ where: { id: id } });
-
-      return res.status(200).send({ message: 'Produto deletado com sucesso!' });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o produto.' });
-    }
+  async inactivate(req, res) {
+    // 
   }
+
+  // async delete(req, res) {
+  //   try {
+  //     const { id } = req.params;
+
+  //     const produto = await Produto.findByPk(id);
+
+  //     if (!produto) {
+  //       return res.status(404).send({ message: 'Produto não encontrado!' });
+  //     }
+
+  //     await Produto.destroy({ where: { id: id } });
+
+  //     return res.status(200).send({ message: 'Produto deletado com sucesso!' });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).send({ message: 'Ocorreu um erro ao deletar o produto.' });
+  //   }
+  // }
 }

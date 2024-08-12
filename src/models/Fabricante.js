@@ -7,6 +7,11 @@ class Fabricante extends Model {
         type: DataTypes.STRING,
         allowNull: false,
         unique: true
+      },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['ativo', 'inativo'],
+        allowNull: false
       }
     }, {
       sequelize,

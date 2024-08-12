@@ -12,6 +12,11 @@ class Produto extends Model {
         type: DataTypes.INTEGER,
         allowNull: false
       },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['ativo', 'inativo'],
+        allowNull: false
+      }
     }, {
       sequelize,
       tableName: 'produtos'

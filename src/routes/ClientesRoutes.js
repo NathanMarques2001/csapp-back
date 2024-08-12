@@ -7,8 +7,8 @@ router.use(authMiddleware);
 router.get('/', ClienteController.indexAll);
 router.get('/:id', ClienteController.index);
 router.post('/', ClienteController.store);
-router.post('/migrate', ClienteController.migrate);
+router.put('/migrate', ClienteController.migrate);
 router.put('/:id', ClienteController.update);
-router.delete('/:id', ClienteController.delete);
+// router.delete('/:id', ClienteController.delete);
 
 module.exports = router;

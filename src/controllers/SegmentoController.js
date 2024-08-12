@@ -71,22 +71,26 @@ module.exports = {
     }
   },
 
-  async delete(req, res) {
-    try {
-      const { id } = req.params;
-
-      const segmento = await Segmento.findByPk(id);
-
-      if (!segmento) {
-        return res.status(404).send({ message: 'Segmento não encontrado!' });
-      }
-
-      await Segmento.destroy({ where: { id: id } });
-
-      return res.status(200).send({ message: 'Segmento deletado com sucesso!' });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o segmento.' });
-    }
+  async inactivate(req, res) {
+    // 
   }
+
+  // async delete(req, res) {
+  //   try {
+  //     const { id } = req.params;
+
+  //     const segmento = await Segmento.findByPk(id);
+
+  //     if (!segmento) {
+  //       return res.status(404).send({ message: 'Segmento não encontrado!' });
+  //     }
+
+  //     await Segmento.destroy({ where: { id: id } });
+
+  //     return res.status(200).send({ message: 'Segmento deletado com sucesso!' });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).send({ message: 'Ocorreu um erro ao deletar o segmento.' });
+  //   }
+  // }
 }

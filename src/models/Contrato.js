@@ -41,7 +41,8 @@ class Contrato extends Model {
         },
       },
       status: {
-        type: DataTypes.STRING,
+        type: DataTypes.ENUM,
+        values: ['ativo', 'inativo'],
         allowNull: false
       },
       duracao: {
