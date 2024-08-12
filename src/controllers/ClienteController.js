@@ -125,7 +125,7 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
+      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
 
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
@@ -133,7 +133,7 @@ module.exports = {
       const data_criacao = formatDate(new Date());
       const tipo = "c";
 
-      const cliente = await Cliente.create({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, segmento, tipo, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
+      const cliente = await Cliente.create({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, tipo, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
 
       return res.status(201).send({
         message: 'Cliente criado com sucesso!',
@@ -147,7 +147,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
+      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
       const { id } = req.params;
 
       const cliente = await Cliente.findByPk(id);
@@ -161,7 +161,7 @@ module.exports = {
       if (validationError) return validationError;
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
-      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 }, { where: { id: id } });
+      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Cliente atualizado com sucesso!' });
     } catch (error) {

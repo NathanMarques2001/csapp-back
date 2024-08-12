@@ -75,6 +75,28 @@ module.exports = {
     }
   },
 
+  async indexVendedor(req, res) {
+    try {
+      const { id } = req.params;
+      const clientes = await Cliente.findAll({ where: { relacionamento: id } });
+      let contratos = [];
+
+      for (let cliente of clientes) {
+        const contratosCliente = await Contrato.findAll({ where: { id_cliente: cliente.id } });
+        contratos = contratos.concat(contratosCliente);
+      }
+
+      if (contratos.length == 0) {
+        return res.status(404).send({ message: 'Nenhum contrato cadastrado!' });
+      }
+
+      return res.status(200).send({ contratos });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os contratos.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const contratos = await Contrato.findAll();

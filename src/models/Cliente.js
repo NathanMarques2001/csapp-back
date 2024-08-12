@@ -47,8 +47,8 @@ class Cliente extends Model {
           }
         }
       },
-      segmento: {
-        type: DataTypes.STRING,
+      id_segmento: {
+        type: DataTypes.INTEGER,
         allowNull: false
       },
       tipo: DataTypes.STRING,
@@ -102,6 +102,7 @@ class Cliente extends Model {
     this.hasMany(models.ContatoTecnico, { foreignKey: 'id_cliente', as: 'contatos_tecnicos' });
     this.hasMany(models.FatosImportantes, { foreignKey: 'id_cliente', as: 'fatos_importantes' });
     this.belongsTo(models.Usuario, { foreignKey: 'id_usuario', as: 'usuarios' });
+    this.belongsTo(models.Segmento, { foreignKey: 'id_segmento', as: 'segmentos' });
   }
 
 }
