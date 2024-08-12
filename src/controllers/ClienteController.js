@@ -125,6 +125,17 @@ module.exports = {
     }
   },
 
+  async migrate(req, res) {
+    try {
+      const { antigo_vendedor, novo_vendedor } = req.body;
+      await Cliente.update({ id_usuario: novo_vendedor }, { where: { id_usuario: antigo_vendedor } });
+      return res.status(200).send({ message: 'Migração de clientes realizada com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao migrar os clientes.' });
+    }
+  },
+
   async store(req, res) {
     try {
       const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
