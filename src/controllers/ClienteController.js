@@ -108,6 +108,22 @@ module.exports = {
     }
   },
 
+  async indexVendedor(req, res) {
+    try {
+      const { id } = req.params;
+      const clientes = await Cliente.findAll({ where: { id_usuario: id } });
+
+      if (clientes.length == 0) {
+        return res.status(404).send({ message: 'Nenhum cliente cadastrado!' });
+      }
+
+      return res.status(200).send({ clientes });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os clientes.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const clientes = await Cliente.findAll({

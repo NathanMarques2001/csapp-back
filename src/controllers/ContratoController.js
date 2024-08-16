@@ -78,7 +78,7 @@ module.exports = {
   async indexVendedor(req, res) {
     try {
       const { id } = req.params;
-      const clientes = await Cliente.findAll({ where: { relacionamento: id } });
+      const clientes = await Cliente.findAll({ where: { id_usuario: id } });
       let contratos = [];
 
       for (let cliente of clientes) {
