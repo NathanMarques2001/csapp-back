@@ -53,7 +53,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome } = req.body;
+      const { nome, status } = req.body;
       const { id } = req.params;
 
       const fabricante = await Fabricante.findByPk(id);
@@ -62,7 +62,7 @@ module.exports = {
         return res.status(404).send({ message: 'Fabricante não encontrado!' });
       }
 
-      await Fabricante.update({ nome }, { where: { id: id } });
+      await Fabricante.update({ nome, status }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Fabricante atualizado com sucesso!' });
     } catch (error) {

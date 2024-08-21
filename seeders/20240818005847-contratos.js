@@ -6,7 +6,7 @@ module.exports = {
     const numContratos = 321;
     const numClientes = 50;  // Supondo que você tenha 50 clientes
     const numProdutos = 10;  // Supondo que você tenha 10 produtos
-    const faturado = ['Braga & Fontes', 'Prolinx', 'Infour', 'Clube Permuta'];
+    const numFaturado = 10;
 
     for (let i = 1; i <= numContratos; i++) {
       let id_produto, quantidade, nome_indice;
@@ -29,7 +29,7 @@ module.exports = {
         id_cliente: (i % numClientes) + 1,  // Alternando entre clientes
         id_produto,
         faturado: 0,  // Alternando entre faturado e não faturado
-        faturado_por: faturado[i % faturado.length],  // Nome fictício para o campo faturado_por
+        id_faturado: (i % numFaturado) + 1,  // Nome fictício para o campo faturado_por
         dia_vencimento: (i % 30) + 1,  // Definindo um dia de vencimento entre 1 e 30
         indice_reajuste: Math.random() * 5,  // Valor aleatório para índice de reajuste
         proximo_reajuste: new Date(Date.now() + (i * 24 * 60 * 60 * 1000)),  // Data futura para o próximo reajuste

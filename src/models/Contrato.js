@@ -15,8 +15,8 @@ class Contrato extends Model {
         type: DataTypes.BOOLEAN,
         allowNull: false
       },
-      faturado_por: {
-        type: DataTypes.STRING,
+      id_faturado: {
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       dia_vencimento: {
@@ -84,6 +84,7 @@ class Contrato extends Model {
     this.hasMany(models.Log, { foreignKey: 'id_contrato', as: 'logs' });
     this.belongsTo(models.Cliente, { foreignKey: 'id_cliente', as: 'clientes' });
     this.belongsTo(models.Produto, { foreignKey: 'id_produto', as: 'produtos' });
+    this.belongsTo(models.Faturado, { foreignKey: 'id_faturado', as: 'faturados' });
   }
 }
 

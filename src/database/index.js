@@ -10,10 +10,11 @@ const ContatoTecnico = require('../models/ContatoTecnico');
 const ContatoComercial = require('../models/ContatoComercial');
 const Cliente = require('../models/Cliente');
 const Segmento = require('../models/Segmento');
+const Faturado = require('../models/Faturado');
 
 const connection = new sequelize(dbConfig);
 
-const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento];
+const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento, Faturado];
 
 tables.forEach(table => {
   table.init(connection);

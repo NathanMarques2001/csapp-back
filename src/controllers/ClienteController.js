@@ -176,7 +176,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
+      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status } = req.body;
       const { id } = req.params;
 
       const cliente = await Cliente.findByPk(id);
@@ -190,7 +190,7 @@ module.exports = {
       if (validationError) return validationError;
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
-      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 }, { where: { id: id } });
+      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Cliente atualizado com sucesso!' });
     } catch (error) {
@@ -198,30 +198,6 @@ module.exports = {
       return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o cliente.' });
     }
   },
-
-  async activateOrInactivate(req, res) {
-    try {
-      const { id } = req.params;
-      const { status } = req.body;
-
-      const cliente = await Cliente.findByPk(id);
-
-      if (!cliente) {
-        return res.status(404).send({ message: 'Cliente não encontrado!' });
-      }
-
-      if (status !== 'ativo' && status !== 'inativo') {
-        return res.status(400).send({ message: 'Status inválido!' });
-      }
-
-      await Cliente.update({ status }, { where: { id: id } });
-
-      return res.status(200).send({ message: `Cliente ${status === 'ativo' ? 'ativado' : 'inativado'} com sucesso!` });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao ativar/inativar o cliente.' });
-    }
-  }
 
   // async delete(req, res) {
   //   try {

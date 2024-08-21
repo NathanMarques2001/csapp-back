@@ -53,7 +53,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome } = req.body;
+      const { nome, status } = req.body;
       const { id } = req.params;
 
       const segmento = await Segmento.findByPk(id);
@@ -62,7 +62,7 @@ module.exports = {
         return res.status(404).send({ message: 'Segmento não encontrado!' });
       }
 
-      await Segmento.update({ nome }, { where: { id: id } });
+      await Segmento.update({ nome, status }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Segmento atualizado com sucesso!' });
     } catch (error) {
@@ -70,10 +70,6 @@ module.exports = {
       return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o segmento.' });
     }
   },
-
-  async inactivate(req, res) {
-    // 
-  }
 
   // async delete(req, res) {
   //   try {

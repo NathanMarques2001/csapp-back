@@ -53,7 +53,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome, id_fabricante } = req.body;
+      const { nome, id_fabricante, status } = req.body;
       const { id } = req.params;
 
       const produto = await Produto.findByPk(id);
@@ -62,7 +62,7 @@ module.exports = {
         return res.status(404).send({ message: 'Produto não encontrado!' });
       }
 
-      await Produto.update({ nome, id_fabricante }, { where: { id: id } });
+      await Produto.update({ nome, id_fabricante, status }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Produto atualizado com sucesso!' });
     } catch (error) {
@@ -70,10 +70,6 @@ module.exports = {
       return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o produto.' });
     }
   },
-
-  async inactivate(req, res) {
-    // 
-  }
 
   // async delete(req, res) {
   //   try {
