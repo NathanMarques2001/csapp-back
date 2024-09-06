@@ -2,7 +2,7 @@ const fs = require("fs");
 const axios = require("axios");
 
 class Api {
-  static baseUrl = "http://localhost:8080/api";
+  static baseUrl = "http://20.186.19.140/api";
   constructor() {
     this.api = axios.create({
       baseURL: Api.baseUrl,
@@ -67,7 +67,7 @@ class Api {
   }
 }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzI0NzMwMTUwLCJleHAiOjE3MjQ4MzU2MDB9.fkPZd9dIxu6DIQ76dVl7fXIh4NHzrny1fC8F0-lwzpc";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzI0NzY4MjQ0LCJleHAiOjE3MjQ4MzU2MDB9.jvftu1A81HJyKKvm_zOl8CfA5C8SPN_0DApmGTJH1s8";
 
 uploadData();
 

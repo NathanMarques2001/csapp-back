@@ -33,11 +33,6 @@ class Contrato extends Model {
         allowNull: false,
         validate: {
           isDate: true,
-          isFuture(value) {
-            if (new Date(value) <= new Date()) {
-              throw new Error('A data do próximo reajuste deve ser uma data futura.');
-            }
-          },
         },
       },
       status: {
@@ -74,6 +69,10 @@ class Contrato extends Model {
         },
       },
       descricao: DataTypes.TEXT,
+      data_inicio: {
+        type: DataTypes.DATE,
+        allowNull: true
+      }
     }, {
       sequelize,
       tableName: 'contratos'
