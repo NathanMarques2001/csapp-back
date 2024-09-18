@@ -11,7 +11,7 @@ async function classifyCustomers() {
     // Calcular o faturamento total de cada cliente
     for (let cliente of clientes) {
       const contratos = await Contrato.findAll({ where: { id_cliente: cliente.id } });
-      const faturamentoTotal = contratos.reduce((total, contrato) => total + (contrato.valor_mensal * contrato.duracao), 0);
+      const faturamentoTotal = contratos.reduce((total, contrato) => total + (contrato.valor_mensal), 0);
       clientesPorFaturamento.push({ cliente, faturamentoTotal });
     }
 
