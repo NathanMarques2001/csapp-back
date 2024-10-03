@@ -25,6 +25,23 @@ module.exports = {
     }
   },
 
+  async indexFato(req, res) {
+    try {
+      const { id } = req.params;
+
+      const fatoImportante = await FatosImportantes.findByPk(id);
+
+      if (!fatoImportante) {
+        return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      }
+
+      return res.status(200).send({ fatoImportante });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Erro ao buscar o fato importante.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const fatosImportantes = await FatosImportantes.findAll();

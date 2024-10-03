@@ -25,6 +25,23 @@ module.exports = {
     }
   },
 
+  async indexContato(req, res) {
+    try {
+      const { id } = req.params;
+
+      const contatoTecnico = await ContatoTecnico.findByPk(id);
+
+      if (!contatoTecnico) {
+        return res.status(404).send({ message: 'Contato técnico não encontrado!' });
+      }
+
+      return res.status(200).send({ contatoTecnico });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Erro ao buscar o contato técnico.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const contatosTecnicos = await ContatoTecnico.findAll();

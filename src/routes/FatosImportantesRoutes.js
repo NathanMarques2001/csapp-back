@@ -6,6 +6,7 @@ const authMiddleware = require('../middlewares/auth.js');
 router.use(authMiddleware);
 router.get('/', FatosImportantesController.indexAll);
 router.get('/:id_cliente', FatosImportantesController.index);
+router.get('/fato/:id', FatosImportantesController.indexFato);
 router.post('/', FatosImportantesController.store);
 router.put('/:id', FatosImportantesController.update);
 router.delete('/:id', FatosImportantesController.delete);

@@ -25,6 +25,23 @@ module.exports = {
     }
   },
 
+  async indexContato(req, res) {
+    try {
+      const { id } = req.params;
+
+      const contatoComercial = await ContatoComercial.findByPk(id);
+
+      if (!contatoComercial) {
+        return res.status(404).send({ message: 'Contato comercial não encontrado!' });
+      }
+
+      return res.status(200).send({ contatoComercial });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Erro ao buscar o contato comercial.' });
+    }
+  },
+
   async indexAll(req, res) {
     try {
       const contatosComerciais = await ContatoComercial.findAll();
