@@ -1,4 +1,5 @@
 const Cliente = require('../models/Cliente');
+const Contrato = require('../models/Contrato');
 
 function validateCPF(cpf) {
   cpf = cpf.replaceAll(".", "").replace("-", "");
@@ -149,6 +150,26 @@ module.exports = {
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Ocorreu um erro ao migrar os clientes.' });
+    }
+  },
+
+  async inativar(req, res) {
+    try {
+      const { id } = req.params;
+
+      const cliente = await Cliente.findByPk(id);
+
+      if (!cliente) {
+        return res.status(404).send({ message: 'Cliente não encontrado!' });
+      }
+
+      await Cliente.update({ status: 'inativo' }, { where: { id: id } });
+      await Contrato.update({ status: 'inativo' }, { where: { id_cliente: id } });
+
+      return res.status(200).send({ message: 'Cliente e contratos inativados com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao inativar o cliente.' });
     }
   },
 
