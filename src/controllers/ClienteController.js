@@ -1,5 +1,6 @@
 const Cliente = require('../models/Cliente');
 const Contrato = require('../models/Contrato');
+const classifyCustomers = require('../utils/classifyCustomers');
 
 function validateCPF(cpf) {
   cpf = cpf.replaceAll(".", "").replace("-", "");
@@ -166,6 +167,7 @@ module.exports = {
       if (cliente.status === 'ativo') {
         await Cliente.update({ status: 'inativo' }, { where: { id: id } });
         await Contrato.update({ status: 'inativo' }, { where: { id_cliente: id } });
+        await classifyCustomers();
       } else {
         await Cliente.update({ status: 'ativo' }, { where: { id: id } });
       }
