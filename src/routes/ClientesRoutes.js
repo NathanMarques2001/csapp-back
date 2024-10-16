@@ -9,7 +9,7 @@ router.get('/:id', ClienteController.index);
 router.get('/vendedor/:id', ClienteController.indexVendedor);
 router.post('/', ClienteController.store);
 router.put('/migrate', ClienteController.migrate);
-router.put('/inativar/:id', ClienteController.inativar);
+router.put('/active-inactive/:id', ClienteController.inactiveOrActive);
 router.put('/:id', ClienteController.update);
 // router.delete('/:id', ClienteController.delete);
 

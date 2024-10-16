@@ -153,7 +153,7 @@ module.exports = {
     }
   },
 
-  async inativar(req, res) {
+  async inactiveOrActive(req, res) {
     try {
       const { id } = req.params;
 
@@ -163,8 +163,12 @@ module.exports = {
         return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      await Cliente.update({ status: 'inativo' }, { where: { id: id } });
-      await Contrato.update({ status: 'inativo' }, { where: { id_cliente: id } });
+      if (cliente.status === 'ativo') {
+        await Cliente.update({ status: 'inativo' }, { where: { id: id } });
+        await Contrato.update({ status: 'inativo' }, { where: { id_cliente: id } });
+      } else {
+        await Cliente.update({ status: 'ativo' }, { where: { id: id } });
+      }
 
       return res.status(200).send({ message: 'Cliente e contratos inativados com sucesso!' });
     } catch (error) {

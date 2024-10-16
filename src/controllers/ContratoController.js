@@ -11,7 +11,8 @@ async function classifyCustomers() {
     // Calcular o faturamento total de cada cliente
     for (let cliente of clientes) {
       const contratos = await Contrato.findAll({ where: { id_cliente: cliente.id } });
-      const faturamentoTotal = contratos.reduce((total, contrato) => total + (contrato.valor_mensal), 0);
+      const contratosAtivos = contratos.filter(contrato => contrato.status === 'ativo');
+      const faturamentoTotal = contratosAtivos.reduce((total, contrato) => total + parseFloat(contrato.valor_mensal), 0);
       clientesPorFaturamento.push({ cliente, faturamentoTotal });
     }
 
@@ -22,14 +23,19 @@ async function classifyCustomers() {
     for (let i = 0; i < clientesPorFaturamento.length; i++) {
       const { cliente, faturamentoTotal } = clientesPorFaturamento[i];
 
-      if (i < 30) {
-        tipo = "top 30";
-      } else if (faturamentoTotal >= 3000) {
+      console.log(`Classificando cliente ${cliente.id}...`, faturamentoTotal);
+
+      if (faturamentoTotal >= 3000) {
         tipo = "a";
       } else if (faturamentoTotal >= 1000) {
         tipo = "b";
       } else {
         tipo = "c";
+      }
+
+      // Aplicar a classificação "top 30" após verificar o faturamento
+      if (i < 30) {
+        tipo = "top 30";
       }
 
       await Cliente.update({ tipo }, { where: { id: cliente.id } });
@@ -39,6 +45,7 @@ async function classifyCustomers() {
     console.error('Erro ao classificar os clientes:', error);
   }
 }
+
 
 module.exports = {
   async index(req, res) {
