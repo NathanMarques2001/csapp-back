@@ -14,10 +14,6 @@ module.exports = {
         return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (cliente.contatos_comerciais.length == 0) {
-        return res.status(404).send({ message: 'Nenhum contato comercial cadastrado!' });
-      }
-
       return res.status(200).send({ contatos_comerciais: cliente.contatos_comerciais });
     } catch (error) {
       console.error(error);
@@ -45,10 +41,6 @@ module.exports = {
   async indexAll(req, res) {
     try {
       const contatosComerciais = await ContatoComercial.findAll();
-
-      if (contatosComerciais.length == 0) {
-        return res.status(404).send({ message: 'Nenhum contato comercial cadastrado!' });
-      }
 
       return res.status(200).send({ contatosComerciais });
     } catch (error) {

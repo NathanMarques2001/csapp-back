@@ -14,10 +14,6 @@ module.exports = {
         return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (cliente.contatos_tecnicos.length == 0) {
-        return res.status(404).send({ message: 'Nenhum contato técnico cadastrado!' });
-      }
-
       return res.status(200).send({ contatos_tecnicos: cliente.contatos_tecnicos });
     } catch (error) {
       console.error(error);
@@ -45,10 +41,6 @@ module.exports = {
   async indexAll(req, res) {
     try {
       const contatosTecnicos = await ContatoTecnico.findAll();
-
-      if (contatosTecnicos.length == 0) {
-        return res.status(404).send({ message: 'Nenhum contato técnico cadastrado!' });
-      }
 
       return res.status(200).send({ contatosTecnicos });
     } catch (error) {

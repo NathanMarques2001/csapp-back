@@ -14,10 +14,6 @@ module.exports = {
         return res.status(404).send({ message: 'Cliente não encontrado!' });
       }
 
-      if (cliente.fatos_importantes.length == 0) {
-        return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
-      }
-
       return res.status(200).send({ fatos_importantes: cliente.fatos_importantes });
     } catch (error) {
       console.error(error);
@@ -45,10 +41,6 @@ module.exports = {
   async indexAll(req, res) {
     try {
       const fatosImportantes = await FatosImportantes.findAll();
-
-      if (fatosImportantes.length == 0) {
-        return res.status(404).send({ message: 'Nenhum fato importante cadastrado!' });
-      }
 
       return res.status(200).send({ fatosImportantes });
     } catch (error) {
