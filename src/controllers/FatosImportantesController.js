@@ -53,6 +53,12 @@ module.exports = {
     try {
       const { id_cliente, conteudo } = req.body;
 
+      if (!conteudo) {
+        return res.status(400).send({ message: 'O campo conteúdo é obrigatório!' });
+      } else if (!id_cliente) {
+        return res.status(400).send({ message: 'O campo id_cliente é obrigatório!' });
+      }
+
       const fatoImportante = await FatosImportantes.create({ id_cliente, conteudo });
 
       return res.status(201).send({
@@ -74,6 +80,8 @@ module.exports = {
 
       if (!fatoImportante) {
         return res.status(404).send({ message: 'Fato importante não encontrado!' });
+      } else if (!conteudo) {
+        return res.status(400).send({ message: 'O campo conteúdo é obrigatório!' });
       }
 
       await FatosImportantes.update({ conteudo }, { where: { id: id } });

@@ -53,6 +53,12 @@ module.exports = {
     try {
       const { id_cliente, conteudo } = req.body;
 
+      if (!conteudo) {
+        return res.status(400).send({ message: 'O campo conteúdo é obrigatório!' });
+      } else if (!id_cliente) {
+        return res.status(400).send({ message: 'O campo id_cliente é obrigatório!' });
+      }
+
       const contatoComercial = await ContatoComercial.create({ id_cliente, conteudo });
       return res.status(201).send({
         message: 'Contato comercial criado com sucesso!',
@@ -73,6 +79,8 @@ module.exports = {
 
       if (!contatoComercial) {
         return res.status(404).send({ message: 'Contato comercial não encontrado!' });
+      } else if (!conteudo) {
+        return res.status(400).send({ message: 'O campo conteúdo é obrigatório!' });
       }
 
       ContatoComercial.update({ conteudo }, { where: { id: id } });

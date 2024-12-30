@@ -186,6 +186,18 @@ module.exports = {
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
 
+      const containsLetters = /[a-zA-Z]/;
+
+      if (isNaN(nps)) {
+        return res.status(400).send({ message: 'O campo NPS deve conter apenas números.' });
+      } else if (containsLetters.test(gestor_chamados_telefone_1) || containsLetters.test(gestor_chamados_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor de chamados devem conter apenas números.' });
+      } else if (containsLetters.test(gestor_contratos_telefone_1) || containsLetters.test(gestor_contratos_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor de contratos devem conter apenas números.' });
+      } else if (containsLetters.test(gestor_financeiro_telefone_1) || containsLetters.test(gestor_financeiro_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor financeiro devem conter apenas números.' });
+      }
+
       const data_criacao = formatDate(new Date());
       const tipo = "c";
 
@@ -215,6 +227,18 @@ module.exports = {
       // Chama a função para validar CPF ou CNPJ
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
+
+      const containsLetters = /[a-zA-Z]/;
+
+      if (isNaN(nps)) {
+        return res.status(400).send({ message: 'O campo NPS deve conter apenas números.' });
+      } else if (containsLetters.test(gestor_chamados_telefone_1) || containsLetters.test(gestor_chamados_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor de chamados devem conter apenas números.' });
+      } else if (containsLetters.test(gestor_contratos_telefone_1) || containsLetters.test(gestor_contratos_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor de contratos devem conter apenas números.' });
+      } else if (containsLetters.test(gestor_financeiro_telefone_1) || containsLetters.test(gestor_financeiro_telefone_2)) {
+        return res.status(400).send({ message: 'Os campos de telefone do gestor financeiro devem conter apenas números.' });
+      }
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
       await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status }, { where: { id: id } });
