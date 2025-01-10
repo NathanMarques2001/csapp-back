@@ -226,12 +226,6 @@ module.exports = {
 
       if (isNaN(nps)) {
         return res.status(400).send({ message: 'O campo NPS deve conter apenas números.' });
-      } else if (containsLetters.test(gestor_chamados_telefone_1) || containsLetters.test(gestor_chamados_telefone_2)) {
-        return res.status(400).send({ message: 'Os campos de telefone do gestor de chamados devem conter apenas números.' });
-      } else if (containsLetters.test(gestor_contratos_telefone_1) || containsLetters.test(gestor_contratos_telefone_2)) {
-        return res.status(400).send({ message: 'Os campos de telefone do gestor de contratos devem conter apenas números.' });
-      } else if (containsLetters.test(gestor_financeiro_telefone_1) || containsLetters.test(gestor_financeiro_telefone_2)) {
-        return res.status(400).send({ message: 'Os campos de telefone do gestor financeiro devem conter apenas números.' });
       }
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
