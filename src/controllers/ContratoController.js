@@ -78,13 +78,13 @@ module.exports = {
     try {
       const { id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio } = req.body;
 
-      const containsLetters = /[a-zA-Z]/;
+      // const containsLetters = /[a-zA-Z]/;
 
-      if (containsLetters.test(valor_mensal)) {
-        return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
-      } else if (containsLetters.test(quantidade)) {
-        return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
-      }
+      // if (containsLetters.test(valor_mensal)) {
+      //   return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
+      // } else if (containsLetters.test(quantidade)) {
+      //   return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
+      // }
 
 
       const contrato = await Contrato.create({ id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio });
@@ -105,17 +105,17 @@ module.exports = {
     try {
       const { id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio } = req.body;
       const { id } = req.params;
-      const containsLetters = /[a-zA-Z]/;
+      //const containsLetters = /[a-zA-Z]/;
 
       const contrato = await Contrato.findByPk(id);
 
       if (!contrato) {
         return res.status(404).send({ message: 'Contrato não encontrado!' });
-      } else if (containsLetters.test(valor_mensal)) {
-        return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
-      } else if (containsLetters.test(quantidade)) {
-        return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
-      }
+      // } else if (containsLetters.test(valor_mensal)) {
+      //   return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
+      // } else if (containsLetters.test(quantidade)) {
+      //   return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
+      // }
 
       const chagedStatus = status !== contrato.status;
 
