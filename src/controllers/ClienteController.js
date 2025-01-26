@@ -2,6 +2,10 @@ const Cliente = require('../models/Cliente');
 const Contrato = require('../models/Contrato');
 const classifyCustomers = require('../utils/classifyCustomers');
 
+const EXCEPTION_LIST = [
+  "38532573000175" // ITA ALIMENTOS
+];
+
 function validateCPF(cpf) {
   cpf = cpf.replaceAll(".", "").replace("-", "");
 
@@ -67,16 +71,18 @@ function validateCNPJ(cnpj) {
 function validateCPFOrCNPJ(cpf_cnpj, res) {
   cpf_cnpj = cpf_cnpj.replaceAll(".", "").replaceAll("/", "").replace("-", "");
 
-  if (cpf_cnpj.length === 11) {
-    if (!validateCPF(cpf_cnpj)) {
-      return res.status(400).send({ message: 'CPF inválido!' });
+  if (!EXCEPTION_LIST.includes(cpf_cnpj)) {
+    if (cpf_cnpj.length === 11) {
+      if (!validateCPF(cpf_cnpj)) {
+        return res.status(400).send({ message: 'CPF inválido!' });
+      }
+    } else if (cpf_cnpj.length === 14) {
+      if (!validateCNPJ(cpf_cnpj)) {
+        return res.status(400).send({ message: 'CNPJ inválido!' });
+      }
+    } else {
+      return res.status(400).send({ message: 'CPF/CNPJ inválido!' });
     }
-  } else if (cpf_cnpj.length === 14) {
-    if (!validateCNPJ(cpf_cnpj)) {
-      return res.status(400).send({ message: 'CNPJ inválido!' });
-    }
-  } else {
-    return res.status(400).send({ message: 'CPF/CNPJ inválido!' });
   }
 }
 
