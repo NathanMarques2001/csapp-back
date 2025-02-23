@@ -39,7 +39,7 @@ module.exports = {
         faturado: 0,
         id_faturado: (i % numFaturado) + 1,
         dia_vencimento: (i % 30) + 1,
-        indice_reajuste: Math.random() * 5,
+        indice_reajuste: 0,
         proximo_reajuste: proximoReajuste,
         status: 'ativo',
         duracao: 12 * (i % 3 + 1),
