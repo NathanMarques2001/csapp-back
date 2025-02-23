@@ -8,7 +8,7 @@ module.exports = {
       const nome = `Usuario ${i}`;
       const email = `usuario${i}@example.com`;
       const tipo = i % 2 === 0 ? 'admin' : 'user';
-      const senha = 'senhaSegura123';
+      const senha = '123';
 
       // Criptografar a senha antes de inserir
       const salt = bcrypt.genSaltSync();
