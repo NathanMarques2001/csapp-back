@@ -1,3 +1,5 @@
+const bcrypt = require('bcryptjs');
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const usuarios = [];
@@ -5,14 +7,18 @@ module.exports = {
     for (let i = 1; i <= 10; i++) {
       const nome = `Usuario ${i}`;
       const email = `usuario${i}@example.com`;
-      const tipo = i % 2 === 0 ? 'admin' : 'user';  // Alterna entre 'admin' e 'user'
+      const tipo = i % 2 === 0 ? 'admin' : 'user';
       const senha = 'senhaSegura123';
+
+      // Criptografar a senha antes de inserir
+      const salt = bcrypt.genSaltSync();
+      const senhaCriptografada = bcrypt.hashSync(senha, salt);
 
       usuarios.push({
         nome,
         email,
         tipo,
-        senha,
+        senha: senhaCriptografada,  // Armazena a senha encriptada
         logado: false,
         created_at: new Date(),
         updated_at: new Date()
