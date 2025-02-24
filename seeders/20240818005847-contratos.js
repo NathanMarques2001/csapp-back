@@ -8,31 +8,25 @@ module.exports = {
     const numProdutos = 10;
     const numFaturado = 10;
 
+    const indices = ['inpc', 'igpm', 'ipc-fipe', 'ipca', null];
+
     function getRandomDate(startYear, endYear) {
       const start = new Date(startYear, 0, 1);
       const end = new Date(endYear, 11, 31);
       return new Date(start.getTime() + Math.random() * (end.getTime() - start.getTime()));
     }
 
-    for (let i = 1; i <= numContratos; i++) {
-      let id_produto, quantidade, nome_indice;
+    function getRandomElement(array) {
+      return array[Math.floor(Math.random() * array.length)];
+    }
 
-      if (i === 1) {
-        id_produto = 1;
-        quantidade = 100;
-        nome_indice = 'ipca';
-      } else if (i === 2) {
-        id_produto = 2;
-        quantidade = 200;
-        nome_indice = 'igpm';
-      } else {
-        id_produto = (i % numProdutos) + 1;
-        quantidade = null;
-        nome_indice = null;
-      }
+    for (let i = 1; i <= numContratos; i++) {
+      const id_produto = (i % numProdutos) + 1;
+      const quantidade = Math.random() > 0.5 ? Math.floor(Math.random() * 500) + 1 : null;
+      const nome_indice = getRandomElement(indices);
 
       const proximoReajuste = getRandomDate(2010, 2026);
-      
+
       contratos.push({
         id_cliente: (i % numClientes) + 1,
         id_produto,
@@ -43,7 +37,8 @@ module.exports = {
         proximo_reajuste: proximoReajuste,
         status: 'ativo',
         duracao: 12 * (i % 3 + 1),
-        valor_mensal: (Math.random() * 1000).toFixed(2),
+        //valor_mensal: (Math.random() * 1000).toFixed(2),
+        valor_mensal: 100,
         quantidade,
         descricao: `Descrição do contrato ${i}`,
         nome_indice,

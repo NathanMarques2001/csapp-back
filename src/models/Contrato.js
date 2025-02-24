@@ -80,6 +80,8 @@ class Contrato extends Model {
 
   static associate(models) {
     this.hasMany(models.Log, { foreignKey: 'id_contrato', as: 'logs' });
+    this.hasMany(models.ContratoErroReajuste, { foreignKey: 'id_contrato', as: 'erros_reajuste' });
+    this.hasMany(models.ReprocessamentoContrato, { foreignKey: 'id_contrato', as: 'reprocessamentos' });
     this.belongsTo(models.Cliente, { foreignKey: 'id_cliente', as: 'clientes' });
     this.belongsTo(models.Produto, { foreignKey: 'id_produto', as: 'produtos' });
     this.belongsTo(models.Faturado, { foreignKey: 'id_faturado', as: 'faturados' });

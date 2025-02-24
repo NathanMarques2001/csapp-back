@@ -12,6 +12,7 @@ const contatosComerciaisRoutes = require('./routes/ContatosComerciaisRoutes.js')
 const clienteRoutes = require('./routes/ClientesRoutes.js');
 const segmentosRoutes = require('./routes/SegmentosRoutes.js');
 const faturadosRoutes = require('./routes/FaturadosRoutes.js');
+const reajustaContratosRoutes = require('./routes/ReajustaContratosRoutes.js');
 
 const port = 8080;
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/contatos-comerciais', contatosComerciaisRoutes);
 app.use('/api/clientes', clienteRoutes);
 app.use('/api/segmentos', segmentosRoutes);
 app.use('/api/faturados', faturadosRoutes);
+app.use('/api/reajusta-contratos', reajustaContratosRoutes);
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

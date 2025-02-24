@@ -11,10 +11,12 @@ const ContatoComercial = require('../models/ContatoComercial');
 const Cliente = require('../models/Cliente');
 const Segmento = require('../models/Segmento');
 const Faturado = require('../models/Faturado');
+const ContratoErroReajuste = require('../models/ContratoErroReajuste');
+const ReprocessamentoContrato = require('../models/ReprocessamentoContrato');
 
 const connection = new sequelize(dbConfig);
 
-const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento, Faturado];
+const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento, Faturado, ContratoErroReajuste, ReprocessamentoContrato];
 
 tables.forEach(table => {
   table.init(connection);
