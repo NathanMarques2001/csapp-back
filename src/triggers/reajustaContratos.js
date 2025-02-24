@@ -13,5 +13,4 @@ async function reajustaContratos() {
   }
 }
 
-reajustaContratos().then(() => process.exit(0));
-// Compare this snippet from package.json:
+reajustaContratos().then(contratos => console.log(contratos));
