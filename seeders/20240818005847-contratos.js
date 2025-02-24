@@ -3,7 +3,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     const contratos = [];
-    const numContratos = 321;
+    const numContratos = 100;
     const numClientes = 50;
     const numProdutos = 10;
     const numFaturado = 10;

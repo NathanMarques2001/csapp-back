@@ -13,6 +13,10 @@ module.exports = {
           -- Insere um registro na tabela reprocessamentos_contratos
           INSERT INTO reprocessamentos_contratos (id_contrato, erro)
           VALUES (NEW.id_contrato, NEW.erro);
+          
+          -- Exclui o registro da tabela contratos_erros_reajuste
+          DELETE FROM contratos_erros_reajuste
+          WHERE id_contrato = NEW.id_contrato;
         END IF;
       END;
     `);
