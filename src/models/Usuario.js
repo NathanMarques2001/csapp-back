@@ -41,11 +41,12 @@ class Usuario extends Model {
           const salt = bcrypt.genSaltSync();
           usuario.senha = bcrypt.hashSync(usuario.senha, salt);
         },
-        beforeUpdate: (usuario) => {
-          console.log('Senha modificada, encriptando...');
-          const salt = bcrypt.genSaltSync();
-          usuario.senha = bcrypt.hashSync(usuario.senha, salt);
-        }
+        beforeUpdate: async (usuario) => {
+          if (usuario.changed('senha')) {
+            const salt = await bcrypt.genSalt();
+            usuario.senha = await bcrypt.hash(usuario.senha, salt);
+          }
+        }        
       }
     });
   }
@@ -53,6 +54,7 @@ class Usuario extends Model {
   static associate(models) {
     this.hasMany(models.Log, { foreignKey: 'id_usuario', as: 'logs' });
     this.hasMany(models.Cliente, { foreignKey: 'id_usuario', as: 'clientes' });
+    this.belongsTo(models.ResetSenha, { foreignKey: 'id_usuario', as: 'reset_senha' });
   }
 }
 
