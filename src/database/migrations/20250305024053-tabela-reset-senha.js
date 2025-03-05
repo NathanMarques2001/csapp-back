@@ -24,19 +24,15 @@ module.exports = {
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE'
       },
-      expiresAt: {
+      expires_at: {
         type: Sequelize.DATE,
         allowNull: true
       },
-      used: {
-        type: Sequelize.BOOLEAN,
-        defaultValue: false
-      },
-      createdAt: {
+      created_at: {
         type: Sequelize.DATE,
         allowNull: false
       },
-      updatedAt: {
+      updated_at: {
         type: Sequelize.DATE,
         allowNull: false
       }

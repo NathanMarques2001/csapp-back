@@ -13,6 +13,7 @@ const clienteRoutes = require('./routes/ClientesRoutes.js');
 const segmentosRoutes = require('./routes/SegmentosRoutes.js');
 const faturadosRoutes = require('./routes/FaturadosRoutes.js');
 const reajustaContratosRoutes = require('./routes/ReajustaContratosRoutes.js');
+const resetSenhaRoutes = require('./routes/ResetSenhaRoutes.js');
 
 const port = 8080;
 const app = express();
@@ -31,6 +32,8 @@ app.use('/api/clientes', clienteRoutes);
 app.use('/api/segmentos', segmentosRoutes);
 app.use('/api/faturados', faturadosRoutes);
 app.use('/api/reajusta-contratos', reajustaContratosRoutes);
+app.use('/api/reset-senha', resetSenhaRoutes);
+
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

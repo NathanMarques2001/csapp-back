@@ -51,7 +51,7 @@ module.exports = {
       }
 
       await usuario.update({ senha: senha });
-      await resetSenha.update({ used: true });
+      await resetSenha.destroy();
 
       return res.status(200).send({ message: 'Senha alterada com sucesso!' });
     } catch (error) {

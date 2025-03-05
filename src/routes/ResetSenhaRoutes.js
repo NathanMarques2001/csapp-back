@@ -3,4 +3,6 @@ const ResetSenhaController = require('../controllers/ResetSenhaController');
 const router = express.Router();
 
 router.post('/', ResetSenhaController.store);
-router.post('/reset-senha', ResetSenhaController.reset);
+router.post('/reset', ResetSenhaController.reset);
+
+module.exports = router;

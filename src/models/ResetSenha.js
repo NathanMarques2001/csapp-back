@@ -6,19 +6,15 @@ class ResetSenha extends Model {
     super.init({
       hash: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       id_usuario: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      expiresAt: {
+      expires_at: {
         type: DataTypes.DATE,
-        allowNull: false
-      },
-      used: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
+        allowNull: true
       }
     }, {
       sequelize,
@@ -27,7 +23,7 @@ class ResetSenha extends Model {
 
     this.beforeCreate((hashReset) => {
       hashReset.hash = uuidv4();
-      hashReset.expiresAt = new Date(Date.now() + 30 * 60000); // 30 minutos
+      hashReset.expires_at = new Date(Date.now() + 60 * 60000); // 60 minutos
     });
   }
 
