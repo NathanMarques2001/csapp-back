@@ -11,12 +11,6 @@ class ResetSenha extends Model {
       id_usuario: {
         type: DataTypes.INTEGER,
         allowNull: false,
-        references: {
-          model: 'usuarios',
-          key: 'id'
-        },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
       },
       expiresAt: {
         type: DataTypes.DATE,
