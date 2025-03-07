@@ -14,10 +14,11 @@ const Faturado = require('../models/Faturado');
 const ContratoErroReajuste = require('../models/ContratoErroReajuste');
 const ReprocessamentoContrato = require('../models/ReprocessamentoContrato');
 const ResetSenha = require('../models/ResetSenha');
+const VencimentoContratos = require('../models/VencimentoContratos');
 
 const connection = new sequelize(dbConfig);
 
-const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento, Faturado, ContratoErroReajuste, ReprocessamentoContrato, ResetSenha];
+const tables = [Usuario, Produto, Log, FatosImportantes, Fabricante, Contrato, ContatoTecnico, ContatoComercial, Cliente, Segmento, Faturado, ContratoErroReajuste, ReprocessamentoContrato, ResetSenha, VencimentoContratos];
 
 tables.forEach(table => {
   table.init(connection);

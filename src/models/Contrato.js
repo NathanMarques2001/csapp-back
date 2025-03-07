@@ -85,6 +85,7 @@ class Contrato extends Model {
     this.belongsTo(models.Cliente, { foreignKey: 'id_cliente', as: 'clientes' });
     this.belongsTo(models.Produto, { foreignKey: 'id_produto', as: 'produtos' });
     this.belongsTo(models.Faturado, { foreignKey: 'id_faturado', as: 'faturados' });
+    this.hasMany(models.VencimentoContratos, { foreignKey: 'id_contrato', as: 'vencimento_contratos' });
   }
 }
 
