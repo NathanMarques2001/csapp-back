@@ -5,7 +5,7 @@ class VencimentoContratos extends Model {
     super.init({
       data_vencimento: {
         type: DataTypes.DATE,
-        allowNull: false
+        allowNull: true
       },
       id_contrato: {
         type: DataTypes.INTEGER,

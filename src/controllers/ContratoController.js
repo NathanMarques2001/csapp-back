@@ -1,5 +1,6 @@
 const Contrato = require('../models/Contrato');
 const Cliente = require('../models/Cliente');
+const VencimentoContratos = require('../models/VencimentoContratos');
 const classifyCustomers = require('../utils/classifyCustomers');
 
 module.exports = {
@@ -90,6 +91,7 @@ module.exports = {
       const contrato = await Contrato.create({ id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio });
 
       await classifyCustomers();
+      
 
       return res.status(201).send({
         message: 'Contrato criado com sucesso!',

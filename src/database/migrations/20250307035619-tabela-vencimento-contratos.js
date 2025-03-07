@@ -12,7 +12,7 @@ module.exports = {
       },
       data_vencimento: {
         type: Sequelize.DATE,
-        allowNull: false
+        allowNull: true
       },
       id_contrato: {
         type: Sequelize.INTEGER,
