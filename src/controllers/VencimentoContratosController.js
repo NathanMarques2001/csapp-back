@@ -5,7 +5,7 @@ module.exports = {
   async getAll(req, res) {
     try {
       const vencimentos = await VencimentoContratos.findAll();
-      res.status(200).json(vencimentos);
+      res.status(200).json({ vencimentos });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -18,7 +18,7 @@ module.exports = {
           data_vencimento: new Date()
         }
       });
-      res.status(200).json(vencimentos);
+      res.status(200).json({ vencimentos });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
