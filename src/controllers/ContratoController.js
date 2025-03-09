@@ -91,7 +91,10 @@ module.exports = {
       const contrato = await Contrato.create({ id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio });
 
       await classifyCustomers();
-      
+
+      const inicio = new Date(data_inicio);
+      const vencimento = new Date(inicio.setMonth(inicio.getMonth() + duracao));
+      await VencimentoContratos.create({ id_contrato: contrato.id, status: status, data_vencimento: vencimento });
 
       return res.status(201).send({
         message: 'Contrato criado com sucesso!',
@@ -126,6 +129,10 @@ module.exports = {
       if (chagedStatus) {
         await classifyCustomers();
       }
+
+      const inicio = new Date(data_inicio);
+      const vencimento = new Date(inicio.setMonth(inicio.getMonth() + duracao));
+      await VencimentoContratos.update({ id_contrato: contrato.id, status: status, data_vencimento: vencimento });
 
       return res.status(200).send({ message: 'Contrato atualizado com sucesso!' });
     } catch (error) {
