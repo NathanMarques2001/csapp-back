@@ -2,7 +2,8 @@ const fs = require("fs");
 const axios = require("axios");
 
 class Api {
-  static baseUrl = "http://20.186.19.140/api";
+  //static baseUrl = "http://20.186.19.140/api";
+  static baseUrl = "http://localhost:8080/api";
   constructor() {
     this.api = axios.create({
       baseURL: Api.baseUrl,
@@ -67,8 +68,51 @@ class Api {
   }
 }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzI0NzY4MjQ0LCJleHAiOjE3MjQ4MzU2MDB9.jvftu1A81HJyKKvm_zOl8CfA5C8SPN_0DApmGTJH1s8";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQxNTY3ODA2LCJleHAiOjE3NDE1OTcyMDB9.XDByKiwHMZQxvISZWa03RpsQDoOkS0_CCDKB3DXQizw";
+const api = new Api();
 
+async function insereVencimentos() {
+  let contratos = await api.get("/contratos");
+  contratos = contratos.contratos;
+  for (let contrato of contratos) {
+    if (!contrato.data_inicio) {
+      console.warn(`Contrato ${contrato.id} não tem data_inicio! Pulando...`);
+      continue;
+    }
+
+    const dt_inicio = new Date(contrato.data_inicio);
+    const dt_vencimento = new Date(dt_inicio);
+    dt_vencimento.setMonth(dt_vencimento.getMonth() + contrato.duracao);
+
+    await api.post("/vencimento-contratos", {
+      id_contrato: contrato.id,
+      status: contrato.status,
+      data_vencimento: dt_vencimento
+    });
+  }
+  console.log("Vencimentos inseridos com sucesso!");
+}
+
+async function ajustaReajuste(){
+  let contratos = await api.get("/contratos");
+  contratos = contratos.contratos;
+  for (let contrato of contratos) {
+    if (contrato.indice_reajuste) {
+      console.log(`Contrato ${contrato.id} com índice de reajuste. Ajustando...`);
+      await api.put(`/contratos/${contrato.id}`, { indice_reajuste: 0 });
+    }
+  }
+  console.log("Índices de reajuste ajustados com sucesso!");
+}
+
+async function ajustaBanco() {
+  await insereVencimentos();
+  await ajustaReajuste();
+  process.exit();
+}
+
+ajustaBanco().catch(console.error);
+/*
 uploadData();
 
 function uploadData() {
@@ -160,3 +204,4 @@ function uploadClients(api) {
     });
   });
 }
+  */
