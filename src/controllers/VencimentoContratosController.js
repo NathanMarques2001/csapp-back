@@ -1,5 +1,7 @@
 const VencimentoContratos = require('../models/VencimentoContratos');
 const Contrato = require('../models/Contrato');
+const Cliente = require('../models/Cliente');
+const Usuario = require('../models/Usuario');
 const { Op } = require('sequelize');
 
 module.exports = {
@@ -18,8 +20,8 @@ module.exports = {
       let startOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 0, 0, 0, 0));
       let endOfDay = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate(), 23, 59, 59, 999));
 
-      startOfDay.setDate(startOfDay.getDate() - 1);
-      endOfDay.setDate(endOfDay.getDate() - 1);
+     // startOfDay.setDate(startOfDay.getDate() - 1);
+     // endOfDay.setDate(endOfDay.getDate() - 1);
 
       const vencimentos = await VencimentoContratos.findAll({
         where: {
@@ -30,6 +32,29 @@ module.exports = {
       });
 
       res.status(200).json({ vencimentos });
+    } catch (error) {
+      res.status(500).json({ error: error.message });
+    }
+  },
+
+  async emailData(req, res) {
+    try {
+      const { id_contrato } = req.params;
+      const contrato = await Contrato.findByPk(id_contrato);
+
+      if (!contrato) {
+        return res.status(404).json({ message: 'Contrato não encontrado' });
+      }
+
+      const cliente = await Cliente.findByPk(contrato.id_cliente);
+      const usuario = await Usuario.findByPk(cliente.id_usuario);
+
+      res.status(200).json({
+        usuario_nome: usuario.nome,
+        usuario_email: usuario.email,
+        cliente_nome: cliente.nome_fantasia,
+        cliente_cnpj: cliente.cpf_cnpj
+      });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

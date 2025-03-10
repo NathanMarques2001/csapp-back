@@ -6,7 +6,7 @@ class Email {
   // DEV
   static baseUrl = "http://localhost:9090/email";
   constructor() {
-    this.api = axios.create({
+    this.email = axios.create({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -15,7 +15,7 @@ class Email {
 
   async sendEmail(data) {
     try {
-      const res = await this.api.post(Email.baseUrl + '/send', data);
+      const res = await this.email.post(Email.baseUrl + '/send', data);
       return res.data;
     } catch (err) {
       throw err.response?.data?.message || "Erro ao enviar email";
@@ -23,4 +23,4 @@ class Email {
   }
 }
 
-export default Email;
+module.exports = Email;

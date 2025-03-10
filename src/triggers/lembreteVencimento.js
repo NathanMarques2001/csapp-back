@@ -1,8 +1,8 @@
-const axios = require("axios");
-const Email = require("../utils/email");
-const Contratos = require("../models/Contratos");
-const Vendedores = require("../models/Usuario");
-const Clientes = require("../models/Cliente");
+import axios from "axios";
+import Email from "../services/email.js";
+import Contrato from "../models/Contrato.js";
+import Usuario from "../models/Usuario.js";
+import Cliente from "../models/Cliente.js";
 
 function MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome) {
   const subject = `🚨 O contrato do cliente ${clienteNome} vence em breve!`;
@@ -12,28 +12,35 @@ function MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome)
   return { subject, text, html };
 }
 
+function formatDateToDDMMYYYY(date) {
+  const day = String(date.getDate()).padStart(2, '0');  // Adiciona zero à esquerda, se necessário
+  const month = String(date.getMonth() + 1).padStart(2, '0');  // Meses começam do 0, então somamos 1
+  const year = date.getFullYear();
+
+  return `${day}/${month}/${year}`;
+}
+
+
 async function lembreteVencimento() {
   try {
+    const url = "http://localhost:8080";
+    //const url = "http://20.186.19.140";
     // Chamada para obter os contratos que vencem hoje
-    // DEV
-    const response = await axios.get("http://localhost:8080/api/vencimento-contratos/hoje");
-    // PRD
-    //const response = await axios.get("http://20.186.19.140/api/vencimento-contratos/hoje");
+    const response = await axios.get(`${url}/api/vencimento-contratos/hoje`);
 
-    if (response.data && response.data.length > 0) {
+    const vencimentos = response.data.vencimentos;
+
+    if (vencimentos && vencimentos.length > 0) {
       const emailService = new Email();
 
-      for (const contratoVencimento of response.vencimentos) {
-        const contrato = await Contratos.findById(contratoVencimento.id_contrato);
-        const cliente = await Clientes.findById(contrato.id_cliente);
-        const vendedor = await Vendedores.findById(cliente.id_usuario);
-        const vendedorNome = vendedor.nome;
-        const vendedorEmail = vendedor.email;
-        const clienteNome = cliente.nome_fantasia;
-        const clienteCNPJ = cliente.cpf_cnpj;
-        const vencimento = contratoVencimento.data_vencimento;
+      for (const contratoVencimento of vencimentos) {
+        const responseVencimento = await axios.get(`${url}/api/vencimento-contratos/email/${contratoVencimento.id_contrato}`);
 
-        const mailAviso = MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome);
+        const { cliente_nome: clienteNome, cliente_cnpj: clienteCNPJ, usuario_nome: vendedorNome, usuario_email: vendedorEmail } = responseVencimento.data;
+
+        const formattedVencimento = formatDateToDDMMYYYY(new Date(contratoVencimento.data_vencimento));
+
+        const mailAviso = MailAvisoVencimento(clienteNome, clienteCNPJ, formattedVencimento, vendedorNome);
 
         const emailData = {
           to: vendedorEmail,
