@@ -1,8 +1,5 @@
 import axios from "axios";
 import Email from "../services/email.js";
-import Contrato from "../models/Contrato.js";
-import Usuario from "../models/Usuario.js";
-import Cliente from "../models/Cliente.js";
 
 function MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome) {
   const subject = `🚨 O contrato do cliente ${clienteNome} vence em breve!`;
