@@ -131,8 +131,12 @@ module.exports = {
       }
 
       const inicio = new Date(data_inicio);
-      const vencimento = new Date(inicio.setMonth(inicio.getMonth() + duracao));
-      await VencimentoContratos.update({ id_contrato: contrato.id, status: status, data_vencimento: vencimento });
+      const vencimento = new Date(inicio.setMonth(inicio.getMonth() + Number(duracao)));
+      await VencimentoContratos.update(
+        { id_contrato: contrato.id, status: status, data_vencimento: vencimento },
+        { where: { id_contrato: contrato.id } }
+      );
+
 
       return res.status(200).send({ message: 'Contrato atualizado com sucesso!' });
     } catch (error) {
