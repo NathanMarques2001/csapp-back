@@ -40,7 +40,7 @@ module.exports = {
         faturado: 0,
         id_faturado: (i % numFaturado) + 1,
         dia_vencimento: (i % 30) + 1,
-        indice_reajuste: 0,
+        indice_reajuste: 5,
         proximo_reajuste: proximoReajuste,
         status: 'ativo',
         duracao: 12 * (i % 3 + 1),
@@ -50,7 +50,6 @@ module.exports = {
         nome_indice,
         created_at: new Date(),
         updated_at: new Date(),
-        data_inicio: getRandomDate(2022, 2025)  // Aqui, a data será gerada corretamente
       });
     }
 

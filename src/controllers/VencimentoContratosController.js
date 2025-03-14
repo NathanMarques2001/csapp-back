@@ -97,8 +97,7 @@ module.exports = {
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
-  }
-  ,
+  },
 
   async delete(req, res) {
     try {
