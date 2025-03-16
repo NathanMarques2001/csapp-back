@@ -1,7 +1,7 @@
 const { execSync } = require("child_process");
 
 try {
-    const decrypted = execSync("gpg --decrypt /var/www/scrt/db.json ", { encoding: "utf-8" });
+    const decrypted = execSync("gpg --decrypt /var/www/scrt/db.json.gpg", { encoding: "utf-8" });
     const secrets = JSON.parse(decrypted);
 
     console.log("Tudo:", secrets);
