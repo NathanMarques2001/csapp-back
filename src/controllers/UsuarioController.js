@@ -1,7 +1,7 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authConfig = require('../config/auth.json');
+const authConfig = require('C:\\Users\\NATHAN.BRANDAO\\Documents\\dev\\scrts\\secret.json');
 
 function gerarToken(params = {}) {
   const expireAt = new Date();
