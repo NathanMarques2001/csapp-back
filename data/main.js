@@ -68,7 +68,7 @@ class Api {
   }
 }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQxOTY5NTg5LCJleHAiOjE3NDIwMjkyMDB9.OmKr_ILuW0dsa5UVCfbi5w_bWzdUkuAhxgabjHY9uXI";
+const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQyMDkyNDM0LCJleHAiOjE3NDIxMTU2MDB9.r7ny_Szb3LyQ-v4rCFv8mbL1nh-uv3K-Dk9oT5K66ng";
 const api = new Api();
 
 async function insereVencimentos() {

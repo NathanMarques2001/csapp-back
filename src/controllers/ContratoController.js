@@ -130,22 +130,16 @@ module.exports = {
         await classifyCustomers();
       }
 
-      let dt_inicio = data_inicio;
-      if (!data_inicio) {
-        dt_inicio = contrato.data_inicio;
+      if (data_inicio || status || duracao) {
+        const inicio = data_inicio ? new Date(data_inicio) : new Date(contrato.data_inicio);
+        const duracaoContrato = duracao ? duracao : contrato.duracao;
+        const vencimento = new Date(inicio.setMonth(inicio.getMonth() + Number(duracaoContrato)));
+        const statusContrato = status ? status : contrato.status;
+        await VencimentoContratos.update(
+          { id_contrato: contrato.id, status: statusContrato, data_vencimento: vencimento },
+          { where: { id_contrato: contrato.id } }
+        );
       }
-
-      let statusVencimento = status;
-      if (!status) {
-        statusVencimento = contrato.status;
-      }
-
-      const inicio = new Date(dt_inicio);
-      const vencimento = new Date(inicio.setMonth(inicio.getMonth() + Number(duracao)));
-      await VencimentoContratos.update(
-        { id_contrato: contrato.id, status: statusVencimento, data_vencimento: vencimento },
-        { where: { id_contrato: contrato.id } }
-      );
 
       return res.status(200).send({ message: 'Contrato atualizado com sucesso!' });
     } catch (error) {
