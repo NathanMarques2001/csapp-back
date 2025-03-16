@@ -23,7 +23,7 @@ class ResetSenha extends Model {
 
     this.beforeCreate((hashReset) => {
       hashReset.hash = uuidv4();
-      hashReset.expires_at = new Date(Date.now() + 1 * 60000); // 60 minutos
+      hashReset.expires_at = new Date(Date.now() + 60 * 60000); // 60 minutos
     });
   }
 
