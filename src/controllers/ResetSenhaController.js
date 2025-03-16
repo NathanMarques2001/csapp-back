@@ -1,3 +1,4 @@
+const { Op } = require('sequelize');
 const { validate } = require('uuid');
 const ResetSenha = require('../models/ResetSenha');
 const Usuario = require('../models/Usuario');
@@ -40,7 +41,8 @@ module.exports = {
         return res.status(400).send({ message: 'Hash já utilizado!' });
       }
 
-      if (resetSenha.expiresAt < new Date()) {
+      if (resetSenha.expires_at < new Date()) {
+        await resetSenha.destroy();
         return res.status(400).send({ message: 'Hash expirado!' });
       }
 
@@ -57,6 +59,22 @@ module.exports = {
     } catch (error) {
       console.error(error);
       return res.status(500).send({ message: 'Ocorreu um erro ao alterar a senha.' });
+    }
+  },
+
+  async removeExpiredTokens(req, res) {
+    try {
+      // Apaga registros expirados
+      await ResetSenha.destroy({
+        where: {
+          expires_at: { [Op.lt]: new Date() }
+        }
+      });
+      
+      return res.status(200).send({ message: 'Registros expirados apagados com sucesso!' });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: 'Ocorreu um erro ao listar os registros.' });
     }
   }
 };
