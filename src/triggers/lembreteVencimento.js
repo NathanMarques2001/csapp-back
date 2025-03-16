@@ -68,8 +68,8 @@ function formatDateToDDMMYYYY(date) {
 
 async function lembreteVencimento() {
   try {
-    const url = "http://localhost:8080";
-    //const url = "http://20.186.19.140";
+    //const url = "http://localhost:8080";
+    const url = "https://csapp.prolinx.com.br";
     const response = await axios.get(`${url}/api/vencimento-contratos/hoje`);
 
     const vencimentos = response.data.vencimentos;

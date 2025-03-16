@@ -2,8 +2,8 @@ const fs = require("fs");
 const axios = require("axios");
 
 class Api {
-  //static baseUrl = "http://20.186.19.140/api";
-  static baseUrl = "http://localhost:8080/api";
+  static baseUrl = "https://csapp.prolinx.com.br/api";
+  //static baseUrl = "http://localhost:8080/api";
   constructor() {
     this.api = axios.create({
       baseURL: Api.baseUrl,
@@ -68,7 +68,7 @@ class Api {
   }
 }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiaWF0IjoxNzQyMDkyNDM0LCJleHAiOjE3NDIxMTU2MDB9.r7ny_Szb3LyQ-v4rCFv8mbL1nh-uv3K-Dk9oT5K66ng";
+const token = "";
 const api = new Api();
 
 async function insereVencimentos() {
