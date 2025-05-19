@@ -1,6 +1,10 @@
 const Contrato = require('../models/Contrato');
 const Cliente = require('../models/Cliente');
 
+function valueWithTax(value, tax) {
+  return value + ((value * tax) / 100);
+}
+
 async function classifyCustomers() {
   try {
     console.log('[classifyCustomers] Iniciando classificação...');
