@@ -122,13 +122,9 @@ module.exports = {
       //   return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
       // }
 
-      const chagedStatus = status !== contrato.status;
-
       await Contrato.update({ id_cliente, id_produto, faturado, id_faturado, dia_vencimento, indice_reajuste, nome_indice, proximo_reajuste, status, duracao, valor_mensal, quantidade, descricao, data_inicio }, { where: { id: id } });
 
-      if (chagedStatus) {
-        await classifyCustomers();
-      }
+      await classifyCustomers();
 
       if (data_inicio || status || duracao) {
         const inicio = data_inicio ? new Date(data_inicio) : new Date(contrato.data_inicio);
