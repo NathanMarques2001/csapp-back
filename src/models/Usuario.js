@@ -24,13 +24,18 @@ class Usuario extends Model {
         },
         unique: true
       },
+      microsoft_oid: {
+        type: DataTypes.STRING(255),
+        allowNull: true,
+        unique: true
+      },
       tipo: {
         type: DataTypes.STRING,
         allowNull: false
       },
       senha: {
         type: DataTypes.STRING,
-        allowNull: false
+        allowNull: true
       },
       logado: DataTypes.BOOLEAN
     }, {
@@ -38,15 +43,18 @@ class Usuario extends Model {
       tableName: 'usuarios',
       hooks: {
         beforeCreate: (usuario) => {
-          const salt = bcrypt.genSaltSync();
-          usuario.senha = bcrypt.hashSync(usuario.senha, salt);
+          // Correto: só executa se houver uma senha para criptografar
+          if (usuario.senha) {
+            const salt = bcrypt.genSaltSync();
+            usuario.senha = bcrypt.hashSync(usuario.senha, salt);
+          }
         },
         beforeUpdate: async (usuario) => {
           if (usuario.changed('senha')) {
             const salt = await bcrypt.genSalt();
             usuario.senha = await bcrypt.hash(usuario.senha, salt);
           }
-        }        
+        }
       }
     });
   }

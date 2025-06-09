@@ -4,6 +4,7 @@ const router = express.Router();
 const authMiddleware = require('../middlewares/auth.js');
 
 router.post('/login', UsuarioController.login);
+router.post('/login-microsoft', UsuarioController.loginComMicrosoft);
 router.post('/', UsuarioController.store);
 router.use(authMiddleware);
 router.get('/', UsuarioController.indexAll);
