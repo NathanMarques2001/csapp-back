@@ -1,7 +1,7 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authConfig = require('C:\\Users\\natha\\dev\\scrts\\secret.json');
+const authConfig = require('C:\\Users\\nathan.brandao\\OneDrive - FUNDAFFEMG\\Documentos\\dev\\scrts\\secret.json');
 const jwksClient = require('jwks-rsa');
 
 function gerarToken(params = {}) {
@@ -9,9 +9,11 @@ function gerarToken(params = {}) {
   expireAt.setHours(6, 0, 0, 0); // Define a expiração para as 6h da manhã do dia seguinte
   expireAt.setDate(expireAt.getDate() + 1);
 
-  return jwt.sign(params, authConfig.secret, {
-    expiresIn: Math.floor(expireAt.getTime() / 1000) - Math.floor(Date.now() / 1000)
-  });
+  const payload = {
+    ...params,
+    amr: ["mfa"] // Authentication Methods Reference
+  };
+  return jwt.sign(payload, authConfig.secret, { expiresIn: '1d' });
 }
 
 module.exports = {
@@ -67,88 +69,26 @@ module.exports = {
     }
   },
 
-  async loginComMicrosoft(req, res) {
+  async loginComMicrosoftCallback(req, res) {
+    console.log('----------------------------------------------------');
+    console.log('[DEBUG] CHEGUEI NO CONTROLLER PARA GERAR O TOKEN!');
+    console.log('[DEBUG] Usuário processado pelo Passport:', req.user?.nome); // Usamos ?. para evitar erro se req.user for nulo
+    console.log('----------------------------------------------------');
+
     try {
-      // --- ETAPAS 1 e 2 (Validação do Token) permanecem as mesmas ---
-      const { microsoftToken } = req.body;
-      if (!microsoftToken) return res.status(400).send({ message: 'Token da Microsoft não fornecido.' });
+      // O 'req.user' é populado pela função 'done' do Passport.js
+      const usuario = req.user;
 
-      const getSigningKey = (header, callback) => {
-        // Cria um "cliente" que sabe onde encontrar as chaves da Microsoft
-        const client = jwksClient({
-          // Esta é a URL pública onde a Microsoft expõe as chaves para validação
-          jwksUri: `https://login.microsoftonline.com/75504aa9-e9ba-434e-9986-779973a88e37/discovery/v2.0/keys`
-        });
-
-        // Pega a chave específica (identificada pelo 'kid' no header do token)
-        client.getSigningKey(header.kid, (err, key) => {
-          if (err) {
-            return callback(err);
-          }
-          // Extrai a chave pública no formato correto
-          const signingKey = key.publicKey || key.rsaPublicKey;
-          // Retorna a chave para o `jwt.verify`
-          callback(null, signingKey);
-        });
-      };
-
-      const decodedToken = await new Promise((resolve, reject) => {
-        jwt.verify(microsoftToken, getSigningKey, {
-          audience: 'c6d8daf9-f254-4fd6-824d-11105e3f48e9',
-          issuer: `https://sts.windows.net/75504aa9-e9ba-434e-9986-779973a88e37/`
-        }, (err, decoded) => {
-          if (err) return reject(err);
-          resolve(decoded);
-        });
-      });
-
-      // --- ETAPA 3: NOVA LÓGICA DE VINCULAÇÃO DE CONTAS ---
-
-      // 1. Tenta encontrar o usuário pelo ID da Microsoft (caso de um usuário que já retornou)
-      let usuario = await Usuario.findOne({ where: { microsoft_oid: decodedToken.oid } });
-
-      if (!usuario) {
-        // Se NÃO encontrou pelo OID, pode ser a primeira vez com Microsoft. Vamos checar o e-mail.
-        console.log(`Usuário com OID ${decodedToken.oid} não encontrado. Verificando e-mail: ${decodedToken.preferred_username}`);
-
-        // 2. Tenta encontrar um usuário LOCAL já existente com o mesmo e-mail
-        usuario = await Usuario.findOne({ where: { email: decodedToken.preferred_username } });
-
-        if (usuario) {
-          // 3. ENCONTROU PELO E-MAIL! Vamos vincular a conta.
-          console.log(`Usuário com e-mail ${usuario.email} encontrado. Vinculando conta Microsoft.`);
-
-          // Atualiza o registro existente com o OID da Microsoft
-          await usuario.update({ microsoft_oid: decodedToken.oid });
-
-        } else {
-          // 4. Se não encontrou nem pelo OID nem pelo E-MAIL, é um usuário 100% novo.
-          console.log(`Nenhum usuário existente encontrado. Criando novo usuário.`);
-
-          // CRIA um novo usuário no seu banco
-          usuario = await Usuario.create({
-            nome: decodedToken.name,
-            email: decodedToken.preferred_username,
-            microsoft_oid: decodedToken.oid,
-            tipo: 'user',
-          });
-        }
-      }
-
-      // --- ETAPA FINAL (Gerar token da sua aplicação) ---
-      // Neste ponto, a variável 'usuario' sempre terá o registro correto (encontrado, vinculado ou criado)
-      await Usuario.update({ logado: true }, { where: { id: usuario.id } });
-      usuario.senha = undefined;
+      // Gera o token para o nosso sistema
       const token = gerarToken({ id: usuario.id });
-      return res.status(200).send({ message: 'Usuário logado com sucesso!', usuario, token });
+
+      // Redireciona o usuário de volta para o frontend com o token
+      // O frontend deve ter uma rota para capturar este token
+      return res.redirect(`http://localhost:3000/auth/callback?token=${token}`);
 
     } catch (error) {
-      // ... seu tratamento de erro
-      if (error.name === 'SequelizeUniqueConstraintError') {
-        return res.status(400).send({ message: 'Ocorreu um erro de vínculo. O e-mail já pode estar em uso.' });
-      }
-      console.error('Erro no login com Microsoft:', error);
-      return res.status(500).send({ message: 'Ocorreu um erro interno ao fazer login com a Microsoft.' });
+      console.error("Erro no callback do login Microsoft:", error);
+      return res.redirect('http://localhost:3000/login');
     }
   },
 

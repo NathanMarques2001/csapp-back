@@ -1,5 +1,7 @@
 require('./database');
 const express = require('express');
+const passport = require('passport');
+require('./config/passportConfig.js');
 const cors = require('cors');
 const usuarioRoutes = require('./routes/UsuariosRoutes.js');
 const produtoRoutes = require('./routes/ProdutosRoutes.js');
@@ -21,6 +23,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(passport.initialize());
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/produtos', produtoRoutes);
 app.use('/api/logs', logsRoutes);
