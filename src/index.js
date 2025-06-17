@@ -1,5 +1,6 @@
 require('./database');
 const express = require('express');
+const session = require('express-session');
 const passport = require('passport');
 require('./config/passportConfig.js');
 const cors = require('cors');
@@ -21,9 +22,23 @@ const vencimentoContratos = require('./routes/VencimentoContratosRoute.js');
 const port = 8080;
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
+
+app.use(session({
+  secret: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', // coloca algo seguro, de preferência variável de ambiente
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+    secure: false, // true se for HTTPS (produção)
+    maxAge: 60 * 60 * 1000 // 1 hora
+  }
+}));
+
 app.use(passport.initialize());
+app.use(passport.session());
+
 app.use('/api/usuarios', usuarioRoutes);
 app.use('/api/produtos', produtoRoutes);
 app.use('/api/logs', logsRoutes);

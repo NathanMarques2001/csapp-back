@@ -16,10 +16,14 @@ router.get('/login-microsoft',
 );
 
 // A rota de callback permanece a mesma:
-router.post('/login-microsoft/callback',
-    passport.authenticate('azuread-openidconnect', { failureRedirect: '/login-failure' }),
-    UsuarioController.loginComMicrosoftCallback
+router.post('/login-microsoft/callback', (req, res, next) => {
+  console.log('REQUISIÇÃO CHEGOU NO CALLBACK');
+  next();
+}, 
+passport.authenticate('azuread-openidconnect', { failureRedirect: '/login-failure' }),
+UsuarioController.loginComMicrosoftCallback
 );
+
 
 // Rota de falha genérica
 router.get('/login-failure', (req, res) => {

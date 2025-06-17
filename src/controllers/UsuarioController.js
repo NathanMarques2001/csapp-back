@@ -1,18 +1,22 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authConfig = require('C:\\Users\\nathan.brandao\\OneDrive - FUNDAFFEMG\\Documentos\\dev\\scrts\\secret.json');
+//const authConfig = require('C:\\Users\\nathan.brandao\\OneDrive - FUNDAFFEMG\\Documentos\\dev\\scrts\\secret.json');
+const authConfig = require('C:\\Users\\natha\\dev\\scrts\\secret.json');
 const jwksClient = require('jwks-rsa');
 
-function gerarToken(params = {}) {
+function gerarToken({ id, nome, tipo }) {
   const expireAt = new Date();
-  expireAt.setHours(6, 0, 0, 0); // Define a expiração para as 6h da manhã do dia seguinte
+  expireAt.setHours(6, 0, 0, 0);
   expireAt.setDate(expireAt.getDate() + 1);
 
   const payload = {
-    ...params,
-    amr: ["mfa"] // Authentication Methods Reference
+    id,
+    nome,
+    tipo,
+    amr: ["mfa"]
   };
+
   return jwt.sign(payload, authConfig.secret, { expiresIn: '1d' });
 }
 
@@ -57,7 +61,11 @@ module.exports = {
       // Lógica de sucesso...
       await Usuario.update({ logado: true }, { where: { id: usuario.id } });
       usuario.senha = undefined;
-      const token = gerarToken({ id: usuario.id });
+      const token = gerarToken({
+        id: usuario.id,
+        nome: usuario.nome,
+        tipo: usuario.tipo
+      });
 
       return res.status(200).send({
         message: 'Usuário logado com sucesso!',
@@ -78,9 +86,11 @@ module.exports = {
     try {
       // O 'req.user' é populado pela função 'done' do Passport.js
       const usuario = req.user;
-
-      // Gera o token para o nosso sistema
-      const token = gerarToken({ id: usuario.id });
+      const token = gerarToken({
+        id: usuario.id,
+        nome: usuario.nome,
+        tipo: usuario.tipo
+      });
 
       // Redireciona o usuário de volta para o frontend com o token
       // O frontend deve ter uma rota para capturar este token
