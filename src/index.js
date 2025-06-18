@@ -27,13 +27,15 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+app.set('trust proxy', 1);
+
 app.use(session({
   secret: authConfig.secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
-    secure: true, // true se for HTTPS (produção)
-    maxAge: 60 * 60 * 1000 // 1 hora
+    secure: true,
+    maxAge: 60 * 60 * 1000
   }
 }));
 
