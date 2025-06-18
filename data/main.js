@@ -71,11 +71,6 @@ class Api {
 const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQyMTY4MTkxLCJleHAiOjE3NDIyMDIwMDB9.HJdM6H2JbVpZbzPjTmCUH8_FINXgop9sy61DQQXTq5I";
 const api = new Api();
 
-// Função para fazer as requisições com intervalo
-async function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
 async function insereVencimentos() {
   let contratos = await api.get("/contratos");
   contratos = contratos.contratos;
@@ -94,9 +89,6 @@ async function insereVencimentos() {
       status: contrato.status,
       data_vencimento: dt_vencimento
     });
-
-    // Aguardar 1,5 segundos antes da próxima requisição
-    await delay(1500);
   }
   console.log("Vencimentos inseridos com sucesso!");
 }
@@ -107,9 +99,6 @@ async function ajustaReajuste() {
   for (let contrato of contratos) {
     console.log(`Contrato ${contrato.id} com índice de reajuste. Ajustando...`);
     await api.put(`/contratos/${contrato.id}`, { indice_reajuste: 0 });
-
-    // Aguardar 1,5 segundos antes da próxima requisição
-    await delay(1500);
   }
   console.log("Índices de reajuste ajustados com sucesso!");
 }
@@ -132,9 +121,6 @@ async function getContratosSemInicio() {
     if (!contrato.data_inicio) {
       contrato.data_inicio = formatDateToMySQL(new Date('1980-01-01T00:00:00Z'));
       await api.put(`/contratos/${contrato.id}`, { data_inicio: contrato.data_inicio });
-
-      // Aguardar 1,5 segundos antes da próxima requisição
-      await delay(1500);
     }
   }
 }
@@ -147,3 +133,96 @@ async function ajustaBanco() {
 }
 
 ajustaBanco().catch(console.error);
+/*
+uploadData();
+
+function uploadData() {
+  const api = new Api();
+
+  uploadSegments(api);
+  uploadFab(api);
+  uploadProducts(api);
+  uploadFaturados(api);
+  uploadClients(api);
+}
+
+function uploadFab(api) {
+  fs.readFile('./json/fabricantes.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo:', err);
+      return;
+    }
+
+    const fabricantes = JSON.parse(data);
+
+    // Manipule os dados aqui
+    fabricantes.forEach(async fabricante => {
+      await api.post("/fabricantes", fabricante);
+    });
+  });
+}
+
+function uploadProducts(api) {
+  fs.readFile('./json/produtos.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo:', err);
+      return;
+    }
+
+    const produtos = JSON.parse(data);
+
+    // Manipule os dados aqui
+    produtos.forEach(async produto => {
+      await api.post("/produtos", produto);
+    });
+  });
+}
+
+function uploadFaturados(api) {
+  fs.readFile('./json/faturados.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo:', err);
+      return;
+    }
+
+    const faturados = JSON.parse(data);
+
+    // Manipule os dados aqui
+    faturados.forEach(async faturado => {
+      await api.post("/faturados", faturado);
+    });
+  });
+}
+
+function uploadSegments(api) {
+  fs.readFile('./json/segmentos.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo:', err);
+      return;
+    }
+
+    const segmentos = JSON.parse(data);
+
+    // Manipule os dados aqui
+    segmentos.forEach(async segmento => {
+      await api.post("/segmentos", segmento);
+    });
+  });
+}
+
+function uploadClients(api) {
+  fs.readFile('./json/clientes.json', 'utf8', (err, data) => {
+    if (err) {
+      console.error('Erro ao ler o arquivo:', err);
+      return;
+    }
+
+    const clientes = JSON.parse(data);
+
+    // Manipule os dados aqui
+    clientes.forEach(async cliente => {
+      await api.post("/clientes", cliente);
+    });
+  });
+}
+*/

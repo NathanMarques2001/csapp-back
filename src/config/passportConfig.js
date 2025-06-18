@@ -1,7 +1,7 @@
 const passport = require('passport');
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
 const Usuario = require('../models/Usuario');
-const microsoftConfig = require('../../../scrt/secret.json').microsoft;
+const microsoftConfig = require('/var/www/scrt/secret.json').microsoft;
 
 passport.use(new OIDCStrategy({
     identityMetadata: microsoftConfig.identityMetadata,

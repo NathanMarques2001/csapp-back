@@ -1,7 +1,7 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const authConfig = require('../../../scrt/secret.json');
+const authConfig = require('/var/www/scrt/secret.json');
 const jwksClient = require('jwks-rsa');
 
 function gerarToken({ id, nome, tipo }) {
