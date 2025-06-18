@@ -2,7 +2,7 @@ require('./database');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
-const authConfig = require('../../scrts/secret.json');
+const authConfig = require('../../scrt/secret.json');
 require('./config/passportConfig.js');
 const cors = require('cors');
 const usuarioRoutes = require('./routes/UsuariosRoutes.js');
