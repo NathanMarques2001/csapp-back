@@ -18,6 +18,10 @@ passport.use(new OIDCStrategy({
     passReqToCallback: false
 },
     async (iss, sub, profile, accessToken, refreshToken, done) => {
+        console.log('----------------------------------------------------');
+        console.log('[DEBUG] CHEGUEI NO CALLBACK DO PASSPORT!');
+        console.log('[DEBUG] Perfil recebido da Microsoft:', profile);
+        console.log('----------------------------------------------------');
         if (!profile.oid) {
             return done(new Error("No OID found in profile"), null);
         }

@@ -77,6 +77,10 @@ module.exports = {
   },
 
   async loginComMicrosoftCallback(req, res) {
+    console.log('----------------------------------------------------');
+    console.log('[DEBUG] CHEGUEI NO CONTROLLER PARA GERAR O TOKEN!');
+    console.log('[DEBUG] Usuário processado pelo Passport:', req.user?.nome); // Usamos ?. para evitar erro se req.user for nulo
+    console.log('----------------------------------------------------');
     try {
       // O 'req.user' é populado pela função 'done' do Passport.js
       const usuario = req.user;
