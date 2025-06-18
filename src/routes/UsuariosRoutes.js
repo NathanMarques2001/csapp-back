@@ -9,19 +9,17 @@ router.post('/', UsuarioController.store);
 
 // 1. Rota de início: O frontend redireciona o usuário para cá
 router.get('/login-microsoft',
-    passport.authenticate('azuread-openidconnect', { 
-        prompt: 'select_account', 
-        failureRedirect: '/login-failure' 
+    passport.authenticate('azuread-openidconnect', {
+        prompt: 'select_account',
+        failureRedirect: '/login-failure'
     })
 );
 
-// A rota de callback permanece a mesma:
 router.post('/login-microsoft/callback', (req, res, next) => {
-  console.log('REQUISIÇÃO CHEGOU NO CALLBACK');
-  next();
-}, 
-passport.authenticate('azuread-openidconnect', { failureRedirect: '/login-failure' }),
-UsuarioController.loginComMicrosoftCallback
+    next();
+},
+    passport.authenticate('azuread-openidconnect', { failureRedirect: '/login-failure' }),
+    UsuarioController.loginComMicrosoftCallback
 );
 
 

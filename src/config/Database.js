@@ -1,28 +1,33 @@
 const fs = require('fs');
 const path = require('path');
 
-//const secretsPath = path.join('C:\\Users\\NATHAN.BRANDAO\\Documents\\dev\\scrts\\db.json');
+const secretsPath = path.join('../../../scrts/secret.json');
 
-// function loadSecrets() {
-//   try {
-//     const rawData = fs.readFileSync(secretsPath, 'utf8');
-//     return JSON.parse(rawData);
-//   } catch (error) {
-//     console.error('Erro ao carregar secrets.json:', error.message);
-//     process.exit(1);
-//   }
-// }
+function loadSecrets() {
+  try {
+    const rawData = fs.readFileSync(secretsPath, 'utf8');
+    return JSON.parse(rawData);
+  } catch (error) {
+    console.error('Erro ao carregar secrets.json:', error.message);
+    process.exit(1);
+  }
+}
 
-// const secrets = loadSecrets();
+const secrets = loadSecrets();
 
 module.exports = {
-  host: "localhost",
-  dialect: 'mysql',
-  username: "root",
-  password: "admin",
-  database: "sistema_gerenciamento_contratos",
+  host: secrets.DB_HOST,
+  dialect: "mysql",
+  username: secrets.DB_USER,
+  password: secrets.DB_PASS,
+  database: secrets.DB_NAME,
+  timezone: '-03:00',
+  dialectOptions: {
+    useUTC: false,
+    timezone: 'America/Sao_Paulo',
+  },
   define: {
     timestamps: true,
     underscored: true,
   },
-}
+};

@@ -1,7 +1,7 @@
 const passport = require('passport');
 const OIDCStrategy = require('passport-azure-ad').OIDCStrategy;
 const Usuario = require('../models/Usuario');
-const microsoftConfig = require('C:\\Users\\natha\\dev\\scrts\\secret.json').microsoft;
+const microsoftConfig = require('../../../scrts/secret.json').microsoft;
 
 passport.use(new OIDCStrategy({
     identityMetadata: microsoftConfig.identityMetadata,
@@ -18,11 +18,6 @@ passport.use(new OIDCStrategy({
     passReqToCallback: false
 },
     async (iss, sub, profile, accessToken, refreshToken, done) => {
-        console.log('----------------------------------------------------');
-        console.log('[DEBUG] CHEGUEI NO CALLBACK DO PASSPORT!');
-        console.log('[DEBUG] Perfil recebido da Microsoft:', profile._json.preferred_username);
-        console.log('----------------------------------------------------');
-
         if (!profile.oid) {
             return done(new Error("No OID found in profile"), null);
         }

@@ -1,8 +1,7 @@
 const Usuario = require('../models/Usuario.js');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-//const authConfig = require('C:\\Users\\nathan.brandao\\OneDrive - FUNDAFFEMG\\Documentos\\dev\\scrts\\secret.json');
-const authConfig = require('C:\\Users\\natha\\dev\\scrts\\secret.json');
+const authConfig = require('../../../scrts/secret.json');
 const jwksClient = require('jwks-rsa');
 
 function gerarToken({ id, nome, tipo }) {
@@ -78,11 +77,6 @@ module.exports = {
   },
 
   async loginComMicrosoftCallback(req, res) {
-    console.log('----------------------------------------------------');
-    console.log('[DEBUG] CHEGUEI NO CONTROLLER PARA GERAR O TOKEN!');
-    console.log('[DEBUG] Usuário processado pelo Passport:', req.user?.nome); // Usamos ?. para evitar erro se req.user for nulo
-    console.log('----------------------------------------------------');
-
     try {
       // O 'req.user' é populado pela função 'done' do Passport.js
       const usuario = req.user;
@@ -92,13 +86,11 @@ module.exports = {
         tipo: usuario.tipo
       });
 
-      // Redireciona o usuário de volta para o frontend com o token
-      // O frontend deve ter uma rota para capturar este token
-      return res.redirect(`http://localhost:3000/auth/callback?token=${token}`);
+      return res.redirect(`https://csapp.prolinx.com.br/auth/callback?token=${token}`);
 
     } catch (error) {
       console.error("Erro no callback do login Microsoft:", error);
-      return res.redirect('http://localhost:3000/login');
+      return res.redirect('https://csapp.prolinx.com.br/login');
     }
   },
 

@@ -2,6 +2,7 @@ require('./database');
 const express = require('express');
 const session = require('express-session');
 const passport = require('passport');
+const authConfig = require('../../scrts/secret.json');
 require('./config/passportConfig.js');
 const cors = require('cors');
 const usuarioRoutes = require('./routes/UsuariosRoutes.js');
@@ -27,11 +28,11 @@ app.use(express.json());
 app.use(cors());
 
 app.use(session({
-  secret: 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', // coloca algo seguro, de preferência variável de ambiente
+  secret: authConfig.secret,
   resave: false,
   saveUninitialized: true,
   cookie: {
-    secure: false, // true se for HTTPS (produção)
+    secure: true, // true se for HTTPS (produção)
     maxAge: 60 * 60 * 1000 // 1 hora
   }
 }));
