@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const secretsPath = path.join('/var/www/scrt/secret.json');
+const secretsPath = path.join('/var/www/scrt/db.json');
 
 function loadSecrets() {
   try {
