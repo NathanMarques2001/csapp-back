@@ -48,7 +48,7 @@ passport.use(new OIDCStrategy({
                 nome: nome,
                 email: email,
                 microsoft_oid: microsoftOid,
-                tipo: 'user',
+                tipo: 'usuario',
                 senha: null
             });
             return done(null, novoUsuario);
