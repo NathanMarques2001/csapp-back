@@ -59,5 +59,7 @@ app.use('/api/vencimento-contratos', vencimentoContratos);
 
 
 app.listen(port, () => {
-  console.log(`Servidor rodando na porta ${port}`);
+  const agora = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
+  console.log(`🚀 Servidor rodando na porta ${port}`);
+  console.log(`🕒 Iniciado em: ${agora}`);
 });
