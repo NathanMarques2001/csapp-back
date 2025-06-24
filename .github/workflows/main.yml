@@ -1,0 +1,28 @@
+name: Deploy CSApp back-end
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: SSH + PM2 restart
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout código (opcional)
+        uses: actions/checkout@v4
+
+      - name: Conectar no servidor e atualizar API
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          script: |
+            cd /var/www/csapp/csapp-back
+            sudo git pull
+            sudo pm2 restart api
+            sudo pm2 save
+            exit
