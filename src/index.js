@@ -62,7 +62,6 @@ app.use('/api/grupos-economicos', gruposEconomicosRoutes);
 
 app.listen(port, () => {
   const agora = new Date().toLocaleString('pt-BR', { timeZone: 'America/Sao_Paulo' });
-  console.log(`🚀 Servidor rodando na porta ${port}`);
-  console.log(`🕒 Iniciado em: ${agora}`);
-  console.log(`-------------------------`);
+  console.log(`Servidor rodando na porta ${port}`);
+  console.log(`Iniciado em: ${agora}`);
 });
