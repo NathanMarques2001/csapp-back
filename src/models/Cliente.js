@@ -92,7 +92,8 @@ class Cliente extends Model {
       gestor_financeiro_email: DataTypes.STRING,
       gestor_financeiro_nascimento: DataTypes.STRING,
       gestor_financeiro_telefone_1: DataTypes.STRING,
-      gestor_financeiro_telefone_2: DataTypes.STRING
+      gestor_financeiro_telefone_2: DataTypes.STRING,
+      id_grupo_economico: DataTypes.INTEGER
     }, {
       sequelize,
       tableName: 'clientes'
@@ -106,6 +107,7 @@ class Cliente extends Model {
     this.hasMany(models.FatosImportantes, { foreignKey: 'id_cliente', as: 'fatos_importantes' });
     this.belongsTo(models.Usuario, { foreignKey: 'id_usuario', as: 'usuarios' });
     this.belongsTo(models.Segmento, { foreignKey: 'id_segmento', as: 'segmentos' });
+    this.belongsTo(models.GrupoEconomico, { foreignKey: 'id_grupo_economico', as: 'grupos_economicos' });
   }
 
 }
