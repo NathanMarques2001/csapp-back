@@ -1,8 +1,16 @@
+'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Buscar IDs reais dos clientes para garantir foreign key válida
+    const clientes = await queryInterface.sequelize.query(
+      'SELECT id FROM clientes',
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const clienteIds = clientes.map(c => c.id);
+
     const fatosImportantes = [];
-    const numFatos = 200;  // Número de fatos importantes a serem inseridos
-    const numClientes = 50;  // Supondo que você tenha 50 clientes
+    const numFatos = 200;
 
     const conteudos = [
       'Reunião de estratégia realizada com sucesso.',
@@ -17,10 +25,10 @@ module.exports = {
       'Reunião para discutir aumento de orçamento.'
     ];
 
-    for (let i = 1; i <= numFatos; i++) {
+    for (let i = 0; i < numFatos; i++) {
       fatosImportantes.push({
-        id_cliente: (i % numClientes) + 1,  // Alternando entre clientes
-        conteudo: conteudos[i % conteudos.length],  // Alternando entre os conteúdos fornecidos no array conteudos
+        id_cliente: clienteIds[i % clienteIds.length], // usa IDs reais do banco
+        conteudo: conteudos[i % conteudos.length],
         created_at: new Date(),
         updated_at: new Date()
       });

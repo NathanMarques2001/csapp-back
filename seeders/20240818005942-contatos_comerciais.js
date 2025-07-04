@@ -1,8 +1,16 @@
+'use strict';
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
+    // Busca os IDs reais dos clientes
+    const clientes = await queryInterface.sequelize.query(
+      'SELECT id FROM clientes',
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const clienteIds = clientes.map(c => c.id);
+
     const contatosComerciais = [];
-    const numContatos = 300;  // Número de contatos comerciais a serem inseridos
-    const numClientes = 50;  // Supondo que você tenha 50 clientes
+    const numContatos = 300;
 
     const conteudos = [
       'Consulta sobre o contrato de manutenção',
@@ -17,10 +25,10 @@ module.exports = {
       'Feedback sobre o serviço recebido'
     ];
 
-    for (let i = 1; i <= numContatos; i++) {
+    for (let i = 0; i < numContatos; i++) {
       contatosComerciais.push({
-        id_cliente: (i % numClientes) + 1,  // Alternando entre clientes
-        conteudo: conteudos[i % conteudos.length],  // Alternando entre os conteúdos fornecidos no array conteudos
+        id_cliente: clienteIds[i % clienteIds.length], // usa IDs reais
+        conteudo: conteudos[i % conteudos.length],
         created_at: new Date(),
         updated_at: new Date()
       });

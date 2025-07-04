@@ -1,6 +1,75 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    const clientes = [];
+    const now = new Date();
+
+    // Primeiro insere os grupos econômicos
+    const grupos = [
+      {
+        nome: 'Grupo Alfa',
+        id_usuario: 1,
+        nps: 9,
+        id_segmento: 1,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      },
+      {
+        nome: 'Grupo Beta',
+        id_usuario: 2,
+        nps: 7,
+        id_segmento: 2,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      },
+      {
+        nome: 'Grupo Gama',
+        id_usuario: 3,
+        nps: 6,
+        id_segmento: 3,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      },
+      {
+        nome: 'Grupo Delta',
+        id_usuario: 4,
+        nps: 8,
+        id_segmento: 4,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      },
+      {
+        nome: 'Grupo Ômega',
+        id_usuario: 5,
+        nps: 10,
+        id_segmento: 5,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      },
+      {
+        nome: 'Grupo Lambda',
+        id_usuario: 5,
+        nps: 10,
+        id_segmento: 3,
+        status: 'ativo',
+        created_at: now,
+        updated_at: now
+      }
+    ];
+
+    await queryInterface.bulkInsert('grupos_economicos', grupos, {});
+
+    // Recupera os grupos do banco após inserção
+    const gruposInseridos = await queryInterface.sequelize.query(
+      'SELECT id FROM grupos_economicos',
+      { type: Sequelize.QueryTypes.SELECT }
+    );
+    const grupoIds = gruposInseridos.map(g => g.id);
+
+    // CPF/CNPJ fictícios
     const cpfsCnpjs = [
       '679.205.940-50', '891.304.720-80', '014.916.480-29', '149.714.020-90', '796.305.410-33',
       '057.914.620-18', '398.762.950-65', '238.289.180-04', '207.790.990-11', '394.496.760-60',
@@ -14,14 +83,22 @@ module.exports = {
       '184.228.920-33', '258.763.110-45', '799.440.950-55', '337.216.340-77', '943.318.750-22'
     ];
 
+    // Gera 50 clientes com os grupos reais
+    const clientes = [];
+
     for (let i = 1; i <= 50; i++) {
-      const cliente = {
+      clientes.push({
         razao_social: `Razao Social ${i}`,
         nome_fantasia: `Nome Fantasia ${i}`,
         cpf_cnpj: cpfsCnpjs[i - 1],
-        id_usuario: i % 10 + 1,  // Assume que existem pelo menos 10 usuários, alternando IDs de 1 a 10
-        nps: null,
-        data_criacao: new Date(),
+        id_grupo_economico: grupoIds[i % grupoIds.length],
+        tipo_unidade: i % 2 === 0 ? 'filial' : 'matriz',
+        status: 'ativo',
+        tipo: 'c',
+        data_criacao: now,
+        created_at: now,
+        updated_at: now,
+        // Gestores
         gestor_contratos_nome: `Gestor Contratos ${i}`,
         gestor_contratos_email: `gestor.contratos${i}@example.com`,
         gestor_contratos_nascimento: '1980-01-01',
@@ -36,15 +113,8 @@ module.exports = {
         gestor_financeiro_email: `gestor.financeiro${i}@example.com`,
         gestor_financeiro_nascimento: '1980-01-01',
         gestor_financeiro_telefone_1: `+55000000000${i}`,
-        gestor_financeiro_telefone_2: null,
-        id_segmento: i % 10 + 1,  // Assume que existem pelo menos 10 segmentos
-        status: 'ativo',
-        created_at: new Date(),
-        updated_at: new Date(),
-        tipo: 'c'
-      };
-
-      clientes.push(cliente);
+        gestor_financeiro_telefone_2: null
+      });
     }
 
     await queryInterface.bulkInsert('clientes', clientes, {});
@@ -52,5 +122,6 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.bulkDelete('clientes', null, {});
+    await queryInterface.bulkDelete('grupos_economicos', null, {});
   }
 };
