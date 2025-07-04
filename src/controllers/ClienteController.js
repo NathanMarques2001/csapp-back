@@ -53,21 +53,21 @@ module.exports = {
     }
   },
 
-  async indexVendedor(req, res) {
-    try {
-      const { id } = req.params;
-      const clientes = await Cliente.findAll({ where: { id_usuario: id } });
+  // async indexVendedor(req, res) {
+  //   try {
+  //     const { id } = req.params;
+  //     const clientes = await Cliente.findAll({ where: { id_usuario: id } });
 
-      if (clientes.length == 0) {
-        return res.status(404).send({ message: 'Nenhum cliente cadastrado!' });
-      }
+  //     if (clientes.length == 0) {
+  //       return res.status(404).send({ message: 'Nenhum cliente cadastrado!' });
+  //     }
 
-      return res.status(200).send({ clientes });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao buscar os clientes.' });
-    }
-  },
+  //     return res.status(200).send({ clientes });
+  //   } catch (error) {
+  //     console.error(error);
+  //     return res.status(500).send({ message: 'Ocorreu um erro ao buscar os clientes.' });
+  //   }
+  // },
 
   async indexAll(req, res) {
     try {
@@ -131,10 +131,6 @@ module.exports = {
 
       const containsLetters = /[a-zA-Z]/;
 
-      if (isNaN(nps)) {
-        return res.status(400).send({ message: 'O campo NPS deve conter apenas números.' });
-      }
-
       const data_criacao = formatDate(new Date());
       const tipo = "c";
 
@@ -166,10 +162,6 @@ module.exports = {
       if (validationError) return validationError;
 
       const containsLetters = /[a-zA-Z]/;
-
-      if (isNaN(nps)) {
-        return res.status(400).send({ message: 'O campo NPS deve conter apenas números.' });
-      }
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
       await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status, id_grupo_economico, tipo_unidade }, { where: { id: id } });

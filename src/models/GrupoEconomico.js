@@ -41,7 +41,7 @@ class GrupoEconomico extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Cliente, { foreignKey: 'id_grupo_segmento', as: 'clientes' });
+    this.hasMany(models.Cliente, { foreignKey: 'id_grupo_economico', as: 'clientes' });
     this.belongsTo(models.Usuario, { foreignKey: 'id_usuario', as: 'usuarios' });
   }
 
