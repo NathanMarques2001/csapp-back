@@ -1,88 +1,25 @@
 const Cliente = require('../models/Cliente');
 const Contrato = require('../models/Contrato');
 const classifyCustomers = require('../utils/classifyCustomers');
+const { cpf, cnpj } = require('cpf-cnpj-validator');
 
 const EXCEPTION_LIST = [
   "38532573000175" // ITA ALIMENTOS
 ];
 
-function validateCPF(cpf) {
-  cpf = cpf.replaceAll(".", "").replace("-", "");
-
-  if (cpf.length !== 11) {
-    console.log("FORMATO DE CPF INVALIDO!");
-    return false;
-  }
-
-  if (/^(\d)\1+$/.test(cpf)) {
-    console.log("FORMATO DE CPF INVALIDO!");
-    return false;
-  }
-
-  const cpfArray = cpf.split('').map(Number);
-
-  function calcularDigito(cpfParcial, pesos) {
-    const soma = cpfParcial.reduce((acc, digit, idx) => acc + digit * pesos[idx], 0);
-    const resto = soma % 11;
-    return resto < 2 ? 0 : 11 - resto;
-  }
-
-  const pesos1 = [10, 9, 8, 7, 6, 5, 4, 3, 2];
-  const pesos2 = [11, 10, 9, 8, 7, 6, 5, 4, 3, 2];
-
-  const primeiroDigito = calcularDigito(cpfArray.slice(0, 9), pesos1);
-  const segundoDigito = calcularDigito(cpfArray.slice(0, 9).concat(primeiroDigito), pesos2);
-
-  return primeiroDigito === cpfArray[9] && segundoDigito === cpfArray[10];
-}
-
-
-function validateCNPJ(cnpj) {
-  cnpj = cnpj.replaceAll(".", "").replaceAll("/", "").replace("-", "");
-
-  if (cnpj.length !== 14) {
-    console.log("FORMATO DE CNPJ INVALIDO!");
-    return false;
-  }
-
-  if (/^(\d)\1+$/.test(cnpj)) {
-    console.log("FORMATO DE CNPJ INVALIDO!");
-    return false;
-  }
-
-  const cnpjArray = cnpj.split('').map(Number);
-
-  function calcularDigito(cnpjParcial, pesos) {
-    const soma = cnpjParcial.reduce((acc, digit, idx) => acc + digit * pesos[idx], 0);
-    const resto = soma % 11;
-    return resto < 2 ? 0 : 11 - resto;
-  }
-
-  const pesos1 = [5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-  const pesos2 = [6, 5, 4, 3, 2, 9, 8, 7, 6, 5, 4, 3, 2];
-
-  const primeiroDigito = calcularDigito(cnpjArray.slice(0, 12), pesos1);
-  const segundoDigito = calcularDigito(cnpjArray.slice(0, 12).concat(primeiroDigito), pesos2);
-
-  return primeiroDigito === cnpjArray[12] && segundoDigito === cnpjArray[13];
-}
-
-
 function validateCPFOrCNPJ(cpf_cnpj, res) {
-  cpf_cnpj = cpf_cnpj.replaceAll(".", "").replaceAll("/", "").replace("-", "");
+  const documento = cpf_cnpj.replace(/[^\d]/g, '');
 
-  if (!EXCEPTION_LIST.includes(cpf_cnpj)) {
-    if (cpf_cnpj.length === 11) {
-      if (!validateCPF(cpf_cnpj)) {
-        return res.status(400).send({ message: 'CPF inválido!' });
-      }
-    } else if (cpf_cnpj.length === 14) {
-      if (!validateCNPJ(cpf_cnpj)) {
-        return res.status(400).send({ message: 'CNPJ inválido!' });
-      }
-    } else {
-      return res.status(400).send({ message: 'CPF/CNPJ inválido!' });
-    }
+  if (EXCEPTION_LIST.includes(documento)) return;
+
+  const isValid =
+    (documento.length === 11 && cpf.isValid(documento)) ||
+    (documento.length === 14 && cnpj.isValid(documento));
+
+  if (!isValid) {
+    return res.status(400).send({
+      message: documento.length === 11 ? 'CPF inválido!' : 'CNPJ inválido!'
+    });
   }
 }
 
@@ -187,7 +124,7 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 } = req.body;
+      const { razao_social, nome_fantasia, cpf_cnpj, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, id_grupo_economico, tipo_unidade } = req.body;
 
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
@@ -201,7 +138,7 @@ module.exports = {
       const data_criacao = formatDate(new Date());
       const tipo = "c";
 
-      const cliente = await Cliente.create({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, tipo, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2 });
+      const cliente = await Cliente.create({ razao_social, nome_fantasia, cpf_cnpj, tipo, data_criacao, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, id_grupo_economico, tipo_unidade });
 
       return res.status(201).send({
         message: 'Cliente criado com sucesso!',
@@ -215,7 +152,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status } = req.body;
+      const { razao_social, nome_fantasia, cpf_cnpj, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status, id_grupo_economico, tipo_unidade } = req.body;
       const { id } = req.params;
 
       const cliente = await Cliente.findByPk(id);
@@ -235,7 +172,7 @@ module.exports = {
       }
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
-      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, id_usuario, nps, id_segmento, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status }, { where: { id: id } });
+      await Cliente.update({ razao_social, nome_fantasia, cpf_cnpj, gestor_contratos_nome, gestor_contratos_email, gestor_contratos_nascimento, gestor_contratos_telefone_1, gestor_contratos_telefone_2, gestor_chamados_nome, gestor_chamados_email, gestor_chamados_nascimento, gestor_chamados_telefone_1, gestor_chamados_telefone_2, gestor_financeiro_nome, gestor_financeiro_email, gestor_financeiro_nascimento, gestor_financeiro_telefone_1, gestor_financeiro_telefone_2, status, id_grupo_economico, tipo_unidade }, { where: { id: id } });
 
       return res.status(200).send({ message: 'Cliente atualizado com sucesso!' });
     } catch (error) {

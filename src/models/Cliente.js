@@ -29,27 +29,9 @@ class Cliente extends Model {
         allowNull: false,
         unique: true
       },
-      id_usuario: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-      },
-      nps: {
-        type: DataTypes.INTEGER,
-        validate: {
-          min: {
-            args: [0],
-            msg: 'O NPS mínimo é 0'
-          },
-          max: {
-            args: [10],
-            msg: 'O NPS máximo é 10'
-          }
-        }
-      },
-      id_segmento: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-      },
+      id_usuario: DataTypes.INTEGER,
+      nps: DataTypes.INTEGER,
+      id_segmento: DataTypes.INTEGER,
       status: {
         type: DataTypes.ENUM,
         values: ['ativo', 'inativo']
@@ -93,7 +75,13 @@ class Cliente extends Model {
       gestor_financeiro_nascimento: DataTypes.STRING,
       gestor_financeiro_telefone_1: DataTypes.STRING,
       gestor_financeiro_telefone_2: DataTypes.STRING,
-      id_grupo_economico: DataTypes.INTEGER
+      id_grupo_economico: DataTypes.INTEGER,
+      tipo_unidade: {
+        type: DataTypes.ENUM,
+        values: ['matriz', 'filial'],
+        allowNull: false,
+        defaultValue: 'matriz'
+      }
     }, {
       sequelize,
       tableName: 'clientes'
