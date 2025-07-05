@@ -7,14 +7,14 @@ module.exports = {
         nome: `Fabricante${i}`,
         created_at: new Date(),
         updated_at: new Date(),
-        status: 'ativo'
+        status: "ativo",
       });
     }
 
-    return queryInterface.bulkInsert('fabricantes', fabricantes, {});
+    return queryInterface.bulkInsert("fabricantes", fabricantes, {});
   },
 
   down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete('fabricantes', null, {});
-  }
+    return queryInterface.bulkDelete("fabricantes", null, {});
+  },
 };

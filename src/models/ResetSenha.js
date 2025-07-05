@@ -1,25 +1,28 @@
-const { Model, DataTypes } = require('sequelize');
-const { v4: uuidv4 } = require('uuid');
+const { Model, DataTypes } = require("sequelize");
+const { v4: uuidv4 } = require("uuid");
 
 class ResetSenha extends Model {
   static init(sequelize) {
-    super.init({
-      hash: {
-        type: DataTypes.STRING,
-        allowNull: true
+    super.init(
+      {
+        hash: {
+          type: DataTypes.STRING,
+          allowNull: true,
+        },
+        id_usuario: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        expires_at: {
+          type: DataTypes.DATE,
+          allowNull: true,
+        },
       },
-      id_usuario: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
+      {
+        sequelize,
+        tableName: "reset_senha",
       },
-      expires_at: {
-        type: DataTypes.DATE,
-        allowNull: true
-      }
-    }, {
-      sequelize,
-      tableName: 'reset_senha'
-    });
+    );
 
     this.beforeCreate((hashReset) => {
       hashReset.hash = uuidv4();
@@ -28,7 +31,10 @@ class ResetSenha extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Usuario, { foreignKey: 'id_usuario', as: 'usuarios' });
+    this.belongsTo(models.Usuario, {
+      foreignKey: "id_usuario",
+      as: "usuarios",
+    });
   }
 }
 

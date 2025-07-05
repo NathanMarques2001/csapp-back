@@ -13,4 +13,4 @@ async function reajustaContratos() {
   }
 }
 
-reajustaContratos().then(contratos => console.log(contratos));
+reajustaContratos().then((contratos) => console.log(contratos));

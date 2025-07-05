@@ -1,38 +1,38 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
-    return queryInterface.createTable('contatos_comerciais', {
+    return queryInterface.createTable("contatos_comerciais", {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
-        allowNull: false
+        allowNull: false,
       },
       id_cliente: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
-          model: 'clientes',
-          key: 'id'
+          model: "clientes",
+          key: "id",
         },
-        onUpdate: 'CASCADE',
-        onDelete: 'CASCADE'
+        onUpdate: "CASCADE",
+        onDelete: "CASCADE",
       },
       conteudo: {
         type: Sequelize.TEXT,
-        allowNull: false
+        allowNull: false,
       },
       created_at: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updated_at: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
 
   async down(queryInterface, Sequelize) {
-    return queryInterface.dropTable('contatos_comerciais');
-  }
+    return queryInterface.dropTable("contatos_comerciais");
+  },
 };

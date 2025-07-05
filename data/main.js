@@ -8,7 +8,7 @@ class Api {
     this.api = axios.create({
       baseURL: Api.baseUrl,
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     });
 
@@ -16,14 +16,14 @@ class Api {
     this.api.interceptors.request.use(
       (config) => {
         if (token) {
-          config.headers['Authorization'] = `Bearer ${token}`;
+          config.headers["Authorization"] = `Bearer ${token}`;
         }
 
         return config;
       },
       (error) => {
         return Promise.reject(error);
-      }
+      },
     );
   }
 
@@ -68,7 +68,8 @@ class Api {
   }
 }
 
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQyMTY4MTkxLCJleHAiOjE3NDIyMDIwMDB9.HJdM6H2JbVpZbzPjTmCUH8_FINXgop9sy61DQQXTq5I";
+const token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiaWF0IjoxNzQyMTY4MTkxLCJleHAiOjE3NDIyMDIwMDB9.HJdM6H2JbVpZbzPjTmCUH8_FINXgop9sy61DQQXTq5I";
 const api = new Api();
 
 async function insereVencimentos() {
@@ -87,7 +88,7 @@ async function insereVencimentos() {
     await api.post("/vencimento-contratos", {
       id_contrato: contrato.id,
       status: contrato.status,
-      data_vencimento: dt_vencimento
+      data_vencimento: dt_vencimento,
     });
   }
   console.log("Vencimentos inseridos com sucesso!");
@@ -105,22 +106,28 @@ async function ajustaReajuste() {
 
 function formatDateToMySQL(date) {
   const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, '0');
-  const day = String(date.getDate()).padStart(2, '0');
-  const hours = String(date.getHours()).padStart(2, '0');
-  const minutes = String(date.getMinutes()).padStart(2, '0');
-  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  const hours = String(date.getHours()).padStart(2, "0");
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const seconds = String(date.getSeconds()).padStart(2, "0");
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
 async function getContratosSemInicio() {
   let contratos = await api.get("/contratos");
   contratos = contratos.contratos;
-  const contratosSemInicio = contratos.filter(contrato => !contrato.data_inicio);
+  const contratosSemInicio = contratos.filter(
+    (contrato) => !contrato.data_inicio,
+  );
   for (let contrato of contratosSemInicio) {
     if (!contrato.data_inicio) {
-      contrato.data_inicio = formatDateToMySQL(new Date('1980-01-01T00:00:00Z'));
-      await api.put(`/contratos/${contrato.id}`, { data_inicio: contrato.data_inicio });
+      contrato.data_inicio = formatDateToMySQL(
+        new Date("1980-01-01T00:00:00Z"),
+      );
+      await api.put(`/contratos/${contrato.id}`, {
+        data_inicio: contrato.data_inicio,
+      });
     }
   }
 }

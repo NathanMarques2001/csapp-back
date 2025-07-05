@@ -1,7 +1,12 @@
 import axios from "axios";
 import Email from "../services/email.js";
 
-function MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome) {
+function MailAvisoVencimento(
+  clienteNome,
+  clienteCNPJ,
+  vencimento,
+  vendedorNome,
+) {
   const subject = `🚨 O contrato do cliente ${clienteNome} vence em breve!`;
   const text = `Olá, ${vendedorNome},\n\nO contrato do seu cliente ${clienteNome} (CNPJ: ${clienteCNPJ}) vence em ${vencimento}.\n\nEntre em contato com ele para verificar a renovação e garantir a continuidade do serviço.\n\nAtenção para não perder o prazo!\n\n(Envio Automático CSApp)`;
   const html = `<!DOCTYPE html>
@@ -59,8 +64,8 @@ function MailAvisoVencimento(clienteNome, clienteCNPJ, vencimento, vendedorNome)
 }
 
 function formatDateToDDMMYYYY(date) {
-  const day = String(date.getDate()).padStart(2, '0');
-  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, "0");
+  const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = date.getFullYear();
 
   return `${day}/${month}/${year}`;
@@ -78,13 +83,27 @@ async function lembreteVencimento() {
       const emailService = new Email();
 
       for (const contratoVencimento of vencimentos) {
-        const responseVencimento = await axios.get(`${url}/api/vencimento-contratos/email/${contratoVencimento.id_contrato}`);
+        const responseVencimento = await axios.get(
+          `${url}/api/vencimento-contratos/email/${contratoVencimento.id_contrato}`,
+        );
 
-        const { cliente_nome: clienteNome, cliente_cnpj: clienteCNPJ, usuario_nome: vendedorNome, usuario_email: vendedorEmail } = responseVencimento.data;
+        const {
+          cliente_nome: clienteNome,
+          cliente_cnpj: clienteCNPJ,
+          usuario_nome: vendedorNome,
+          usuario_email: vendedorEmail,
+        } = responseVencimento.data;
 
-        const formattedVencimento = formatDateToDDMMYYYY(new Date(contratoVencimento.data_vencimento));
+        const formattedVencimento = formatDateToDDMMYYYY(
+          new Date(contratoVencimento.data_vencimento),
+        );
 
-        const mailAviso = MailAvisoVencimento(clienteNome, clienteCNPJ, formattedVencimento, vendedorNome);
+        const mailAviso = MailAvisoVencimento(
+          clienteNome,
+          clienteCNPJ,
+          formattedVencimento,
+          vendedorNome,
+        );
 
         const emailData = {
           to: vendedorEmail,
@@ -94,7 +113,9 @@ async function lembreteVencimento() {
         };
 
         await emailService.sendEmail(emailData);
-        console.log(`E-mail enviado para ${vendedorEmail} sobre o contrato de ${clienteNome}.`);
+        console.log(
+          `E-mail enviado para ${vendedorEmail} sobre o contrato de ${clienteNome}.`,
+        );
       }
     } else {
       console.log("Nenhum contrato vencendo hoje.");

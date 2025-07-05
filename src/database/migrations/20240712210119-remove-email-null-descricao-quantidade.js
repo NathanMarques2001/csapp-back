@@ -1,35 +1,35 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.removeColumn('contratos', 'email_envio');
+    await queryInterface.removeColumn("contratos", "email_envio");
 
-    await queryInterface.changeColumn('contratos', 'descricao', {
+    await queryInterface.changeColumn("contratos", "descricao", {
       type: Sequelize.TEXT,
-      allowNull: true
+      allowNull: true,
     });
 
-    await queryInterface.changeColumn('contratos', 'quantidade', {
+    await queryInterface.changeColumn("contratos", "quantidade", {
       type: Sequelize.INTEGER,
-      allowNull: true
+      allowNull: true,
     });
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.addColumn('contratos', 'email_envio', {
+    await queryInterface.addColumn("contratos", "email_envio", {
       type: Sequelize.STRING,
-      allowNull: false
+      allowNull: false,
     });
 
-    await queryInterface.changeColumn('contratos', 'descricao', {
+    await queryInterface.changeColumn("contratos", "descricao", {
       type: Sequelize.TEXT,
-      allowNull: false
+      allowNull: false,
     });
 
-    await queryInterface.changeColumn('contratos', 'quantidade', {
+    await queryInterface.changeColumn("contratos", "quantidade", {
       type: Sequelize.INTEGER,
-      allowNull: false
+      allowNull: false,
     });
-  }
+  },
 };

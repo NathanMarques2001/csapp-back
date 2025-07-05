@@ -1,5 +1,5 @@
-const Cliente = require('../models/Cliente');
-const ContatoTecnico = require('../models/ContatoTecnico');
+const Cliente = require("../models/Cliente");
+const ContatoTecnico = require("../models/ContatoTecnico");
 
 module.exports = {
   async index(req, res) {
@@ -7,17 +7,21 @@ module.exports = {
       const { id_cliente } = req.params;
 
       const cliente = await Cliente.findByPk(id_cliente, {
-        include: { association: 'contatos_tecnicos' }
+        include: { association: "contatos_tecnicos" },
       });
 
       if (!cliente) {
-        return res.status(404).send({ message: 'Cliente não encontrado!' });
+        return res.status(404).send({ message: "Cliente não encontrado!" });
       }
 
-      return res.status(200).send({ contatos_tecnicos: cliente.contatos_tecnicos });
+      return res
+        .status(200)
+        .send({ contatos_tecnicos: cliente.contatos_tecnicos });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Erro ao buscar os contatos técnicos.' });
+      return res
+        .status(500)
+        .send({ message: "Erro ao buscar os contatos técnicos." });
     }
   },
 
@@ -28,13 +32,17 @@ module.exports = {
       const contatoTecnico = await ContatoTecnico.findByPk(id);
 
       if (!contatoTecnico) {
-        return res.status(404).send({ message: 'Contato técnico não encontrado!' });
+        return res
+          .status(404)
+          .send({ message: "Contato técnico não encontrado!" });
       }
 
       return res.status(200).send({ contatoTecnico });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Erro ao buscar o contato técnico.' });
+      return res
+        .status(500)
+        .send({ message: "Erro ao buscar o contato técnico." });
     }
   },
 
@@ -45,7 +53,9 @@ module.exports = {
       return res.status(200).send({ contatosTecnicos });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Erro ao buscar os contatos técnicos.' });
+      return res
+        .status(500)
+        .send({ message: "Erro ao buscar os contatos técnicos." });
     }
   },
 
@@ -53,15 +63,20 @@ module.exports = {
     try {
       const { id_cliente, conteudo } = req.body;
 
-      const contatoTecnico = await ContatoTecnico.create({ id_cliente, conteudo });
+      const contatoTecnico = await ContatoTecnico.create({
+        id_cliente,
+        conteudo,
+      });
 
       return res.status(201).send({
-        message: 'Contato técnico criado com sucesso!',
-        contatoTecnico
+        message: "Contato técnico criado com sucesso!",
+        contatoTecnico,
       });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao criar o contato técnico.' });
+      return res
+        .status(500)
+        .send({ message: "Ocorreu um erro ao criar o contato técnico." });
     }
   },
 
@@ -73,15 +88,21 @@ module.exports = {
       const contatoTecnico = await ContatoTecnico.findByPk(id);
 
       if (!contatoTecnico) {
-        return res.status(404).send({ message: 'Contato técnico não encontrado!' });
+        return res
+          .status(404)
+          .send({ message: "Contato técnico não encontrado!" });
       }
 
       ContatoTecnico.update({ conteudo }, { where: { id: id } });
 
-      return res.status(200).send({ message: 'Contato técnico atualizado com sucesso!' });
+      return res
+        .status(200)
+        .send({ message: "Contato técnico atualizado com sucesso!" });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao atualizar o contato técnico.' });
+      return res
+        .status(500)
+        .send({ message: "Ocorreu um erro ao atualizar o contato técnico." });
     }
   },
 
@@ -92,15 +113,21 @@ module.exports = {
       const contatoTecnico = await ContatoTecnico.findByPk(id);
 
       if (!contatoTecnico) {
-        return res.status(404).send({ message: 'Contato técnico não encontrado!' });
+        return res
+          .status(404)
+          .send({ message: "Contato técnico não encontrado!" });
       }
 
       ContatoTecnico.destroy({ where: { id: id } });
 
-      return res.status(200).send({ message: 'Contato técnico deletado com sucesso!' });
+      return res
+        .status(200)
+        .send({ message: "Contato técnico deletado com sucesso!" });
     } catch (error) {
       console.error(error);
-      return res.status(500).send({ message: 'Ocorreu um erro ao deletar o contato técnico.' });
+      return res
+        .status(500)
+        .send({ message: "Ocorreu um erro ao deletar o contato técnico." });
     }
-  }
-}
+  },
+};
