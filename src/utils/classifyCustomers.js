@@ -10,18 +10,13 @@ async function classifyCustomers() {
   try {
     console.log("[classifyCustomers] Iniciando classificação...");
 
-    const gruposEconomicos = await GrupoEconomico.findAll({
-      where: { status: "ativo" },
-    });
+    const gruposEconomicos = await GrupoEconomico.findAll();
 
     const gruposEconomicosPorFaturamento = [];
 
     for (const grupoEconomico of gruposEconomicos) {
       const clientes = await Cliente.findAll({
-        where: {
-          status: "ativo",
-          id_grupo_economico: grupoEconomico.id,
-        },
+        where: { id_grupo_economico: grupoEconomico.id },
       });
 
       let faturamentoTotalGrupo = 0;
@@ -40,7 +35,7 @@ async function classifyCustomers() {
 
           if (isNaN(valorMensal) || isNaN(indiceReajuste)) {
             console.warn(
-              `[classifyCustomers] Contrato inválido para cliente ${cliente.id}: valores NaN`,
+              `[classifyCustomers] Contrato inválido para cliente ${cliente.id}: valores NaN`
             );
             return total;
           }
@@ -59,7 +54,7 @@ async function classifyCustomers() {
 
     // Ordena do maior para o menor faturamento
     gruposEconomicosPorFaturamento.sort(
-      (a, b) => b.faturamentoTotal - a.faturamentoTotal,
+      (a, b) => b.faturamentoTotal - a.faturamentoTotal
     );
 
     for (let i = 0; i < gruposEconomicosPorFaturamento.length; i++) {
@@ -74,15 +69,15 @@ async function classifyCustomers() {
 
       await GrupoEconomico.update(
         { tipo },
-        { where: { id: grupoEconomico.id } },
+        { where: { id: grupoEconomico.id } }
       );
 
       console.log(
         `[classifyCustomers] Grupo Econômico ${
           grupoEconomico.id
         } classificado como "${tipo}" (faturamento: ${faturamentoTotal.toFixed(
-          2,
-        )})`,
+          2
+        )})`
       );
     }
 
@@ -90,7 +85,7 @@ async function classifyCustomers() {
   } catch (error) {
     console.error(
       "[classifyCustomers] Erro ao classificar os grupos econômicos:",
-      error,
+      error
     );
   }
 }
