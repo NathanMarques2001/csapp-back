@@ -76,7 +76,10 @@ class Cliente extends Model {
         gestor_financeiro_nascimento: DataTypes.STRING,
         gestor_financeiro_telefone_1: DataTypes.STRING,
         gestor_financeiro_telefone_2: DataTypes.STRING,
-        id_grupo_economico: DataTypes.INTEGER,
+        id_grupo_economico: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         tipo_unidade: {
           type: DataTypes.ENUM,
           values: ["matriz", "filial"],
