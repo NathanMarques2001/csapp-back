@@ -23,7 +23,7 @@ module.exports = {
     // Recupera os grupos do banco após inserção
     const gruposInseridos = await queryInterface.sequelize.query(
       "SELECT id FROM grupos_economicos",
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
     const grupoIds = gruposInseridos.map((g) => g.id);
 

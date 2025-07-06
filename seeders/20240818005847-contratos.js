@@ -8,21 +8,21 @@ module.exports = {
     // Busca os IDs reais dos clientes
     const clientes = await queryInterface.sequelize.query(
       "SELECT id FROM clientes",
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
     const clienteIds = clientes.map((c) => c.id);
 
     // Busca os IDs reais dos produtos
     const produtos = await queryInterface.sequelize.query(
       "SELECT id FROM produtos",
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
     const produtoIds = produtos.map((p) => p.id);
 
     // Busca os IDs reais para faturado (assumindo tabela faturados)
     const faturados = await queryInterface.sequelize.query(
       "SELECT id FROM faturados",
-      { type: Sequelize.QueryTypes.SELECT }
+      { type: Sequelize.QueryTypes.SELECT },
     );
     const faturadoIds = faturados.length > 0 ? faturados.map((f) => f.id) : [1]; // fallback
 

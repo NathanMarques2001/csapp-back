@@ -1,3 +1,4 @@
+const Cliente = require("../models/Cliente");
 const GrupoEconomico = require("../models/GrupoEconomico");
 
 module.exports = {
@@ -38,6 +39,50 @@ module.exports = {
       return res
         .status(500)
         .send({ message: "Ocorreu um erro ao buscar os grupos econômicos." });
+    }
+  },
+
+  async inactiveOrActive(req, res) {
+    try {
+      const { id } = req.params;
+
+      const grupoEconomico = await GrupoEconomico.findByPk(id);
+
+      if (!grupoEconomico) {
+        return res.status(404).send({ message: "Cliente não encontrado!" });
+      }
+
+      if (grupoEconomico.status === "ativo") {
+        await GrupoEconomico.update(
+          { status: "inativo" },
+          { where: { id: id } },
+        );
+
+        const clientes = await Cliente.findAll({
+          where: { id_grupo_economico: id },
+        });
+
+        for (const cliente of clientes) {
+          if (cliente.status === "ativo") {
+            await Cliente.update({ status: "inativo" }, { where: { id: id } });
+            await Contrato.update(
+              { status: "inativo" },
+              { where: { id_cliente: id } },
+            );
+          }
+        }
+        await classifyCustomers();
+      }
+
+      return res.status(200).send({
+        message:
+          "Grupo econômico, clientes e contratos inativados com sucesso!",
+      });
+    } catch (error) {
+      console.error(error);
+      return res
+        .status(500)
+        .send({ message: "Ocorreu um erro ao inativar o grupo econômico." });
     }
   },
 
