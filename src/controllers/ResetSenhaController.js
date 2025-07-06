@@ -16,20 +16,15 @@ module.exports = {
 
       const resetSenha = await ResetSenha.create({ id_usuario: usuario.id });
 
-      return res
-        .status(201)
-        .send({
-          message: "E-mail de recuperação de senha enviado com sucesso!",
-          resetSenha,
-        });
+      return res.status(201).send({
+        message: "E-mail de recuperação de senha enviado com sucesso!",
+        resetSenha,
+      });
     } catch (error) {
       console.error(error);
-      return res
-        .status(500)
-        .send({
-          message:
-            "Ocorreu um erro ao enviar o e-mail de recuperação de senha.",
-        });
+      return res.status(500).send({
+        message: "Ocorreu um erro ao enviar o e-mail de recuperação de senha.",
+      });
     }
   },
 

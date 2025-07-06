@@ -39,7 +39,7 @@ app.use(
       secure: true,
       maxAge: 60 * 60 * 1000,
     },
-  }),
+  })
 );
 
 app.use(passport.initialize());

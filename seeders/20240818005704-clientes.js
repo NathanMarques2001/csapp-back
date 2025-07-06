@@ -1,75 +1,33 @@
+"use strict";
+
 module.exports = {
   up: async (queryInterface, Sequelize) => {
     const now = new Date();
 
-    // Primeiro insere os grupos econômicos
-    const grupos = [
-      {
-        nome: "Grupo Alfa",
-        id_usuario: 1,
-        nps: 9,
-        id_segmento: 1,
+    // Gera 40 grupos econômicos dinamicamente
+    const grupos = [];
+    for (let i = 1; i <= 40; i++) {
+      grupos.push({
+        nome: `Grupo ${i}`,
+        id_usuario: (i % 10) + 1, // Assume até 10 usuários no sistema
+        nps: i % 11, // de 0 a 10
+        id_segmento: (i % 5) + 1, // Assume até 5 segmentos
         status: "ativo",
         created_at: now,
         updated_at: now,
-      },
-      {
-        nome: "Grupo Beta",
-        id_usuario: 2,
-        nps: 7,
-        id_segmento: 2,
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        nome: "Grupo Gama",
-        id_usuario: 3,
-        nps: 6,
-        id_segmento: 3,
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        nome: "Grupo Delta",
-        id_usuario: 4,
-        nps: 8,
-        id_segmento: 4,
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        nome: "Grupo Ômega",
-        id_usuario: 5,
-        nps: 10,
-        id_segmento: 5,
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      },
-      {
-        nome: "Grupo Lambda",
-        id_usuario: 5,
-        nps: 10,
-        id_segmento: 3,
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      },
-    ];
+      });
+    }
 
     await queryInterface.bulkInsert("grupos_economicos", grupos, {});
 
     // Recupera os grupos do banco após inserção
     const gruposInseridos = await queryInterface.sequelize.query(
       "SELECT id FROM grupos_economicos",
-      { type: Sequelize.QueryTypes.SELECT },
+      { type: Sequelize.QueryTypes.SELECT }
     );
     const grupoIds = gruposInseridos.map((g) => g.id);
 
-    // CPF/CNPJ fictícios
+    // CPF/CNPJ fictícios válidos para teste
     const cpfsCnpjs = [
       "679.205.940-50",
       "891.304.720-80",
@@ -123,7 +81,6 @@ module.exports = {
       "943.318.750-22",
     ];
 
-    // Gera 50 clientes com os grupos reais
     const clientes = [];
 
     for (let i = 1; i <= 50; i++) {
@@ -131,24 +88,26 @@ module.exports = {
         razao_social: `Razao Social ${i}`,
         nome_fantasia: `Nome Fantasia ${i}`,
         cpf_cnpj: cpfsCnpjs[i - 1],
-        id_grupo_economico: grupoIds[i % grupoIds.length],
+        id_grupo_economico: grupoIds[i % grupoIds.length], // distribui os clientes entre os 40 grupos
         tipo_unidade: i % 2 === 0 ? "filial" : "matriz",
         status: "ativo",
         tipo: "c",
         data_criacao: now,
         created_at: now,
         updated_at: now,
-        // Gestores
+
         gestor_contratos_nome: `Gestor Contratos ${i}`,
         gestor_contratos_email: `gestor.contratos${i}@example.com`,
         gestor_contratos_nascimento: "1980-01-01",
         gestor_contratos_telefone_1: `+55000000000${i}`,
         gestor_contratos_telefone_2: null,
+
         gestor_chamados_nome: `Gestor Chamados ${i}`,
         gestor_chamados_email: `gestor.chamados${i}@example.com`,
         gestor_chamados_nascimento: "1980-01-01",
         gestor_chamados_telefone_1: `+55000000000${i}`,
         gestor_chamados_telefone_2: null,
+
         gestor_financeiro_nome: `Gestor Financeiro ${i}`,
         gestor_financeiro_email: `gestor.financeiro${i}@example.com`,
         gestor_financeiro_nascimento: "1980-01-01",

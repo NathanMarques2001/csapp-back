@@ -111,14 +111,6 @@ module.exports = {
         data_inicio,
       } = req.body;
 
-      // const containsLetters = /[a-zA-Z]/;
-
-      // if (containsLetters.test(valor_mensal)) {
-      //   return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
-      // } else if (containsLetters.test(quantidade)) {
-      //   return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
-      // }
-
       const contrato = await Contrato.create({
         id_cliente,
         id_produto,
