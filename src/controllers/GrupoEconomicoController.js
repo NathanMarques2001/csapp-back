@@ -55,7 +55,7 @@ module.exports = {
       if (grupoEconomico.status === "ativo") {
         await GrupoEconomico.update(
           { status: "inativo" },
-          { where: { id: id } },
+          { where: { id: id } }
         );
 
         const clientes = await Cliente.findAll({
@@ -67,11 +67,13 @@ module.exports = {
             await Cliente.update({ status: "inativo" }, { where: { id: id } });
             await Contrato.update(
               { status: "inativo" },
-              { where: { id_cliente: id } },
+              { where: { id_cliente: id } }
             );
           }
         }
         await classifyCustomers();
+      } else {
+        await GrupoEconomico.update({ status: "ativo" }, { where: { id: id } });
       }
 
       return res.status(200).send({
@@ -127,7 +129,7 @@ module.exports = {
 
       await GrupoEconomico.update(
         { nome, id_usuario, nps, id_segmento, status },
-        { where: { id: id } },
+        { where: { id: id } }
       );
 
       return res.status(200).send({ message: "Grupo econômico com sucesso!" });
