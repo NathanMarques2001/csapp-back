@@ -74,14 +74,14 @@ class Contrato extends Model {
           allowNull: true,
         },
         tipo_faturamento: {
-          type: DataTypes.ENUM,
-          avalues: ["mensal", "anual"],
+          type: DataTypes.ENUM("mensal", "anual"),
+          allowNull: false,
         },
       },
       {
         sequelize,
         tableName: "contratos",
-      },
+      }
     );
   }
 
