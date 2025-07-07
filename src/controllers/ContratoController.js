@@ -109,6 +109,7 @@ module.exports = {
         quantidade,
         descricao,
         data_inicio,
+        tipo_faturamento,
       } = req.body;
 
       const contrato = await Contrato.create({
@@ -126,6 +127,7 @@ module.exports = {
         quantidade,
         descricao,
         data_inicio,
+        tipo_faturamento,
       });
 
       await classifyCustomers();
@@ -167,6 +169,7 @@ module.exports = {
         quantidade,
         descricao,
         data_inicio,
+        tipo_faturamento,
       } = req.body;
       const { id } = req.params;
       //const containsLetters = /[a-zA-Z]/;
@@ -197,6 +200,7 @@ module.exports = {
           quantidade,
           descricao,
           data_inicio,
+          tipo_faturamento,
         },
         { where: { id: id } },
       );
