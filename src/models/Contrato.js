@@ -81,7 +81,7 @@ class Contrato extends Model {
       {
         sequelize,
         tableName: "contratos",
-      }
+      },
     );
   }
 

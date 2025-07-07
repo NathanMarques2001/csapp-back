@@ -11,7 +11,6 @@ async function classifyCustomers() {
     console.log("[classifyCustomers] Iniciando classificação...");
 
     const gruposEconomicos = await GrupoEconomico.findAll();
-
     const gruposEconomicosPorFaturamento = [];
 
     for (const grupoEconomico of gruposEconomicos) {
@@ -30,17 +29,36 @@ async function classifyCustomers() {
         });
 
         const faturamentoCliente = contratos.reduce((total, contrato) => {
-          const valorMensal = parseFloat(contrato.valor_mensal);
-          const indiceReajuste = parseFloat(contrato.indice_reajuste);
+          const bruto = parseFloat(contrato.valor_mensal);
+          let indiceReajuste = parseFloat(contrato.indice_reajuste);
+          const tipo = contrato.tipo_faturamento;
 
-          if (isNaN(valorMensal) || isNaN(indiceReajuste)) {
+          if (isNaN(bruto)) {
             console.warn(
-              `[classifyCustomers] Contrato inválido para cliente ${cliente.id}: valores NaN`,
+              `⚠️ Contrato ${contrato.id} do cliente ${cliente.id} com valor_mensal inválido: "${contrato.valor_mensal}"`,
             );
             return total;
           }
 
-          return total + valueWithTax(valorMensal, indiceReajuste);
+          if (isNaN(indiceReajuste)) {
+            console.warn(
+              `⚠️ Contrato ${contrato.id} do cliente ${cliente.id} sem índice de reajuste definido. Usando 0%.`,
+            );
+            indiceReajuste = 0;
+          }
+
+          const valorMensal = tipo === "anual" ? bruto / 12 : bruto;
+          const valorFinal = valueWithTax(valorMensal, indiceReajuste);
+
+          console.log(
+            `[✓] Contrato ${
+              contrato.id
+            } (${tipo}) - bruto: ${bruto} | mensal: ${valorMensal.toFixed(
+              2,
+            )} | reajuste: ${indiceReajuste}% | final: ${valorFinal.toFixed(2)}`,
+          );
+
+          return total + valorFinal;
         }, 0);
 
         faturamentoTotalGrupo += faturamentoCliente;
