@@ -107,7 +107,7 @@ module.exports = {
       });
 
       return res.redirect(
-        `https://csapp.prolinx.com.br/auth/callback?token=${token}`,
+        `https://csapp.prolinx.com.br/auth/callback?token=${token}`
       );
     } catch (error) {
       console.error("Erro no callback do login Microsoft:", error);
@@ -153,26 +153,26 @@ module.exports = {
     }
   },
 
-  async store(req, res) {
-    try {
-      const { nome, email, tipo, senha } = req.body;
+  // async store(req, res) {
+  //   try {
+  //     const { nome, email, tipo, senha } = req.body;
 
-      const usuario = await Usuario.create({ nome, email, tipo, senha });
+  //     const usuario = await Usuario.create({ nome, email, tipo, senha });
 
-      return res.status(201).send({
-        message: "Usuário criado com sucesso!",
-        usuario,
-      });
-    } catch (error) {
-      if (error.name == "SequelizeUniqueConstraintError") {
-        return res.status(400).send({ message: "E-mail já cadastrado!" });
-      }
-      console.error(error);
-      return res
-        .status(500)
-        .send({ message: "Ocorreu um erro ao criar o usuário." });
-    }
-  },
+  //     return res.status(201).send({
+  //       message: "Usuário criado com sucesso!",
+  //       usuario,
+  //     });
+  //   } catch (error) {
+  //     if (error.name == "SequelizeUniqueConstraintError") {
+  //       return res.status(400).send({ message: "E-mail já cadastrado!" });
+  //     }
+  //     console.error(error);
+  //     return res
+  //       .status(500)
+  //       .send({ message: "Ocorreu um erro ao criar o usuário." });
+  //   }
+  // },
 
   async update(req, res) {
     try {
