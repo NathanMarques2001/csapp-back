@@ -1,25 +1,24 @@
+"use strict";
+
 const bcrypt = require("bcryptjs");
+const { faker } = require("@faker-js/faker");
 
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  async up(queryInterface, Sequelize) {
     const usuarios = [];
 
-    for (let i = 1; i <= 10; i++) {
-      const nome = `Usuario ${i}`;
-      const email = `usuario${i}@example.com`;
-      const tipo = i % 2 === 0 ? "admin" : "user";
-      const senha = "123";
-
-      // Criptografar a senha antes de inserir
-      const salt = bcrypt.genSaltSync();
-      const senhaCriptografada = bcrypt.hashSync(senha, salt);
+    for (let i = 0; i < 15; i++) {
+      const senha = faker.internet.password(8);
+      const senhaHash = bcrypt.hashSync(senha, bcrypt.genSaltSync());
+      const isMicrosoft = Math.random() < 0.3;
 
       usuarios.push({
-        nome,
-        email,
-        tipo,
-        senha: senhaCriptografada, // Armazena a senha encriptada
-        logado: false,
+        nome: faker.person.fullName(),
+        email: faker.internet.email().toLowerCase(),
+        microsoft_oid: isMicrosoft ? faker.string.uuid() : null,
+        tipo: faker.helpers.arrayElement(["admin", "comum", "editor"]),
+        senha: isMicrosoft ? null : senhaHash,
+        logado: faker.datatype.boolean(),
         created_at: new Date(),
         updated_at: new Date(),
       });
@@ -28,7 +27,7 @@ module.exports = {
     await queryInterface.bulkInsert("usuarios", usuarios, {});
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("usuarios", null, {});
   },
 };

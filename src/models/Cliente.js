@@ -30,9 +30,9 @@ class Cliente extends Model {
           allowNull: false,
           unique: true,
         },
-        id_usuario: DataTypes.INTEGER,
+        id_usuario: { type: DataTypes.INTEGER, allowNull: false },
         nps: DataTypes.INTEGER,
-        id_segmento: DataTypes.INTEGER,
+        id_segmento: { type: DataTypes.INTEGER, allowNull: false },
         status: {
           type: DataTypes.ENUM,
           values: ["ativo", "inativo"],
@@ -76,15 +76,10 @@ class Cliente extends Model {
         gestor_financeiro_nascimento: DataTypes.STRING,
         gestor_financeiro_telefone_1: DataTypes.STRING,
         gestor_financeiro_telefone_2: DataTypes.STRING,
-        id_grupo_economico: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
+        id_grupo_economico: DataTypes.INTEGER,
         tipo_unidade: {
           type: DataTypes.ENUM,
-          values: ["matriz", "filial"],
-          allowNull: false,
-          defaultValue: "matriz",
+          values: ["pai", "filha"],
         },
       },
       {

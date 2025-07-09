@@ -145,6 +145,9 @@ module.exports = {
         razao_social,
         nome_fantasia,
         cpf_cnpj,
+        id_usuario,
+        nps,
+        id_segmento,
         gestor_contratos_nome,
         gestor_contratos_email,
         gestor_contratos_nascimento,
@@ -167,16 +170,15 @@ module.exports = {
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
 
-      const containsLetters = /[a-zA-Z]/;
-
       const data_criacao = formatDate(new Date());
-      const tipo = "c";
 
       const cliente = await Cliente.create({
         razao_social,
         nome_fantasia,
         cpf_cnpj,
-        tipo,
+        id_usuario,
+        nps,
+        id_segmento,
         data_criacao,
         gestor_contratos_nome,
         gestor_contratos_email,
@@ -215,6 +217,9 @@ module.exports = {
         razao_social,
         nome_fantasia,
         cpf_cnpj,
+        id_usuario,
+        nps,
+        id_segmento,
         gestor_contratos_nome,
         gestor_contratos_email,
         gestor_contratos_nascimento,
@@ -246,7 +251,10 @@ module.exports = {
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
 
-      const containsLetters = /[a-zA-Z]/;
+      let novoEstadoTipo = cliente.tipo;
+      if (cliente.id_grupo_economico !== id_grupo_economico) {
+        novoEstadoTipo = null;
+      }
 
       // Continua com a atualização do cliente se o CPF/CNPJ for válido
       await Cliente.update(
@@ -254,6 +262,10 @@ module.exports = {
           razao_social,
           nome_fantasia,
           cpf_cnpj,
+          id_usuario,
+          nps,
+          tipo: novoEstadoTipo,
+          id_segmento,
           gestor_contratos_nome,
           gestor_contratos_email,
           gestor_contratos_nascimento,
@@ -275,6 +287,8 @@ module.exports = {
         },
         { where: { id: id } },
       );
+
+      await classifyCustomers();
 
       return res
         .status(200)

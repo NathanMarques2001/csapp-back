@@ -1,20 +1,23 @@
+"use strict";
+
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    const faturados = [];
+  async up(queryInterface, Sequelize) {
+    const faturados = [
+      { nome: "Faturamento Centralizado", status: "ativo" },
+      { nome: "Faturamento Regional", status: "ativo" },
+      { nome: "Faturamento Terceirizado", status: "inativo" },
+      { nome: "Faturamento Matriz", status: "ativo" },
+      { nome: "Faturamento Filial", status: "inativo" },
+    ].map((f) => ({
+      ...f,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }));
 
-    for (let i = 1; i <= 10; i++) {
-      faturados.push({
-        nome: `Faturado${i}`,
-        created_at: new Date(),
-        updated_at: new Date(),
-        status: "ativo",
-      });
-    }
-
-    return queryInterface.bulkInsert("faturados", faturados, {});
+    await queryInterface.bulkInsert("faturados", faturados, {});
   },
 
-  down: async (queryInterface, Sequelize) => {
-    return queryInterface.bulkDelete("faturados", null, {});
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete("faturados", null, {});
   },
 };

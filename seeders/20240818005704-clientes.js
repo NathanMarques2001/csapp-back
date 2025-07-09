@@ -1,125 +1,88 @@
 "use strict";
 
-module.exports = {
-  up: async (queryInterface, Sequelize) => {
-    const now = new Date();
+const { faker } = require("@faker-js/faker");
 
-    // Gera 40 grupos econômicos dinamicamente
-    const grupos = [];
-    for (let i = 1; i <= 40; i++) {
-      grupos.push({
-        nome: `Grupo ${i}`,
-        id_usuario: (i % 10) + 1, // Assume até 10 usuários no sistema
-        nps: i % 11, // de 0 a 10
-        id_segmento: (i % 5) + 1, // Assume até 5 segmentos
-        status: "ativo",
-        created_at: now,
-        updated_at: now,
-      });
-    }
+module.exports = {
+  async up(queryInterface, Sequelize) {
+    // Cria os 10 grupos econômicos
+    const grupos = [
+      { nome: "Grupo Econômico Alpha", status: "ativo", tipo: "Matriz" },
+      { nome: "Grupo Econômico Beta", status: "ativo", tipo: "Matriz" },
+      { nome: "Grupo Econômico Gama", status: "inativo", tipo: "Filial" },
+      { nome: "Grupo Econômico Delta", status: "ativo", tipo: "Matriz" },
+      { nome: "Grupo Econômico Épsilon", status: "ativo", tipo: "Filial" },
+      { nome: "Grupo Econômico Zeta", status: "inativo", tipo: "Matriz" },
+      { nome: "Grupo Econômico Eta", status: "ativo", tipo: "Filial" },
+      { nome: "Grupo Econômico Teta", status: "ativo", tipo: "Matriz" },
+      { nome: "Grupo Econômico Iota", status: "ativo", tipo: "Filial" },
+      { nome: "Grupo Econômico Kappa", status: "ativo", tipo: "Matriz" },
+    ].map((grupo) => ({
+      ...grupo,
+      created_at: new Date(),
+      updated_at: new Date(),
+    }));
 
     await queryInterface.bulkInsert("grupos_economicos", grupos, {});
 
-    // Recupera os grupos do banco após inserção
-    const gruposInseridos = await queryInterface.sequelize.query(
-      "SELECT id FROM grupos_economicos",
-      { type: Sequelize.QueryTypes.SELECT },
-    );
-    const grupoIds = gruposInseridos.map((g) => g.id);
-
-    // CPF/CNPJ fictícios válidos para teste
-    const cpfsCnpjs = [
-      "679.205.940-50",
-      "891.304.720-80",
-      "014.916.480-29",
-      "149.714.020-90",
-      "796.305.410-33",
-      "057.914.620-18",
-      "398.762.950-65",
-      "238.289.180-04",
-      "207.790.990-11",
-      "394.496.760-60",
-      "103.751.540-22",
-      "164.741.250-14",
-      "343.765.180-44",
-      "749.216.860-00",
-      "622.222.390-20",
-      "473.817.240-23",
-      "359.314.520-80",
-      "892.837.290-30",
-      "829.078.370-85",
-      "584.683.980-99",
-      "029.574.720-01",
-      "186.543.790-30",
-      "485.762.110-60",
-      "748.859.430-22",
-      "627.014.520-44",
-      "437.637.210-00",
-      "237.827.380-50",
-      "753.895.690-11",
-      "975.862.470-05",
-      "206.872.290-19",
-      "344.208.600-30",
-      "287.452.750-10",
-      "894.660.530-99",
-      "256.687.140-01",
-      "962.451.920-22",
-      "029.612.760-11",
-      "488.995.430-10",
-      "974.450.810-77",
-      "583.901.230-14",
-      "471.259.890-20",
-      "813.237.160-00",
-      "583.747.840-45",
-      "978.101.230-30",
-      "205.462.950-89",
-      "876.244.710-01",
-      "184.228.920-33",
-      "258.763.110-45",
-      "799.440.950-55",
-      "337.216.340-77",
-      "943.318.750-22",
-    ];
-
+    // Agora cria os 50 clientes
     const clientes = [];
 
-    for (let i = 1; i <= 50; i++) {
+    for (let i = 0; i < 50; i++) {
+      const tipoUnidade = faker.helpers.arrayElement(["pai", "filha"]);
+      const status = faker.helpers.arrayElement(["ativo", "inativo"]);
+
       clientes.push({
-        razao_social: `Razao Social ${i}`,
-        nome_fantasia: `Nome Fantasia ${i}`,
-        cpf_cnpj: cpfsCnpjs[i - 1],
-        id_grupo_economico: grupoIds[i % grupoIds.length], // distribui os clientes entre os 40 grupos
-        tipo_unidade: i % 2 === 0 ? "filial" : "matriz",
-        status: "ativo",
-        tipo: "c",
-        data_criacao: now,
-        created_at: now,
-        updated_at: now,
+        razao_social: faker.company.name() + " LTDA",
+        nome_fantasia: faker.company.name(),
+        cpf_cnpj: faker.number
+          .int({ min: 10000000000000, max: 99999999999999 })
+          .toString(),
+        id_usuario: faker.number.int({ min: 1, max: 15 }),
+        id_segmento: faker.number.int({ min: 1, max: 10 }),
+        id_grupo_economico: faker.number.int({ min: 1, max: 10 }),
 
-        gestor_contratos_nome: `Gestor Contratos ${i}`,
-        gestor_contratos_email: `gestor.contratos${i}@example.com`,
-        gestor_contratos_nascimento: "1980-01-01",
-        gestor_contratos_telefone_1: `+55000000000${i}`,
-        gestor_contratos_telefone_2: null,
+        nps: faker.number.int({ min: 0, max: 10 }),
+        status,
+        tipo: faker.helpers.arrayElement(["cliente", "parceiro", "interno"]),
+        tipo_unidade: tipoUnidade,
+        data_criacao: faker.date.past({ years: 5 }),
 
-        gestor_chamados_nome: `Gestor Chamados ${i}`,
-        gestor_chamados_email: `gestor.chamados${i}@example.com`,
-        gestor_chamados_nascimento: "1980-01-01",
-        gestor_chamados_telefone_1: `+55000000000${i}`,
-        gestor_chamados_telefone_2: null,
+        gestor_contratos_nome: faker.person.fullName(),
+        gestor_contratos_email: faker.internet.email().toLowerCase(),
+        gestor_contratos_nascimento: faker.date
+          .birthdate({ min: 25, max: 60, mode: "age" })
+          .toISOString()
+          .split("T")[0],
+        gestor_contratos_telefone_1: faker.phone.number("(##) #####-####"),
+        gestor_contratos_telefone_2: faker.phone.number("(##) #####-####"),
 
-        gestor_financeiro_nome: `Gestor Financeiro ${i}`,
-        gestor_financeiro_email: `gestor.financeiro${i}@example.com`,
-        gestor_financeiro_nascimento: "1980-01-01",
-        gestor_financeiro_telefone_1: `+55000000000${i}`,
-        gestor_financeiro_telefone_2: null,
+        gestor_chamados_nome: faker.person.fullName(),
+        gestor_chamados_email: faker.internet.email().toLowerCase(),
+        gestor_chamados_nascimento: faker.date
+          .birthdate({ min: 20, max: 50, mode: "age" })
+          .toISOString()
+          .split("T")[0],
+        gestor_chamados_telefone_1: faker.phone.number("(##) #####-####"),
+        gestor_chamados_telefone_2: faker.phone.number("(##) #####-####"),
+
+        gestor_financeiro_nome: faker.person.fullName(),
+        gestor_financeiro_email: faker.internet.email().toLowerCase(),
+        gestor_financeiro_nascimento: faker.date
+          .birthdate({ min: 30, max: 65, mode: "age" })
+          .toISOString()
+          .split("T")[0],
+        gestor_financeiro_telefone_1: faker.phone.number("(##) #####-####"),
+        gestor_financeiro_telefone_2: faker.phone.number("(##) #####-####"),
+
+        created_at: new Date(),
+        updated_at: new Date(),
       });
     }
 
     await queryInterface.bulkInsert("clientes", clientes, {});
   },
 
-  down: async (queryInterface, Sequelize) => {
+  async down(queryInterface, Sequelize) {
     await queryInterface.bulkDelete("clientes", null, {});
     await queryInterface.bulkDelete("grupos_economicos", null, {});
   },

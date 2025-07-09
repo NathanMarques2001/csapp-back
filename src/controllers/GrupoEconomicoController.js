@@ -95,15 +95,12 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { nome, id_usuario, nps, id_segmento } = req.body;
+      const { nome } = req.body;
 
       const tipo = "c";
 
       const grupoEconomico = await GrupoEconomico.create({
         nome,
-        id_usuario,
-        nps,
-        id_segmento,
         tipo,
       });
 
@@ -121,7 +118,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome, id_usuario, nps, id_segmento, status } = req.body;
+      const { nome, status } = req.body;
       const { id } = req.params;
 
       const grupoEconomico = await GrupoEconomico.findByPk(id);
@@ -132,10 +129,7 @@ module.exports = {
           .send({ message: "Grupo econômico não encontrado!" });
       }
 
-      await GrupoEconomico.update(
-        { nome, id_usuario, nps, id_segmento, status },
-        { where: { id: id } },
-      );
+      await GrupoEconomico.update({ nome, status }, { where: { id: id } });
 
       return res.status(200).send({ message: "Grupo econômico com sucesso!" });
     } catch (error) {
