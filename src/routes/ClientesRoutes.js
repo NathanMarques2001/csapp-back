@@ -7,7 +7,7 @@ router.use(authMiddleware);
 router.get("/", ClienteController.indexAll);
 router.get("/:id", ClienteController.index);
 router.get("/grupo-economico/:id", ClienteController.indexGrupoEconomico);
-// router.post("/", ClienteController.store);
+router.post("/", ClienteController.store);
 router.put("/migrate", ClienteController.migrate);
 router.put("/active-inactive/:id", ClienteController.inactiveOrActive);
 router.put("/:id", ClienteController.update);

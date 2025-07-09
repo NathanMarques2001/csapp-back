@@ -5,7 +5,7 @@ const passport = require("passport");
 const authMiddleware = require("../middlewares/auth.js");
 
 router.post("/login", UsuarioController.login);
-router.post("/", UsuarioController.store);
+// router.post("/", UsuarioController.store);
 
 // 1. Rota de início: O frontend redireciona o usuário para cá
 router.get(
@@ -13,7 +13,7 @@ router.get(
   passport.authenticate("azuread-openidconnect", {
     prompt: "select_account",
     failureRedirect: "/login-failure",
-  }),
+  })
 );
 
 router.post(
@@ -24,7 +24,7 @@ router.post(
   passport.authenticate("azuread-openidconnect", {
     failureRedirect: "/login-failure",
   }),
-  UsuarioController.loginComMicrosoftCallback,
+  UsuarioController.loginComMicrosoftCallback
 );
 
 // Rota de falha genérica
