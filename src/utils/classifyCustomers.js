@@ -17,7 +17,10 @@ async function classifyEntitiesOptimized() {
         GrupoEconomico.findAll(),
         Cliente.findAll(),
         Contrato.findAll({ where: { status: "ativo" } }),
-        ClassificacaoClientes.findAll({ order: [["valor", "DESC"]] }),
+        ClassificacaoClientes.findAll({
+          where: { status: "ativo" },
+          order: [["valor", "DESC"]],
+        }),
       ]);
 
     // 2. Agrupar contratos por cliente
