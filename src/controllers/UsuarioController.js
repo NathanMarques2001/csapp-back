@@ -24,16 +24,16 @@ module.exports = {
   async login(req, res) {
     try {
       const { email, senha } = req.body;
-      const origem = req.headers.host;
-      const isLocalhost =
-        origem?.includes("localhost") || origem?.includes("127.0.0.1");
+      // const origem = req.headers.host;
+      // const isLocalhost =
+      //   origem?.includes("localhost") || origem?.includes("127.0.0.1");
 
-      if (!isLocalhost && email === "nathanbrandao1@gmail.com") {
-        return res.status(403).send({
-          message:
-            'Login com e-mail e senha está desativado fora do ambiente local. Use o botão "Entrar com Microsoft".',
-        });
-      }
+      // if (!isLocalhost && email === "nathanbrandao1@gmail.com") {
+      //   return res.status(403).send({
+      //     message:
+      //       'Login com e-mail e senha está desativado fora do ambiente local. Use o botão "Entrar com Microsoft".',
+      //   });
+      // }
 
       if (!email || !senha) {
         return res
