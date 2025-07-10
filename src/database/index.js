@@ -16,6 +16,7 @@ const ReprocessamentoContrato = require("../models/ReprocessamentoContrato");
 const ResetSenha = require("../models/ResetSenha");
 const VencimentoContratos = require("../models/VencimentoContratos");
 const GrupoEconomico = require("../models/GrupoEconomico.js");
+const ClassificacaoCliente = require("../models/ClassificacaoCliente.js");
 
 const connection = new sequelize(dbConfig);
 
@@ -36,6 +37,7 @@ const tables = [
   ResetSenha,
   VencimentoContratos,
   GrupoEconomico,
+  ClassificacaoCliente,
 ];
 
 tables.forEach((table) => {

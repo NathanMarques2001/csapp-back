@@ -20,6 +20,7 @@ const reajustaContratosRoutes = require("./routes/ReajustaContratosRoutes.js");
 const resetSenhaRoutes = require("./routes/ResetSenhaRoutes.js");
 const vencimentoContratos = require("./routes/VencimentoContratosRoute.js");
 const gruposEconomicosRoutes = require("./routes/GruposEconomicosRoutes.js");
+const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRoutes.js");
 
 const port = 8080;
 const app = express();
@@ -60,6 +61,7 @@ app.use("/api/reajusta-contratos", reajustaContratosRoutes);
 app.use("/api/reset-senha", resetSenhaRoutes);
 app.use("/api/vencimento-contratos", vencimentoContratos);
 app.use("/api/grupos-economicos", gruposEconomicosRoutes);
+app.use("/api/classificacoes-clientes", classificacoesClientesRoutes);
 
 app.listen(port, () => {
   const agora = new Date().toLocaleString("pt-BR", {

@@ -107,7 +107,7 @@ module.exports = {
       });
 
       return res.redirect(
-        `https://csapp.prolinx.com.br/auth/callback?token=${token}`
+        `https://csapp.prolinx.com.br/auth/callback?token=${token}`,
       );
     } catch (error) {
       console.error("Erro no callback do login Microsoft:", error);
