@@ -17,6 +17,14 @@ class Produto extends Model {
           type: DataTypes.ENUM,
           values: ["ativo", "inativo"],
         },
+        id_categoria_produto: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+          references: {
+            model: "categorias_produto",
+            key: "id",
+          },
+        },
       },
       {
         sequelize,
@@ -33,6 +41,10 @@ class Produto extends Model {
     this.belongsTo(models.Fabricante, {
       foreignKey: "id_fabricante",
       as: "fabricantes",
+    });
+    this.belongsTo(models.CategoriaProduto, {
+      foreignKey: "id_categoria_produto",
+      as: "categorias_produtos",
     });
   }
 }

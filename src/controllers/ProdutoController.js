@@ -43,9 +43,13 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { nome, id_fabricante } = req.body;
+      const { nome, id_fabricante, id_categoria_produto } = req.body;
 
-      const produto = await Produto.create({ nome, id_fabricante });
+      const produto = await Produto.create({
+        nome,
+        id_fabricante,
+        id_categoria_produto,
+      });
 
       return res.status(201).send({
         message: "Produto criado com sucesso!",
@@ -61,7 +65,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const { nome, id_fabricante, status } = req.body;
+      const { nome, id_fabricante, id_categoria_produto, status } = req.body;
       const { id } = req.params;
 
       const produto = await Produto.findByPk(id);
@@ -71,7 +75,7 @@ module.exports = {
       }
 
       await Produto.update(
-        { nome, id_fabricante, status },
+        { nome, id_fabricante, id_categoria_produto, status },
         { where: { id: id } },
       );
 
