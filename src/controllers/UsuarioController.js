@@ -1,8 +1,8 @@
 const Usuario = require("../models/Usuario.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-//const authConfig = require("/var/www/scrt/secret.json");
-const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
+const authConfig = require("/var/www/scrt/secret.json");
+//const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
 const jwksClient = require("jwks-rsa");
 
 function gerarToken({ id, nome, tipo }) {
@@ -28,7 +28,7 @@ module.exports = {
       const isLocalhost =
         origem?.includes("localhost") || origem?.includes("127.0.0.1");
 
-      if (!isLocalhost) {
+      if (!isLocalhost && email === "nathanbrandao1@gmail.com") {
         return res.status(403).send({
           message:
             'Login com e-mail e senha está desativado fora do ambiente local. Use o botão "Entrar com Microsoft".',
