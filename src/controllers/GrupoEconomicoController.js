@@ -97,11 +97,8 @@ module.exports = {
     try {
       const { nome } = req.body;
 
-      const tipo = "c";
-
       const grupoEconomico = await GrupoEconomico.create({
         nome,
-        tipo,
       });
 
       return res.status(201).send({

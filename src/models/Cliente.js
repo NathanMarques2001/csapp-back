@@ -37,7 +37,13 @@ class Cliente extends Model {
           type: DataTypes.ENUM,
           values: ["ativo", "inativo"],
         },
-        tipo: DataTypes.STRING,
+        id_classificacao_cliente: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "classificacoes_clientes",
+            key: "id",
+          },
+        },
         data_criacao: {
           type: DataTypes.DATE,
           allowNull: false,
@@ -117,6 +123,10 @@ class Cliente extends Model {
     this.belongsTo(models.GrupoEconomico, {
       foreignKey: "id_grupo_economico",
       as: "grupos_economicos",
+    });
+    this.belongsTo(models.ClassificacaoClientes, {
+      foreignKey: "id_classificacao_cliente",
+      as: "classificacao",
     });
   }
 }

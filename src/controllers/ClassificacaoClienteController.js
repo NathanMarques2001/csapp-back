@@ -1,4 +1,5 @@
 const ClassificacaoCliente = require("../models/ClassificacaoCliente");
+const classifyCustomers = require("../utils/classifyCustomers");
 
 module.exports = {
   async index(req, res) {
@@ -86,6 +87,8 @@ module.exports = {
         valor,
       });
 
+      await classifyCustomers();
+
       return res.status(201).send({
         message: "Classificação criada com sucesso!",
         novaClassificacao,
@@ -117,14 +120,7 @@ module.exports = {
           .send({ message: "Classificação não encontrada." });
       }
 
-      // Validação 1: valor, se fornecido, deve ser maior que zero
-      if (valor !== undefined && valor !== null && parseFloat(valor) <= 0) {
-        return res
-          .status(400)
-          .send({ message: "O valor deve ser maior que zero." });
-      }
-
-      // Validação 2: garantir que só exista uma classificação de tipo "quantidade"
+      // Validação 1: garantir que só exista uma classificação de tipo "quantidade"
       if (
         tipo_categoria === "quantidade" &&
         classificacao.tipo_categoria !== "quantidade"
@@ -152,9 +148,11 @@ module.exports = {
         valor,
       });
 
+      await classifyCustomers();
+
       return res
         .status(200)
-        .send({ message: "Classificação atualizada com sucesso." });
+        .send({ message: "Classificação atualizada com sucesso!" });
     } catch (error) {
       console.error("Erro ao atualizar classificação:", error);
       return res.status(500).send({

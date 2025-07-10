@@ -13,7 +13,13 @@ class GrupoEconomico extends Model {
           type: DataTypes.ENUM,
           values: ["ativo", "inativo"],
         },
-        tipo: DataTypes.STRING,
+        id_classificacao_cliente: {
+          type: DataTypes.INTEGER,
+          references: {
+            model: "classificacoes_clientes",
+            key: "id",
+          },
+        },
       },
       {
         sequelize,
@@ -26,6 +32,10 @@ class GrupoEconomico extends Model {
     this.hasMany(models.Cliente, {
       foreignKey: "id_grupo_economico",
       as: "clientes",
+    });
+    this.belongsTo(models.ClassificacaoClientes, {
+      foreignKey: "id_classificacao_cliente",
+      as: "classificacao",
     });
   }
 }

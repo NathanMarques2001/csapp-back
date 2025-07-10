@@ -3,9 +3,7 @@ const Contrato = require("../models/Contrato");
 const classifyCustomers = require("../utils/classifyCustomers");
 const { cpf, cnpj } = require("cpf-cnpj-validator");
 
-const EXCEPTION_LIST = [
-  "38532573000175", // ITA ALIMENTOS
-];
+const EXCEPTION_LIST = ["38532573000175"]; // ITA ALIMENTOS
 
 function validateCPFOrCNPJ(cpf_cnpj, res) {
   const documento = cpf_cnpj.replace(/[^\d]/g, "");
@@ -59,7 +57,7 @@ module.exports = {
         where: { id_grupo_economico: id },
       });
 
-      if (clientes.length == 0) {
+      if (clientes.length === 0) {
         return res.status(404).send({ message: "Nenhum cliente cadastrado!" });
       }
 
@@ -78,7 +76,7 @@ module.exports = {
         order: [["nome_fantasia", "ASC"]],
       });
 
-      if (clientes.length == 0) {
+      if (clientes.length === 0) {
         return res.status(404).send({ message: "Nenhum cliente cadastrado!" });
       }
 
@@ -92,10 +90,12 @@ module.exports = {
   async migrate(req, res) {
     try {
       const { antigo_vendedor, novo_vendedor } = req.body;
+
       await Cliente.update(
         { id_usuario: novo_vendedor },
         { where: { id_usuario: antigo_vendedor } },
       );
+
       return res
         .status(200)
         .send({ message: "Migração de clientes realizada com sucesso!" });
@@ -118,14 +118,14 @@ module.exports = {
       }
 
       if (cliente.status === "ativo") {
-        await Cliente.update({ status: "inativo" }, { where: { id: id } });
+        await Cliente.update({ status: "inativo" }, { where: { id } });
         await Contrato.update(
           { status: "inativo" },
           { where: { id_cliente: id } },
         );
         await classifyCustomers();
       } else {
-        await Cliente.update({ status: "ativo" }, { where: { id: id } });
+        await Cliente.update({ status: "ativo" }, { where: { id } });
       }
 
       return res
@@ -239,6 +239,7 @@ module.exports = {
         id_grupo_economico,
         tipo_unidade,
       } = req.body;
+
       const { id } = req.params;
 
       const cliente = await Cliente.findByPk(id);
@@ -247,16 +248,9 @@ module.exports = {
         return res.status(404).send({ message: "Cliente não encontrado!" });
       }
 
-      // Chama a função para validar CPF ou CNPJ
       const validationError = validateCPFOrCNPJ(cpf_cnpj, res);
       if (validationError) return validationError;
 
-      let novoEstadoTipo = cliente.tipo;
-      if (cliente.id_grupo_economico !== id_grupo_economico) {
-        novoEstadoTipo = null;
-      }
-
-      // Continua com a atualização do cliente se o CPF/CNPJ for válido
       await Cliente.update(
         {
           razao_social,
@@ -264,7 +258,6 @@ module.exports = {
           cpf_cnpj,
           id_usuario,
           nps,
-          tipo: novoEstadoTipo,
           id_segmento,
           gestor_contratos_nome,
           gestor_contratos_email,
@@ -285,7 +278,7 @@ module.exports = {
           id_grupo_economico,
           tipo_unidade,
         },
-        { where: { id: id } },
+        { where: { id } },
       );
 
       await classifyCustomers();
@@ -300,23 +293,4 @@ module.exports = {
         .send({ message: "Ocorreu um erro ao atualizar o cliente." });
     }
   },
-
-  // async delete(req, res) {
-  //   try {
-  //     const { id } = req.params;
-
-  //     const cliente = await Cliente.findByPk(id);
-
-  //     if (!cliente) {
-  //       return res.status(404).send({ message: 'Cliente não encontrado!' });
-  //     }
-
-  //     Cliente.destroy({ where: { id: id } });
-
-  //     return res.status(200).send({ message: 'Cliente deletado com sucesso!' });
-  //   } catch (error) {
-  //     console.error(error);
-  //     return res.status(500).send({ message: 'Ocorreu um erro ao deletar o cliente.' });
-  //   }
-  // }
 };

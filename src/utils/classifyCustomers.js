@@ -1,6 +1,7 @@
 const Contrato = require("../models/Contrato");
 const Cliente = require("../models/Cliente");
 const GrupoEconomico = require("../models/GrupoEconomico");
+const ClassificacaoClientes = require("../models/ClassificacaoCliente");
 
 function valueWithTax(value, tax) {
   return value + (value * tax) / 100;
@@ -10,12 +11,14 @@ async function classifyEntitiesOptimized() {
   try {
     console.log("[classifyEntitiesOptimized] Iniciando classificação...");
 
-    // 1. Buscar todos os grupos econômicos e clientes
-    const [gruposEconomicos, clientes, contratosAtivos] = await Promise.all([
-      GrupoEconomico.findAll(),
-      Cliente.findAll(),
-      Contrato.findAll({ where: { status: "ativo" } }),
-    ]);
+    // 1. Buscar todos os dados necessários
+    const [gruposEconomicos, clientes, contratosAtivos, classificacoes] =
+      await Promise.all([
+        GrupoEconomico.findAll(),
+        Cliente.findAll(),
+        Contrato.findAll({ where: { status: "ativo" } }),
+        ClassificacaoClientes.findAll({ order: [["valor", "DESC"]] }),
+      ]);
 
     // 2. Agrupar contratos por cliente
     const contratosPorCliente = contratosAtivos.reduce((map, contrato) => {
@@ -24,7 +27,7 @@ async function classifyEntitiesOptimized() {
       return map;
     }, {});
 
-    // 3. Calcular faturamento por cliente
+    // 3. Calcular faturamento mensal por cliente (com reajuste e tipo de faturamento)
     const faturamentoPorCliente = {};
     for (const cliente of clientes) {
       const contratosCliente = contratosPorCliente[cliente.id] || [];
@@ -35,19 +38,8 @@ async function classifyEntitiesOptimized() {
         let indiceReajuste = parseFloat(contrato.indice_reajuste);
         const tipo = contrato.tipo_faturamento;
 
-        if (isNaN(bruto)) {
-          console.warn(
-            `⚠️ Contrato ${contrato.id} do cliente ${cliente.id} com valor_mensal inválido: "${contrato.valor_mensal}"`,
-          );
-          continue;
-        }
-
-        if (isNaN(indiceReajuste)) {
-          console.warn(
-            `⚠️ Contrato ${contrato.id} do cliente ${cliente.id} sem índice de reajuste definido. Usando 0%.`,
-          );
-          indiceReajuste = 0;
-        }
+        if (isNaN(bruto)) continue;
+        if (isNaN(indiceReajuste)) indiceReajuste = 0;
 
         const valorMensal = tipo === "anual" ? bruto / 12 : bruto;
         const valorFinal = valueWithTax(valorMensal, indiceReajuste);
@@ -58,7 +50,7 @@ async function classifyEntitiesOptimized() {
       faturamentoPorCliente[cliente.id] = faturamentoCliente;
     }
 
-    // 4. Agrupar faturamento por grupo econômico
+    // 4. Calcular faturamento por grupo econômico (somando o de seus clientes)
     const faturamentoPorGrupo = {};
     for (const cliente of clientes) {
       if (cliente.id_grupo_economico) {
@@ -68,10 +60,9 @@ async function classifyEntitiesOptimized() {
       }
     }
 
-    // 5. Montar lista mesclada de faturamentos
+    // 5. Montar lista combinada de entidades para classificação
     const faturamentos = [];
 
-    // Adicionar grupos econômicos com faturamento
     for (const grupo of gruposEconomicos) {
       faturamentos.push({
         id: grupo.id,
@@ -80,7 +71,6 @@ async function classifyEntitiesOptimized() {
       });
     }
 
-    // Adicionar clientes sem grupo econômico
     for (const cliente of clientes.filter((c) => !c.id_grupo_economico)) {
       faturamentos.push({
         id: cliente.id,
@@ -89,35 +79,63 @@ async function classifyEntitiesOptimized() {
       });
     }
 
-    // 6. Ordenar do maior para menor faturamento
+    // 6. Ordenar todas entidades do maior para o menor faturamento
     faturamentos.sort((a, b) => b.faturamentoTotal - a.faturamentoTotal);
 
-    // 7. Classificar e atualizar bancos
-    for (let i = 0; i < faturamentos.length; i++) {
-      const { id, tipoEntidade, faturamentoTotal } = faturamentos[i];
+    // 7. Aplicar classificações baseadas em quantidade e valor
+    let index = 0;
+    for (const classificacao of classificacoes) {
+      // Classificação por quantidade (ex: top 10)
+      if (classificacao.quantidade) {
+        for (
+          let i = 0;
+          i < classificacao.quantidade && index < faturamentos.length;
+          i++
+        ) {
+          const entidade = faturamentos[index];
 
-      let tipoClassificacao;
-      if (i < 30) tipoClassificacao = "top 30";
-      else if (faturamentoTotal > 3000) tipoClassificacao = "a";
-      else if (faturamentoTotal > 2000) tipoClassificacao = "b";
-      else tipoClassificacao = "c";
+          if (entidade.tipoEntidade === "grupo") {
+            await GrupoEconomico.update(
+              { id_classificacao_cliente: classificacao.id },
+              { where: { id: entidade.id } },
+            );
+          } else {
+            await Cliente.update(
+              { id_classificacao_cliente: classificacao.id },
+              { where: { id: entidade.id } },
+            );
+          }
 
-      if (tipoEntidade === "grupo") {
+          index++;
+        }
+      }
+    }
+
+    // 8. Aplicar classificações por valor (ex: acima de 5k, acima de 3k, etc)
+    for (; index < faturamentos.length; index++) {
+      const entidade = faturamentos[index];
+      const { faturamentoTotal } = entidade;
+
+      // Encontrar a primeira classificação com valor compatível
+      const classificacaoValor = classificacoes.find(
+        (c) => c.valor && faturamentoTotal >= c.valor,
+      );
+
+      const idClassificacao = classificacaoValor
+        ? classificacaoValor.id
+        : classificacoes.find((c) => !c.valor && !c.quantidade)?.id;
+
+      if (!idClassificacao) continue;
+
+      if (entidade.tipoEntidade === "grupo") {
         await GrupoEconomico.update(
-          { tipo: tipoClassificacao },
-          { where: { id } },
+          { id_classificacao_cliente: idClassificacao },
+          { where: { id: entidade.id } },
         );
-        console.log(
-          `[classifyEntitiesOptimized] Grupo Econômico ${id} classificado como "${tipoClassificacao}" (faturamento: ${faturamentoTotal.toFixed(
-            2,
-          )})`,
-        );
-      } else if (tipoEntidade === "cliente") {
-        await Cliente.update({ tipo: tipoClassificacao }, { where: { id } });
-        console.log(
-          `[classifyEntitiesOptimized] Cliente ${id} classificado como "${tipoClassificacao}" (faturamento: ${faturamentoTotal.toFixed(
-            2,
-          )})`,
+      } else {
+        await Cliente.update(
+          { id_classificacao_cliente: idClassificacao },
+          { where: { id: entidade.id } },
         );
       }
     }
