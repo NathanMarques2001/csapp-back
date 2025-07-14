@@ -23,12 +23,14 @@
     "js-cookie": "^3.0.5",
     "jsonwebtoken": "^9.0.2",
     "jwks-rsa": "^3.2.0",
+    "multer": "^2.0.1",
     "mysql2": "^3.9.7",
     "node-fetch": "^3.3.2",
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",
     "sequelize": "^6.37.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@faker-js/faker": "^9.9.0",

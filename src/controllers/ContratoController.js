@@ -1,7 +1,10 @@
 const Contrato = require("../models/Contrato");
 const Cliente = require("../models/Cliente");
+const Produto = require("../models/Produto");
+const Faturado = require("../models/Faturado");
 const VencimentoContratos = require("../models/VencimentoContratos");
 const classifyCustomers = require("../utils/classifyCustomers");
+const XLSX = require("xlsx");
 
 module.exports = {
   async index(req, res) {
@@ -202,7 +205,7 @@ module.exports = {
           data_inicio,
           tipo_faturamento,
         },
-        { where: { id: id } },
+        { where: { id: id } }
       );
 
       await classifyCustomers();
@@ -213,7 +216,7 @@ module.exports = {
           : new Date(contrato.data_inicio);
         const duracaoContrato = duracao ? duracao : contrato.duracao;
         const vencimento = new Date(
-          inicio.setMonth(inicio.getMonth() + Number(duracaoContrato)),
+          inicio.setMonth(inicio.getMonth() + Number(duracaoContrato))
         );
         const statusContrato = status ? status : contrato.status;
         await VencimentoContratos.update(
@@ -222,7 +225,7 @@ module.exports = {
             status: statusContrato,
             data_vencimento: vencimento,
           },
-          { where: { id_contrato: contrato.id } },
+          { where: { id_contrato: contrato.id } }
         );
       }
 
@@ -234,6 +237,119 @@ module.exports = {
       return res
         .status(500)
         .send({ message: "Ocorreu um erro ao atualizar o contrato." });
+    }
+  },
+
+  async importarContratosExcel(req, res) {
+    try {
+      console.log("REQ FILE:", req.file?.originalname);
+
+      if (!req.file) {
+        return res.status(400).send({ message: "Arquivo não enviado." });
+      }
+
+      const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const dados = XLSX.utils.sheet_to_json(sheet);
+
+      for (const row of dados) {
+        const {
+          cpf_cnpj,
+          nome_produto,
+          nome_faturado, // agora é o nome do faturado
+          faturado,
+          dia_vencimento,
+          indice_reajuste,
+          nome_indice,
+          proximo_reajuste,
+          status,
+          duracao,
+          valor_mensal,
+          quantidade,
+          descricao,
+          data_inicio,
+          tipo_faturamento,
+        } = row;
+
+        // Buscar cliente
+        const cliente = await Cliente.findOne({ where: { cpf_cnpj } });
+        if (!cliente) {
+          console.warn(`Cliente não encontrado: ${cpf_cnpj}`);
+          continue;
+        }
+
+        // Buscar produto
+        const produto = await Produto.findOne({
+          where: { nome: nome_produto },
+        });
+        if (!produto) {
+          console.warn(`Produto não encontrado: ${nome_produto}`);
+          continue;
+        }
+
+        // Buscar faturado por nome
+        const entidadeFaturada = await Faturado.findOne({
+          where: { nome: nome_faturado },
+        });
+        if (!entidadeFaturada) {
+          console.warn(`Faturado não encontrado: ${nome_faturado}`);
+          continue;
+        }
+
+        // Verifica se já existe contrato
+        const contratoExistente = await Contrato.findOne({
+          where: {
+            id_cliente: cliente.id,
+            id_produto: produto.id,
+          },
+        });
+
+        const dadosContrato = {
+          id_cliente: cliente.id,
+          id_produto: produto.id,
+          faturado: faturado === 1 || faturado === "1" || faturado === true,
+          id_faturado: entidadeFaturada.id,
+          dia_vencimento,
+          indice_reajuste,
+          nome_indice,
+          proximo_reajuste: proximo_reajuste
+            ? new Date(proximo_reajuste)
+            : null,
+          status: status || "ativo",
+          duracao,
+          valor_mensal,
+          quantidade: quantidade || 1,
+          descricao: descricao || "Importado via Excel",
+          data_inicio: data_inicio ? new Date(data_inicio) : new Date(),
+          tipo_faturamento: tipo_faturamento || "mensal",
+        };
+
+        if (contratoExistente) {
+          await contratoExistente.update(dadosContrato);
+        } else {
+          const contratoCriado = await Contrato.create(dadosContrato);
+
+          const vencimento = new Date(dadosContrato.data_inicio);
+          vencimento.setMonth(
+            vencimento.getMonth() + parseInt(dadosContrato.duracao)
+          );
+
+          await VencimentoContratos.create({
+            id_contrato: contratoCriado.id,
+            status: dadosContrato.status,
+            data_vencimento: vencimento,
+          });
+        }
+      }
+
+      await classifyCustomers();
+
+      return res
+        .status(200)
+        .send({ message: "Importação concluída com sucesso." });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: "Erro ao importar contratos." });
     }
   },
 
