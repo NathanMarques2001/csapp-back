@@ -12,10 +12,10 @@ class Contrato extends Model {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
-        faturado: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-        },
+        // faturado: {
+        //   type: DataTypes.BOOLEAN,
+        //   allowNull: false,
+        // },
         id_faturado: {
           type: DataTypes.INTEGER,
           allowNull: false,
@@ -81,7 +81,7 @@ class Contrato extends Model {
       {
         sequelize,
         tableName: "contratos",
-      },
+      }
     );
   }
 

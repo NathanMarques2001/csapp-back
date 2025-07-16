@@ -6,6 +6,34 @@ const VencimentoContratos = require("../models/VencimentoContratos");
 const classifyCustomers = require("../utils/classifyCustomers");
 const XLSX = require("xlsx");
 
+// Função auxiliar para tratar a regra de negócio da quantidade
+async function tratarQuantidade(id_produto, quantidade) {
+  let quantidadeFinal = quantidade;
+  let aviso = null;
+
+  // Se não houver quantidade ou produto, não há o que fazer
+  if (quantidade === undefined || quantidade === null || !id_produto) {
+    return { quantidadeFinal: quantidade, aviso: null };
+  }
+
+  const produto = await Produto.findByPk(id_produto, { attributes: ["nome"] });
+  if (!produto) {
+    // Se o produto não for encontrado, mantém a quantidade original para não quebrar o fluxo
+    return { quantidadeFinal: quantidade, aviso: null };
+  }
+
+  const nomeNormalizado = produto.nome.toLowerCase();
+  const permiteQuantidade =
+    nomeNormalizado.includes("backup") || nomeNormalizado.includes("antivirus");
+
+  if (!permiteQuantidade) {
+    aviso = `A quantidade '${quantidade}' foi removida (definida como nula), pois o produto '${produto.nome}' não utiliza este campo.`;
+    quantidadeFinal = null;
+  }
+
+  return { quantidadeFinal, aviso };
+}
+
 module.exports = {
   async index(req, res) {
     try {
@@ -100,7 +128,6 @@ module.exports = {
       const {
         id_cliente,
         id_produto,
-        faturado,
         id_faturado,
         dia_vencimento,
         indice_reajuste,
@@ -115,10 +142,14 @@ module.exports = {
         tipo_faturamento,
       } = req.body;
 
+      const { quantidadeFinal, aviso } = await tratarQuantidade(
+        id_produto,
+        quantidade
+      );
+
       const contrato = await Contrato.create({
         id_cliente,
         id_produto,
-        faturado,
         id_faturado,
         dia_vencimento,
         indice_reajuste,
@@ -127,7 +158,7 @@ module.exports = {
         status,
         duracao,
         valor_mensal,
-        quantidade,
+        quantidade: quantidadeFinal,
         descricao,
         data_inicio,
         tipo_faturamento,
@@ -143,10 +174,12 @@ module.exports = {
         data_vencimento: vencimento,
       });
 
-      return res.status(201).send({
-        message: "Contrato criado com sucesso!",
-        contrato,
-      });
+      let message = "Contrato criado com sucesso!";
+      if (aviso) {
+        message += ` (Aviso: ${aviso})`;
+      }
+
+      return res.status(201).send({ message, contrato });
     } catch (error) {
       console.error(error);
       return res
@@ -160,7 +193,6 @@ module.exports = {
       const {
         id_cliente,
         id_produto,
-        faturado,
         id_faturado,
         dia_vencimento,
         indice_reajuste,
@@ -175,23 +207,22 @@ module.exports = {
         tipo_faturamento,
       } = req.body;
       const { id } = req.params;
-      //const containsLetters = /[a-zA-Z]/;
 
       const contrato = await Contrato.findByPk(id);
 
       if (!contrato) {
         return res.status(404).send({ message: "Contrato não encontrado!" });
-      } //else if (containsLetters.test(valor_mensal)) {
-      //   return res.status(400).send({ message: 'O campo valor mensal só aceita números!' });
-      // } else if (containsLetters.test(quantidade)) {
-      //   return res.status(400).send({ message: 'O campo quantidade só aceita números!' });
-      // }
+      }
+
+      const { quantidadeFinal, aviso } = await tratarQuantidade(
+        id_produto,
+        quantidade
+      );
 
       await Contrato.update(
         {
           id_cliente,
           id_produto,
-          faturado,
           id_faturado,
           dia_vencimento,
           indice_reajuste,
@@ -200,7 +231,7 @@ module.exports = {
           status,
           duracao,
           valor_mensal,
-          quantidade,
+          quantidade: quantidadeFinal,
           descricao,
           data_inicio,
           tipo_faturamento,
@@ -229,9 +260,12 @@ module.exports = {
         );
       }
 
-      return res
-        .status(200)
-        .send({ message: "Contrato atualizado com sucesso!" });
+      let message = "Contrato atualizado com sucesso!";
+      if (aviso) {
+        message += ` (Aviso: ${aviso})`;
+      }
+
+      return res.status(200).send({ message });
     } catch (error) {
       console.error(error);
       return res
@@ -241,116 +275,190 @@ module.exports = {
   },
 
   async importarContratosExcel(req, res) {
-    try {
-      console.log("REQ FILE:", req.file?.originalname);
+    if (!req.file) {
+      return res.status(400).send({ message: "Arquivo não enviado." });
+    }
 
-      if (!req.file) {
-        return res.status(400).send({ message: "Arquivo não enviado." });
-      }
+    const erros = [],
+      sucessos = [],
+      avisos = [];
+    const workbook = XLSX.read(req.file.buffer, {
+      type: "buffer",
+      cellDates: true,
+    });
+    const sheet = workbook.Sheets[workbook.SheetNames[0]];
+    const dados = XLSX.utils.sheet_to_json(sheet);
 
-      const workbook = XLSX.read(req.file.buffer, { type: "buffer" });
-      const sheet = workbook.Sheets[workbook.SheetNames[0]];
-      const dados = XLSX.utils.sheet_to_json(sheet);
+    for (const [index, row] of dados.entries()) {
+      const linhaExcel = index + 2;
 
-      for (const row of dados) {
-        const {
-          cpf_cnpj,
-          nome_produto,
-          nome_faturado, // agora é o nome do faturado
-          faturado,
-          dia_vencimento,
-          indice_reajuste,
-          nome_indice,
-          proximo_reajuste,
-          status,
-          duracao,
-          valor_mensal,
-          quantidade,
-          descricao,
-          data_inicio,
-          tipo_faturamento,
-        } = row;
+      try {
+        let { quantidade, ...demaisCampos } = row;
+        const { cpf_cnpj, nome_produto, nome_faturado, ...outrosCampos } =
+          demaisCampos;
 
-        // Buscar cliente
-        const cliente = await Cliente.findOne({ where: { cpf_cnpj } });
-        if (!cliente) {
-          console.warn(`Cliente não encontrado: ${cpf_cnpj}`);
+        if (!cpf_cnpj || !nome_produto) {
+          erros.push({
+            linha: linhaExcel,
+            motivo: "CPF/CNPJ ou Nome do Produto não preenchidos.",
+          });
           continue;
         }
 
-        // Buscar produto
+        const cliente = await Cliente.findOne({ where: { cpf_cnpj } });
+        if (!cliente) {
+          erros.push({
+            linha: linhaExcel,
+            motivo: `Cliente com CPF/CNPJ '${cpf_cnpj}' não encontrado.`,
+          });
+          continue;
+        }
+
         const produto = await Produto.findOne({
           where: { nome: nome_produto },
         });
         if (!produto) {
-          console.warn(`Produto não encontrado: ${nome_produto}`);
+          erros.push({
+            linha: linhaExcel,
+            motivo: `Produto '${nome_produto}' não encontrado.`,
+          });
           continue;
         }
 
-        // Buscar faturado por nome
-        const entidadeFaturada = await Faturado.findOne({
-          where: { nome: nome_faturado },
-        });
-        if (!entidadeFaturada) {
-          console.warn(`Faturado não encontrado: ${nome_faturado}`);
-          continue;
+        const nomeNormalizado = produto.nome.toLowerCase();
+        const permiteQuantidade =
+          nomeNormalizado.includes("backup") ||
+          nomeNormalizado.includes("antivirus");
+
+        // --- LÓGICA DE TRATAMENTO DA QUANTIDADE ---
+        if (
+          quantidade !== undefined &&
+          quantidade !== null &&
+          !permiteQuantidade
+        ) {
+          avisos.push({
+            linha: linhaExcel,
+            motivo: `A quantidade '${quantidade}' foi removida (nula), pois o produto '${produto.nome}' não utiliza este campo.`,
+          });
+          quantidade = null; // Força o valor para null
         }
 
-        // Verifica se já existe contrato
         const contratoExistente = await Contrato.findOne({
-          where: {
-            id_cliente: cliente.id,
-            id_produto: produto.id,
-          },
+          where: { id_cliente: cliente.id, id_produto: produto.id },
         });
-
-        const dadosContrato = {
-          id_cliente: cliente.id,
-          id_produto: produto.id,
-          faturado: faturado === 1 || faturado === "1" || faturado === true,
-          id_faturado: entidadeFaturada.id,
-          dia_vencimento,
-          indice_reajuste,
-          nome_indice,
-          proximo_reajuste: proximo_reajuste
-            ? new Date(proximo_reajuste)
-            : null,
-          status: status || "ativo",
-          duracao,
-          valor_mensal,
-          quantidade: quantidade || 1,
-          descricao: descricao || "Importado via Excel",
-          data_inicio: data_inicio ? new Date(data_inicio) : new Date(),
-          tipo_faturamento: tipo_faturamento || "mensal",
-        };
 
         if (contratoExistente) {
-          await contratoExistente.update(dadosContrato);
+          // --- LÓGICA DE ATUALIZAÇÃO ---
+          const dadosParaAtualizar = { ...outrosCampos };
+          if (row.quantidade !== undefined)
+            dadosParaAtualizar.quantidade = quantidade;
+
+          if (nome_faturado) {
+            const entidadeFaturada = await Faturado.findOne({
+              where: { nome: nome_faturado },
+            });
+            if (entidadeFaturada)
+              dadosParaAtualizar.id_faturado = entidadeFaturada.id;
+            else
+              avisos.push({
+                linha: linhaExcel,
+                motivo: `(UPDATE) Faturado '${nome_faturado}' não encontrado, faturado original mantido.`,
+              });
+          }
+
+          if (Object.keys(dadosParaAtualizar).length > 0) {
+            await contratoExistente.update(dadosParaAtualizar);
+            sucessos.push({
+              linha: linhaExcel,
+              acao: `Contrato ID ${contratoExistente.id} atualizado.`,
+            });
+          } else {
+            sucessos.push({
+              linha: linhaExcel,
+              acao: "Nenhum dado novo para atualizar.",
+            });
+          }
         } else {
-          const contratoCriado = await Contrato.create(dadosContrato);
+          // --- LÓGICA DE CRIAÇÃO ---
+          const camposObrigatorios = { nome_faturado, ...outrosCampos };
+          const camposFaltantes = Object.entries(camposObrigatorios)
+            .filter(
+              ([, value]) =>
+                value === undefined || value === null || value === ""
+            )
+            .map(([key]) => key);
 
-          const vencimento = new Date(dadosContrato.data_inicio);
-          vencimento.setMonth(
-            vencimento.getMonth() + parseInt(dadosContrato.duracao)
-          );
+          if (camposFaltantes.length > 0) {
+            erros.push({
+              linha: linhaExcel,
+              motivo: `Campos obrigatórios não preenchidos: ${camposFaltantes.join(
+                ", "
+              )}.`,
+            });
+            continue;
+          }
 
+          const entidadeFaturada = await Faturado.findOne({
+            where: { nome: nome_faturado },
+          });
+          if (!entidadeFaturada) {
+            erros.push({
+              linha: linhaExcel,
+              motivo: `(CREATE) Faturado '${nome_faturado}' não encontrado.`,
+            });
+            continue;
+          }
+
+          const dadosParaCriar = {
+            id_cliente: cliente.id,
+            id_produto: produto.id,
+            id_faturado: entidadeFaturada.id,
+            quantidade,
+            ...outrosCampos,
+          };
+          const contratoCriado = await Contrato.create(dadosParaCriar);
+
+          const vencimento = new Date(dadosParaCriar.data_inicio);
+          vencimento.setMonth(vencimento.getMonth() + dadosParaCriar.duracao);
           await VencimentoContratos.create({
             id_contrato: contratoCriado.id,
-            status: dadosContrato.status,
+            status: dadosParaCriar.status,
             data_vencimento: vencimento,
           });
+
+          sucessos.push({
+            linha: linhaExcel,
+            acao: `Novo contrato ID ${contratoCriado.id} criado.`,
+          });
         }
+      } catch (error) {
+        erros.push({
+          linha: linhaExcel,
+          motivo: `Erro inesperado: ${error.message}`,
+        });
       }
-
-      await classifyCustomers();
-
-      return res
-        .status(200)
-        .send({ message: "Importação concluída com sucesso." });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: "Erro ao importar contratos." });
     }
+
+    // --- Resposta Final com Relatório Completo ---
+    await classifyCustomers();
+
+    const statusFinal = erros.length > 0 ? 422 : 200;
+    let mensagemFinal = `${sucessos.length} linha(s) processada(s) com sucesso.`;
+    if (erros.length > 0)
+      mensagemFinal += ` ${erros.length} linha(s) com erros.`;
+    if (avisos.length > 0)
+      mensagemFinal += ` ${avisos.length} linha(s) com avisos.`;
+
+    return res.status(statusFinal).send({
+      message: mensagemFinal,
+      summary: {
+        sucesso: sucessos.length,
+        falhas: erros.length,
+        avisos: avisos.length,
+      },
+      erros,
+      avisos,
+    });
   },
 
   // async delete(req, res) {
