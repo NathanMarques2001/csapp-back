@@ -5,24 +5,22 @@ const Faturado = require("../models/Faturado");
 const VencimentoContratos = require("../models/VencimentoContratos");
 const classifyCustomers = require("../utils/classifyCustomers");
 const XLSX = require("xlsx");
+const removeAccents = require("remove-accents");
 
-// Função auxiliar para tratar a regra de negócio da quantidade
 async function tratarQuantidade(id_produto, quantidade) {
   let quantidadeFinal = quantidade;
   let aviso = null;
 
-  // Se não houver quantidade ou produto, não há o que fazer
   if (quantidade === undefined || quantidade === null || !id_produto) {
     return { quantidadeFinal: quantidade, aviso: null };
   }
 
   const produto = await Produto.findByPk(id_produto, { attributes: ["nome"] });
   if (!produto) {
-    // Se o produto não for encontrado, mantém a quantidade original para não quebrar o fluxo
     return { quantidadeFinal: quantidade, aviso: null };
   }
 
-  const nomeNormalizado = produto.nome.toLowerCase();
+  const nomeNormalizado = removeAccents(produto.nome.trim().toLowerCase());
   const permiteQuantidade =
     nomeNormalizado.includes("backup") || nomeNormalizado.includes("antivirus");
 
