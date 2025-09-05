@@ -1,8 +1,8 @@
 const Usuario = require("../models/Usuario.js");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const authConfig = require("/var/www/scrt/secret.json");
-//const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
+//const authConfig = require("/var/www/scrt/secret.json");
+const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
 const jwksClient = require("jwks-rsa");
 
 function gerarToken({ id, nome, tipo }) {
@@ -154,26 +154,26 @@ module.exports = {
     }
   },
 
-  // async store(req, res) {
-  //   try {
-  //     const { nome, email, tipo, senha } = req.body;
+  async store(req, res) {
+    try {
+      const { nome, email, tipo, senha } = req.body;
 
-  //     const usuario = await Usuario.create({ nome, email, tipo, senha });
+      const usuario = await Usuario.create({ nome, email, tipo, senha });
 
-  //     return res.status(201).send({
-  //       message: "Usuário criado com sucesso!",
-  //       usuario,
-  //     });
-  //   } catch (error) {
-  //     if (error.name == "SequelizeUniqueConstraintError") {
-  //       return res.status(400).send({ message: "E-mail já cadastrado!" });
-  //     }
-  //     console.error(error);
-  //     return res
-  //       .status(500)
-  //       .send({ message: "Ocorreu um erro ao criar o usuário." });
-  //   }
-  // },
+      return res.status(201).send({
+        message: "Usuário criado com sucesso!",
+        usuario,
+      });
+    } catch (error) {
+      if (error.name == "SequelizeUniqueConstraintError") {
+        return res.status(400).send({ message: "E-mail já cadastrado!" });
+      }
+      console.error(error);
+      return res
+        .status(500)
+        .send({ message: "Ocorreu um erro ao criar o usuário." });
+    }
+  },
 
   async update(req, res) {
     try {

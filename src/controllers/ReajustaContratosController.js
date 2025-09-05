@@ -24,7 +24,12 @@ async function filaContratos() {
       where: {
         status: "ativo",
         proximo_reajuste: { [Op.lte]: new Date() },
-        nome_indice: { [Op.not]: null },
+        nome_indice: {
+          [Op.and]: [
+            { [Op.not]: null },
+            { [Op.ne]: "" },
+          ],
+        },
         id: {
           [Op.notIn]: Sequelize.literal(
             "(SELECT cer.id_contrato FROM contratos_erros_reajuste cer)",
