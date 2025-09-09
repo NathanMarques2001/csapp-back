@@ -2,6 +2,7 @@ const Contrato = require("../models/Contrato");
 const Cliente = require("../models/Cliente");
 const Produto = require("../models/Produto");
 const Faturado = require("../models/Faturado");
+const Log = require("../models/Log");
 const VencimentoContratos = require("../models/VencimentoContratos");
 const classifyCustomers = require("../utils/classifyCustomers");
 const XLSX = require("xlsx");
@@ -30,6 +31,19 @@ async function tratarQuantidade(id_produto, quantidade) {
   }
 
   return { quantidadeFinal, aviso };
+}
+
+function normalizarValor(valor) {
+  if (valor instanceof Date) {
+    return valor.toISOString().split("T")[0]; // só a data
+  }
+  if (typeof valor === "number") {
+    return valor.toString();
+  }
+  if (typeof valor === "string" && !isNaN(valor)) {
+    return parseFloat(valor).toString(); // trata decimais tipo "2500.00"
+  }
+  return valor;
 }
 
 module.exports = {
@@ -145,6 +159,8 @@ module.exports = {
         quantidade
       );
 
+      const valor_antigo = valor_mensal;
+
       const contrato = await Contrato.create({
         id_cliente,
         id_produto,
@@ -160,6 +176,7 @@ module.exports = {
         descricao,
         data_inicio,
         tipo_faturamento,
+        valor_antigo
       });
 
       await classifyCustomers();
@@ -203,39 +220,68 @@ module.exports = {
         descricao,
         data_inicio,
         tipo_faturamento,
+        id_usuario
       } = req.body;
       const { id } = req.params;
 
       const contrato = await Contrato.findByPk(id);
-
       if (!contrato) {
         return res.status(404).send({ message: "Contrato não encontrado!" });
       }
+
+      const dadosAntigos = contrato.toJSON();
 
       const { quantidadeFinal, aviso } = await tratarQuantidade(
         id_produto,
         quantidade
       );
 
-      await Contrato.update(
-        {
-          id_cliente,
-          id_produto,
-          id_faturado,
-          dia_vencimento,
-          indice_reajuste,
-          nome_indice,
-          proximo_reajuste,
-          status,
-          duracao,
-          valor_mensal,
-          quantidade: quantidadeFinal,
-          descricao,
-          data_inicio,
-          tipo_faturamento,
-        },
-        { where: { id: id } }
-      );
+      let valor_antigo = contrato.valor_antigo;
+
+      if (normalizarValor(contrato.valor_mensal) !== normalizarValor(valor_mensal)) {
+        valor_antigo = contrato.valor_mensal;
+      }
+
+      await contrato.update({
+        id_cliente,
+        id_produto,
+        id_faturado,
+        dia_vencimento,
+        indice_reajuste,
+        nome_indice,
+        proximo_reajuste,
+        status,
+        duracao,
+        valor_mensal,
+        quantidade: quantidadeFinal,
+        descricao,
+        data_inicio,
+        tipo_faturamento,
+        valor_antigo
+      });
+
+      const dadosNovos = contrato.toJSON();
+
+      // Monta lista de alterações
+      const alteracoes = [];
+      for (let campo in dadosNovos) {
+        if (["createdAt", "updatedAt"].includes(campo)) continue; // ignora
+
+        const antes = normalizarValor(dadosAntigos[campo]);
+        const depois = normalizarValor(dadosNovos[campo]);
+
+        if (antes !== depois) {
+          alteracoes.push(`${campo}: '${antes}' → '${depois}'`);
+        }
+      }
+
+      if (alteracoes.length > 0) {
+        await Log.create({
+          id_usuario: id_usuario,
+          id_contrato: contrato.id,
+          alteracao: alteracoes.join("; "),
+        });
+      }
 
       await classifyCustomers();
 
@@ -263,14 +309,15 @@ module.exports = {
         message += ` (Aviso: ${aviso})`;
       }
 
-      return res.status(200).send({ message });
+      return res.status(200).send({ message, alteracoes });
     } catch (error) {
       console.error(error);
       return res
         .status(500)
         .send({ message: "Ocorreu um erro ao atualizar o contrato." });
     }
-  },
+  }
+  ,
 
   async importarContratosExcel(req, res) {
     if (!req.file) {

@@ -1,9 +1,9 @@
 const passport = require("passport");
 const OIDCStrategy = require("passport-azure-ad").OIDCStrategy;
 const Usuario = require("../models/Usuario");
-const microsoftConfig = require("/var/www/scrt/secret.json").microsoft;
-// const microsoftConfig =
-//  require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json").microsoft;
+//const microsoftConfig = require("/var/www/scrt/secret.json").microsoft;
+const microsoftConfig =
+ require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json").microsoft;
 
 passport.use(
   new OIDCStrategy(

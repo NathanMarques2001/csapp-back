@@ -77,6 +77,10 @@ class Contrato extends Model {
           type: DataTypes.ENUM("mensal", "anual"),
           allowNull: false,
         },
+        valor_antigo: {
+          type: DataTypes.DECIMAL(10, 2),
+          allowNull: false,
+        },
       },
       {
         sequelize,
