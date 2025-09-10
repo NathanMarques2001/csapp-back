@@ -88,42 +88,6 @@ module.exports = {
     }
   },
 
-  async indexAllPaginated(req, res) {
-    try {
-      let { page } = req.query;
-
-      // valores padrão
-      page = parseInt(page) || 1;
-      limit = 50;
-      const offset = (page - 1) * limit;
-
-      const { rows: clientes, count: total } = await Cliente.findAndCountAll({
-        order: [["nome_fantasia", "ASC"]],
-        limit,
-        offset,
-      });
-
-      if (clientes.length === 0) {
-        return res.status(404).send({ message: "Nenhum cliente cadastrado!" });
-      }
-
-      const totalPages = Math.ceil(total / limit);
-
-      return res.status(200).send({
-        clientes,
-        pagination: {
-          total,
-          page,
-          totalPages,
-          limit,
-        },
-      });
-    } catch (error) {
-      console.error(error);
-      return res.status(500).send({ message: "Erro ao buscar os clientes." });
-    }
-  },
-
   async migrate(req, res) {
     try {
       const { antigo_vendedor, novo_vendedor } = req.body;

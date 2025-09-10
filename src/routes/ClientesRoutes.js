@@ -6,7 +6,6 @@ const authMiddleware = require("../middlewares/auth.js");
 router.use(authMiddleware);
 router.get("/gestores-nascimento", ClienteController.gestoresComNascimento);
 router.get("/", ClienteController.indexAll);
-router.get("/:page", ClienteController.indexAllPaginated);
 router.get("/:id", ClienteController.index);
 router.get("/grupo-economico/:id", ClienteController.indexGrupoEconomico);
 router.post("/", ClienteController.store);
