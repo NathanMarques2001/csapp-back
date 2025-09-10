@@ -2,6 +2,7 @@ const Cliente = require("../models/Cliente");
 const Contrato = require("../models/Contrato");
 const classifyCustomers = require("../utils/classifyCustomers");
 const { cpf, cnpj } = require("cpf-cnpj-validator");
+const { Op } = require("sequelize");
 
 const EXCEPTION_LIST = ["38532573000175"]; // ITA ALIMENTOS
 
@@ -327,6 +328,30 @@ module.exports = {
       return res
         .status(500)
         .send({ message: "Ocorreu um erro ao atualizar o cliente." });
+    }
+  },
+
+  async gestoresComNascimento(req, res) {
+    try {
+      const clientes = await Cliente.findAll({
+        where: {
+          [Op.or]: [
+            { gestor_chamados_nascimento: { [Op.ne]: null } },
+            { gestor_contratos_nascimento: { [Op.ne]: null } },
+            { gestor_financeiro_nascimento: { [Op.ne]: null } },
+          ],
+        },
+        order: [["nome_fantasia", "ASC"]],
+      });
+
+      if (!clientes || clientes.length === 0) {
+        return res.status(404).send({ message: "Nenhum cliente encontrado!" });
+      }
+
+      return res.status(200).send({ clientes });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: "Erro ao buscar clientes com data de nascimento dos gestores." });
     }
   },
 };

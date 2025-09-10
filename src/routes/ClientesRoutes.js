@@ -4,6 +4,7 @@ const router = express.Router();
 const authMiddleware = require("../middlewares/auth.js");
 
 router.use(authMiddleware);
+router.get("/gestores-nascimento", ClienteController.gestoresComNascimento);
 router.get("/", ClienteController.indexAll);
 router.get("/:page", ClienteController.indexAllPaginated);
 router.get("/:id", ClienteController.index);
