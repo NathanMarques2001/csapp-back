@@ -1,10 +1,10 @@
 const fs = require("fs");
 const path = require("path");
 
-//const secretsPath = path.join("/var/www/scrt/db.json");
-const secretsPath = path.join(
- "C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/db.json",
-);
+const secretsPath = path.join("/var/www/scrt/db.json");
+//const secretsPath = path.join(
+// "C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/db.json",
+//);
 
 function loadSecrets() {
   try {
