@@ -1,5 +1,6 @@
 const Log = require("../models/Log");
 const Contrato = require("../models/Contrato");
+const Usuario = require("../models/Usuario");
 
 module.exports = {
   async index(req, res) {
@@ -44,9 +45,18 @@ module.exports = {
 
   async store(req, res) {
     try {
-      const { id_usuario, id_contrato, alteracao } = req.body;
+      let { nome_usuario, id_usuario, id_contrato, alteracao } = req.body;
 
-      const log = await Log.create({ id_usuario, id_contrato, alteracao });
+      if (!nome_usuario && id_usuario) {
+        const usuario = await Usuario.findByPk(id_usuario, { attributes: ["nome"] });
+        nome_usuario = usuario ? usuario.nome : null;
+      }
+
+      if (!nome_usuario) {
+        return res.status(400).send({ message: "Nome do usuário é obrigatório." });
+      }
+
+      const log = await Log.create({ nome_usuario, id_contrato, alteracao });
 
       return res.status(201).send({
         message: "Log criado com sucesso!",

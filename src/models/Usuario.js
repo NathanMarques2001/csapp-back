@@ -63,7 +63,6 @@ class Usuario extends Model {
   }
 
   static associate(models) {
-    this.hasMany(models.Log, { foreignKey: "id_usuario", as: "logs" });
     this.hasMany(models.Cliente, { foreignKey: "id_usuario", as: "clientes" });
     this.hasMany(models.Cliente, {
       foreignKey: "id_usuario",

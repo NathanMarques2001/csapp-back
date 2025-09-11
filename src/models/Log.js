@@ -4,8 +4,8 @@ class Log extends Model {
   static init(sequelize) {
     super.init(
       {
-        id_usuario: {
-          type: DataTypes.INTEGER,
+        nome_usuario: {
+          type: DataTypes.STRING(255),
           allowNull: false,
         },
         id_contrato: {
@@ -25,10 +25,7 @@ class Log extends Model {
   }
 
   static associate(models) {
-    this.belongsTo(models.Usuario, {
-      foreignKey: "id_usuario",
-      as: "usuarios",
-    });
+  // Logs no longer mantêm referência direta a Usuario (armazenamos o nome em `nome_usuario`)
     this.belongsTo(models.Contrato, {
       foreignKey: "id_contrato",
       as: "contratos",

@@ -3,6 +3,7 @@ const Cliente = require("../models/Cliente");
 const Produto = require("../models/Produto");
 const Faturado = require("../models/Faturado");
 const Log = require("../models/Log");
+const Usuario = require("../models/Usuario");
 const VencimentoContratos = require("../models/VencimentoContratos");
 const classifyCustomers = require("../utils/classifyCustomers");
 const XLSX = require("xlsx");
@@ -139,7 +140,7 @@ module.exports = {
     try {
       const {
         id_cliente,
-        id_produto,
+  id_produto,
         id_faturado,
         dia_vencimento,
         indice_reajuste,
@@ -205,7 +206,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-      const {
+  const {
         id_cliente,
         id_produto,
         id_faturado,
@@ -220,6 +221,7 @@ module.exports = {
         descricao,
         data_inicio,
         tipo_faturamento,
+        nome_usuario,
         id_usuario
       } = req.body;
       const { id } = req.params;
@@ -276,8 +278,16 @@ module.exports = {
       }
 
       if (alteracoes.length > 0) {
+        // Resolve nome do usuário: usa nome_usuario direto ou obtém pelo id_usuario quando fornecido
+        let nomeDoUsuario = nome_usuario;
+        if (!nomeDoUsuario && id_usuario) {
+          const usuario = await Usuario.findByPk(id_usuario, { attributes: ["nome"] });
+          nomeDoUsuario = usuario ? usuario.nome : null;
+        }
+        if (!nomeDoUsuario) nomeDoUsuario = "Sistema"; // fallback para evitar null que quebre a migration
+
         await Log.create({
-          id_usuario: id_usuario,
+          nome_usuario: nomeDoUsuario,
           id_contrato: contrato.id,
           alteracao: alteracoes.join("; "),
         });
