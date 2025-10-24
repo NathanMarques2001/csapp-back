@@ -47,6 +47,50 @@ function normalizarValor(valor) {
   return valor;
 }
 
+/**
+ * Tenta extrair e normalizar um valor decimal vindo do Excel.
+ * Aceita strings com vírgula como separador decimal, pontos como milhares,
+ * quebras de linha, múltiplos números na mesma célula etc.
+ * Retorna um Number quando possível, ou null quando não for interpretável.
+ */
+function parseDecimalCell(raw) {
+  if (raw === undefined || raw === null) return null;
+  if (typeof raw === "number") return raw;
+  if (typeof raw !== "string") raw = String(raw);
+
+  // remove espaços invisíveis e normaliza quebras de linha
+  let s = raw.replace(/\u00A0/g, " ").replace(/[\r\n]+/g, " ").trim();
+  if (s === "") return null;
+
+  // extrai o primeiro token que contenha dígitos/.,-
+  const m = s.match(/-?\d[\d.,]*/);
+  if (!m) return null;
+  s = m[0];
+
+  // se existir tanto '.' quanto ',', decidir qual é o separador decimal
+  const hasDot = s.indexOf(".") !== -1;
+  const hasComma = s.indexOf(",") !== -1;
+
+  if (hasDot && hasComma) {
+    // assume que o último separador é o decimal: se ultima vírgula vem depois do último ponto,
+    // a vírgula é decimal (ex: 1.234,56). Caso contrário, o ponto é decimal (ex: 1117.56\n1117,56)
+    if (s.lastIndexOf(",") > s.lastIndexOf(".")) {
+      s = s.replace(/\./g, "").replace(/,/g, ".");
+    } else {
+      s = s.replace(/,/g, "");
+    }
+  } else if (hasComma) {
+    // formato brasileiro: 1117,56 -> 1117.56
+    s = s.replace(/,/g, ".");
+  } else {
+    // apenas pontos ou nenhum separador: remove possíveis milhares mal colocados
+    s = s.replace(/\s+/g, "");
+  }
+
+  const n = parseFloat(s);
+  return Number.isFinite(n) ? n : null;
+}
+
 module.exports = {
   async index(req, res) {
     try {
@@ -352,6 +396,13 @@ module.exports = {
         const { cpf_cnpj, nome_produto, nome_faturado, ...outrosCampos } =
           demaisCampos;
 
+        // Normaliza/parseia valores numéricos vindos do Excel (ex.: "1.117,56\r\n1117.56")
+        const valorCelulaRaw = row.valor_mensal ?? outrosCampos.valor_mensal;
+        const valor_mensal_parsed = parseDecimalCell(valorCelulaRaw);
+        if (valor_mensal_parsed !== null) {
+          outrosCampos.valor_mensal = valor_mensal_parsed;
+        }
+
         if (!cpf_cnpj || !nome_produto) {
           erros.push({
             linha: linhaExcel,
@@ -405,8 +456,18 @@ module.exports = {
         if (contratoExistente) {
           // --- LÓGICA DE ATUALIZAÇÃO ---
           const dadosParaAtualizar = { ...outrosCampos };
-          if (row.quantidade !== undefined)
-            dadosParaAtualizar.quantidade = quantidade;
+          if (row.quantidade !== undefined) dadosParaAtualizar.quantidade = quantidade;
+
+          // Se a planilha trouxer um novo `valor_mensal` diferente do atual,
+          // armazenamos o valor antigo em `valor_antigo` e atualizamos `valor_mensal`.
+          // Importante: devemos colocar esses campos em `dadosParaAtualizar` para que
+          // sejam aplicados no `contratoExistente.update(...)`.
+          if (row.valor_mensal !== undefined) {
+            if (normalizarValor(row.valor_mensal) !== normalizarValor(contratoExistente.valor_mensal)) {
+              dadosParaAtualizar.valor_antigo = contratoExistente.valor_mensal;
+              dadosParaAtualizar.valor_mensal = row.valor_mensal;
+            }
+          }
 
           if (nome_faturado) {
             const entidadeFaturada = await Faturado.findOne({
@@ -420,6 +481,8 @@ module.exports = {
                 motivo: `(UPDATE) Faturado '${nome_faturado}' não encontrado, faturado original mantido.`,
               });
           }
+
+          console.log(dadosParaAtualizar);
 
           if (Object.keys(dadosParaAtualizar).length > 0) {
             await contratoExistente.update(dadosParaAtualizar);
@@ -471,7 +534,12 @@ module.exports = {
             quantidade,
             ...outrosCampos,
           };
+
+          dadosParaCriar.valor_antigo = 0;
+
           const contratoCriado = await Contrato.create(dadosParaCriar);
+
+          console.log(dadosParaCriar);
 
           const vencimento = new Date(dadosParaCriar.data_inicio);
           vencimento.setMonth(vencimento.getMonth() + dadosParaCriar.duracao);
