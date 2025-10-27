@@ -18,6 +18,7 @@ const VencimentoContratos = require("../models/VencimentoContratos");
 const GrupoEconomico = require("../models/GrupoEconomico.js");
 const ClassificacaoCliente = require("../models/ClassificacaoCliente.js");
 const CategoriaProduto = require("../models/CategoriaProduto.js");
+const Notificacao = require("../models/Notificacao.js");
 
 const connection = new sequelize(dbConfig);
 
@@ -40,6 +41,7 @@ const tables = [
   GrupoEconomico,
   ClassificacaoCliente,
   CategoriaProduto,
+  Notificacao,
 ];
 
 tables.forEach((table) => {

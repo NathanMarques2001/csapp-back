@@ -72,6 +72,10 @@ class Usuario extends Model {
       foreignKey: "id_usuario",
       as: "reset_senha",
     });
+    this.hasMany(models.Notificacao, {
+      foreignKey: "id_usuario",
+      as: "notificacoes",
+    });
   }
 }
 

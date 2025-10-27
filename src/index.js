@@ -2,8 +2,8 @@ require("./database");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const authConfig = require("/var/www/scrt/secret.json");
-//const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
+//const authConfig = require("/var/www/scrt/secret.json");
+const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
 require("./config/passportConfig.js");
 const cors = require("cors");
 const usuarioRoutes = require("./routes/UsuariosRoutes.js");
@@ -22,7 +22,9 @@ const vencimentoContratos = require("./routes/VencimentoContratosRoute.js");
 const gruposEconomicosRoutes = require("./routes/GruposEconomicosRoutes.js");
 const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRoutes.js");
 const categoriasProdutosRoutes = require("./routes/CategoriasProdutosRoutes.js");
-require("./cron/reajusteContratosDiario");
+const notificacoesRoutes = require("./routes/NotificacoesRoutes.js");
+const { iniciarCronNotificacoes } = require("./cron/notificacoesContratosDiario.js");
+//require("./cron/reajusteContratosDiario");
 
 const port = 8080;
 const app = express();
@@ -64,6 +66,9 @@ app.use("/api/vencimento-contratos", vencimentoContratos);
 app.use("/api/grupos-economicos", gruposEconomicosRoutes);
 app.use("/api/classificacoes-clientes", classificacoesClientesRoutes);
 app.use("/api/categorias-produtos", categoriasProdutosRoutes);
+app.use("/api/notificacoes", notificacoesRoutes);
+
+iniciarCronNotificacoes();
 
 app.listen(port, () => {
   const agora = new Date().toLocaleString("pt-BR", {

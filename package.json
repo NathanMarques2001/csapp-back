@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-csapp": "concurrently \"node src\" \"cd ../csapp-front && npm start\" \"cd ../csapp-email && node index.js\"",
+    "start-csapp": "concurrently \"npm start src\" \"cd ../csapp-front && npm start\" \"cd ../csapp-email && node index.js\"",
     "restart-db": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all && npm run start-csapp"
   },
   "keywords": [],
