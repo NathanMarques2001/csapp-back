@@ -6,6 +6,7 @@ const authMiddleware = require("../middlewares/auth.js");
 
 router.use(authMiddleware);
 router.get("/", notificacaoController.listar);
+router.get("/ativas", notificacaoController.listarAtivas);
 router.get("/usuario/:id_usuario", notificacaoController.listarPorUsuario);
 router.post("/", notificacaoController.criar);
 router.put("/:id/confirmar", notificacaoController.confirmar);

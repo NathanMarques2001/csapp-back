@@ -34,6 +34,37 @@ module.exports = {
 		}
 	},
 
+	async listarAtivas(req, res) {
+				try {
+			const notificacoes = await Notificacao.findAll({
+				where: { confirmado_sn: false },
+				include: [
+					{
+						model: Usuario,
+						as: "usuarios",
+						attributes: ["id", "nome", "email"],
+					},
+					{
+						model: Contrato,
+						as: "contratos",
+						attributes: [
+							"id",
+							"descricao",
+							"data_inicio",
+							"duracao",
+							"proximo_reajuste",
+						],
+					},
+				],
+				order: [["created_at", "DESC"]],
+			});
+			return res.json(notificacoes);
+		} catch (error) {
+			console.error("Erro ao listar notificações:", error);
+			return res.status(500).json({ error: "Erro ao listar notificações" });
+		}
+	},
+
 	// GET /notificacoes/usuario/:id_usuario
 	async listarPorUsuario(req, res) {
 		try {
