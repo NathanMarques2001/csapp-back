@@ -52,7 +52,7 @@ async function processarNotificacoesContratos(options = {}) {
           ? `Contrato ${contrato.id} vence hoje.`
           : `Contrato ${contrato.id} vence em ${diasVenc} dia(s).`;
         await criarNotificacaoUnica({
-          id_usuario: contrato.id_usuario_responsavel || contrato.id_usuario || 1,
+          id_usuario: contrato.id_usuario || 2,
           id_contrato: contrato.id,
           descricao: desc,
           modulo: "Contrato"
@@ -68,7 +68,7 @@ async function processarNotificacoesContratos(options = {}) {
           ? `Contrato ${contrato.id} tem reajuste hoje.`
           : `Contrato ${contrato.id} terá reajuste em ${diasReaj} dia(s).`;
         await criarNotificacaoUnica({
-          id_usuario: contrato.id_usuario_responsavel || contrato.id_usuario || 1,
+          id_usuario: contrato.id_usuario || 2,
           id_contrato: contrato.id,
           descricao: desc,
           modulo: "Reajuste"
