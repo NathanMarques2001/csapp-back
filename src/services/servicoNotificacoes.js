@@ -1,5 +1,6 @@
 const Notificacao = require("../models/Notificacao");
 const Contrato = require("../models/Contrato");
+const Cliente = require("../models/Cliente");
 const { Op } = require("sequelize");
 
 function addMonths(date, months) {
@@ -42,6 +43,8 @@ async function processarNotificacoesContratos(options = {}) {
   });
 
   for (const contrato of contratos) {
+    const cliente = await Cliente.findByPk(contrato.id_cliente);
+    if (!cliente) continue;
     // --- Vencimento calculado: data_inicio + duracao (em meses)
     if (contrato.data_inicio && contrato.duracao) {
       const vencimento = addMonths(new Date(contrato.data_inicio), Number(contrato.duracao));
@@ -52,7 +55,7 @@ async function processarNotificacoesContratos(options = {}) {
           ? `Contrato ${contrato.id} vence hoje.`
           : `Contrato ${contrato.id} vence em ${diasVenc} dia(s).`;
         await criarNotificacaoUnica({
-          id_usuario: contrato.id_usuario || 2,
+          id_usuario: cliente.id_usuario || 2,
           id_contrato: contrato.id,
           descricao: desc,
           modulo: "Contrato"
@@ -68,7 +71,7 @@ async function processarNotificacoesContratos(options = {}) {
           ? `Contrato ${contrato.id} tem reajuste hoje.`
           : `Contrato ${contrato.id} terá reajuste em ${diasReaj} dia(s).`;
         await criarNotificacaoUnica({
-          id_usuario: contrato.id_usuario || 2,
+          id_usuario: cliente.id_usuario || 2,
           id_contrato: contrato.id,
           descricao: desc,
           modulo: "Reajuste"
