@@ -184,7 +184,7 @@ module.exports = {
     try {
       const {
         id_cliente,
-  id_produto,
+        id_produto,
         id_faturado,
         dia_vencimento,
         indice_reajuste,
@@ -250,7 +250,7 @@ module.exports = {
 
   async update(req, res) {
     try {
-  const {
+      const {
         id_cliente,
         id_produto,
         id_faturado,
@@ -462,10 +462,14 @@ module.exports = {
           // armazenamos o valor antigo em `valor_antigo` e atualizamos `valor_mensal`.
           // Importante: devemos colocar esses campos em `dadosParaAtualizar` para que
           // sejam aplicados no `contratoExistente.update(...)`.
-          if (row.valor_mensal !== undefined) {
-            if (normalizarValor(row.valor_mensal) !== normalizarValor(contratoExistente.valor_mensal)) {
-              dadosParaAtualizar.valor_antigo = contratoExistente.valor_mensal;
-              dadosParaAtualizar.valor_mensal = row.valor_mensal;
+          // Só faz sentido comparar/atualizar se conseguimos parsear a célula
+          if (valor_mensal_parsed !== null) {
+            const valorPlanilha = valor_mensal_parsed;
+            const valorAtual = contratoExistente.valor_mensal;
+
+            if (normalizarValor(valorPlanilha) !== normalizarValor(valorAtual)) {
+              dadosParaAtualizar.valor_antigo = valorAtual;
+              dadosParaAtualizar.valor_mensal = valorPlanilha; // número limpinho
             }
           }
 
