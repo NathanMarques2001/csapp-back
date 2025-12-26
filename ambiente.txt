@@ -4,3 +4,4 @@
 /src/index.js
 /src/middleware/auth.js
 /src/services/email.js
+/src/services/servicoEmailNotificacoes.js

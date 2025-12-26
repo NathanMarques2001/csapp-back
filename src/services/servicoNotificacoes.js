@@ -3,6 +3,7 @@ const Contrato = require("../models/Contrato");
 const Cliente = require("../models/Cliente");
 const Produto = require("../models/Produto");
 const { Op } = require("sequelize");
+const { enqueueEmailNotification } = require("./emailQueue");
 
 function addMonths(date, months) {
   const d = new Date(date);
@@ -66,6 +67,13 @@ async function criarNotificacaoUnica({ id_usuario, id_contrato, descricao, modul
 
   if (!existe) {
     await Notificacao.create({ id_usuario, id_contrato, descricao, modulo });
+
+    // Ao criar a notificação, enfileirar envio de email (não bloqueante)
+    try {
+      enqueueEmailNotification({ id_usuario, id_contrato, descricao, modulo });
+    } catch (err) {
+      console.error("[NOTIF_EMAIL] Erro ao enfileirar email de notificação:", err);
+    }
   }
 }
 
