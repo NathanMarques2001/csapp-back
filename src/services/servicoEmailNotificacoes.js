@@ -18,7 +18,7 @@ async function enviarEmailNotificacao({ id_usuario, id_contrato, descricao, modu
     const subject = `Aviso de ${modulo} Contratual - ${cliente.razao_social}`;
     const text = descricao;
     // ALTERAR URL PARA PRODUÇÃO DEPOIS
-    const linkContrato = `http://localhost:3000/edicao-contrato/${id_contrato}`;
+    const linkContrato = `https://csapp.prolinx.com.br/edicao-contrato/${id_contrato}`;
 
     const html = `
     <div style="font-family: Arial, Helvetica, sans-serif; color: #333; line-height: 1.5;">
@@ -52,7 +52,7 @@ async function enviarEmailNotificacao({ id_usuario, id_contrato, descricao, modu
 
     try {
         await emailService.sendEmail({
-            to: "nathanmarques20@yahoo.com.br",
+            to: usuario.email,
             subject,
             text,
             html: htmlBase64,
