@@ -195,6 +195,7 @@ module.exports = {
         valor_mensal,
         quantidade,
         descricao,
+        link_contrato,
         data_inicio,
         tipo_faturamento,
       } = req.body;
@@ -219,6 +220,7 @@ module.exports = {
         valor_mensal,
         quantidade: quantidadeFinal,
         descricao,
+        link_contrato,
         data_inicio,
         tipo_faturamento,
         valor_antigo
@@ -263,6 +265,7 @@ module.exports = {
         valor_mensal,
         quantidade,
         descricao,
+        link_contrato,
         data_inicio,
         tipo_faturamento,
         nome_usuario,
@@ -301,6 +304,7 @@ module.exports = {
         valor_mensal,
         quantidade: quantidadeFinal,
         descricao,
+        link_contrato,
         data_inicio,
         tipo_faturamento,
         valor_antigo
