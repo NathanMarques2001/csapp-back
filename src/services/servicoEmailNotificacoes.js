@@ -15,14 +15,27 @@ async function enviarEmailNotificacao({ id_usuario, id_contrato, descricao, modu
     }
 
     const emailService = new Email();
-    const subject = `Aviso de ${modulo} Contratual - ${cliente.razao_social}`;
+    const subject = `Aviso de ${modulo === 'Contrato' ? 'Vencimento' : 'Reajuste'} Contratual - ${cliente.razao_social}`;
     const text = descricao;
     // ALTERAR URL PARA PRODUÇÃO DEPOIS
     const linkContrato = `https://csapp.prolinx.com.br/edicao-contrato/${id_contrato}`;
 
+    // Realçar trecho que começa em "vence" até o ponto final em negrito e vermelho
+    let highlightedDescricao = descricao || "";
+    try {
+      // regex procura 'vence' (case-insensitive) até o próximo ponto (inclui o ponto)
+      const regex = /vence[^.]*\.?/ig;
+      highlightedDescricao = (descricao || "").replace(regex, (match) => {
+        return `<span style="color:#ff0000;font-weight:700;">${match}</span>`;
+      });
+    } catch (err) {
+      // fallback: usar a descricao sem destaque
+      highlightedDescricao = descricao || "";
+    }
+
     const html = `
     <div style="font-family: Arial, Helvetica, sans-serif; color: #333; line-height: 1.5;">
-        <p>${descricao}</p>
+        <p>${highlightedDescricao}</p>
 
         <div style="margin: 24px 0;">
         <a
@@ -57,7 +70,7 @@ async function enviarEmailNotificacao({ id_usuario, id_contrato, descricao, modu
             text,
             html: htmlBase64,
         });
-        console.log(`[NOTIF_EMAIL] Enviado para ${"nathanmarques20@yahoo.com.br"}`);
+        console.log(`[NOTIF_EMAIL] Enviado para ${usuario.email} sobre contrato ID ${id_contrato}`);
     } catch (err) {
         console.error("[NOTIF_EMAIL] Erro ao enviar email:", err);
         throw err;
