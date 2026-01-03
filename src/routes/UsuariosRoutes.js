@@ -12,24 +12,24 @@ router.get(
   "/login-microsoft",
   passport.authenticate("azuread-openidconnect", {
     prompt: "select_account",
-    failureRedirect: "/login-failure",
+    failureRedirect: "/api/usuarios/login-failure",
   }),
 );
 
-router.post(
+router.get(
   "/login-microsoft/callback",
   (req, res, next) => {
     next();
   },
   passport.authenticate("azuread-openidconnect", {
-    failureRedirect: "/login-failure",
+    failureRedirect: "/api/usuarios/login-failure",
   }),
   UsuarioController.loginComMicrosoftCallback,
 );
 
 // Rota de falha genérica
 router.get("/login-failure", (req, res) => {
-  res.status(401).send({ message: "Falha no login com a Microsoft." });
+  res.redirect("https://csapp.prolinx.com.br/login?error=microsoft_auth_failed");
 });
 
 router.use(authMiddleware);

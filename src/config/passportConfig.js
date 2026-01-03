@@ -10,8 +10,8 @@ passport.use(
     {
       identityMetadata: microsoftConfig.identityMetadata,
       clientID: microsoftConfig.clientID,
-      responseType: microsoftConfig.responseType,
-      responseMode: microsoftConfig.responseMode,
+      responseType: "code",
+      responseMode: "query",
       redirectUrl: microsoftConfig.redirectUrl,
       allowHttpForRedirectUrl: true,
       clientSecret: microsoftConfig.clientSecret,
@@ -20,6 +20,7 @@ passport.use(
       logger: console,
       prompt: "select_account",
       passReqToCallback: false,
+      nonceCookieSecure: false
     },
     async (iss, sub, profile, accessToken, refreshToken, done) => {
       console.log("----------------------------------------------------");

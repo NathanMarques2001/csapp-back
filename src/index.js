@@ -39,10 +39,11 @@ app.use(
   session({
     secret: authConfig.secret,
     resave: false,
-    saveUninitialized: true,
+    saveUninitialized: false,
     cookie: {
       secure: true,
       maxAge: 60 * 60 * 1000,
+      sameSite: "lax"
     },
   })
 );
