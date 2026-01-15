@@ -69,7 +69,7 @@ class Contrato extends Model {
           },
         },
         descricao: DataTypes.TEXT,
-        link_contrato: DataTypes.STRING,
+        link_contrato: DataTypes.STRING(500),
         data_inicio: {
           type: DataTypes.DATE,
           allowNull: true,
