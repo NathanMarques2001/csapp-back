@@ -2,7 +2,7 @@ const axios = require("axios");
 
 class Email {
   // PRD
-  static baseUrl = "https://csapp.prolinx.com.br/email";
+  static baseUrl = "https://csapp.prolinx.com.br/email/email";
   // DEV
   // static baseUrl = "http://localhost:9090/email";
   constructor() {
