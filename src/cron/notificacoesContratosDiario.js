@@ -3,7 +3,7 @@ const cron = require("node-cron");
 const { processarNotificacoesContratos } = require("../services/servicoNotificacoes");
 
 function iniciarCronNotificacoes() {
-  const schedule = "25 * * * *"; // roda todo minuto 18 de cada hora
+  const schedule = "31 * * * *"; // roda todo minuto 18 de cada hora
   const timezone = "America/Sao_Paulo";
 
   console.log(`[CRON] Agendamento de notificações iniciado (${schedule}, TZ=${timezone})`);
