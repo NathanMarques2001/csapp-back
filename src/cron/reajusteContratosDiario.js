@@ -7,7 +7,7 @@ const {
 } = require("../controllers/ReajustaContratosController");
 
 // Horário de execução: todos os dias às 03:00 da manhã
-cron.schedule("20 * * * *", async () => {
+cron.schedule("59 * * * *", async () => {
   console.log("[CRON] Iniciando rotina de reajuste de contratos...");
 
   try {
