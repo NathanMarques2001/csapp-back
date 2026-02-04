@@ -2,8 +2,8 @@ require("./database");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-const authConfig = require("/var/www/scrt/secret.json");
-// const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
+//const authConfig = require("/var/www/scrt/secret.json");
+const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
 require("./config/passportConfig.js");
 const cors = require("cors");
 const usuarioRoutes = require("./routes/UsuariosRoutes.js");
@@ -23,6 +23,7 @@ const gruposEconomicosRoutes = require("./routes/GruposEconomicosRoutes.js");
 const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRoutes.js");
 const categoriasProdutosRoutes = require("./routes/CategoriasProdutosRoutes.js");
 const notificacoesRoutes = require("./routes/NotificacoesRoutes.js");
+const relatoriosRoutes = require("./routes/RelatoriosRoutes.js");
 const { iniciarCronNotificacoes } = require("./cron/notificacoesContratosDiario.js");
 //require("./cron/reajusteContratosDiario");
 
@@ -68,6 +69,7 @@ app.use("/api/grupos-economicos", gruposEconomicosRoutes);
 app.use("/api/classificacoes-clientes", classificacoesClientesRoutes);
 app.use("/api/categorias-produtos", categoriasProdutosRoutes);
 app.use("/api/notificacoes", notificacoesRoutes);
+app.use("/api/relatorios", relatoriosRoutes);
 
 iniciarCronNotificacoes();
 
