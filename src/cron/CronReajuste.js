@@ -1,20 +1,15 @@
 const cron = require("node-cron");
-const {
-  ajustaIndice,
-  ajustaValorMensal,
-  reprocessaContratosErro,
-  ajustaNovaData,
-} = require("../controllers/ReajustaContratosController");
+const ReajusteService = require("../services/ReajusteService");
 
 // Horário de execução: todos os dias às 03:00 da manhã
 cron.schedule("59 * * * *", async () => {
   console.log("[CRON] Iniciando rotina de reajuste de contratos...");
 
   try {
-    await ajustaValorMensal();
-    await ajustaIndice();
-    await reprocessaContratosErro();
-    await ajustaNovaData();
+    await ReajusteService.ajustaValorMensal();
+    await ReajusteService.ajustaIndice();
+    await ReajusteService.reprocessaContratosErro();
+    await ReajusteService.ajustaNovaData();
 
     console.log("[CRON] Reajuste de contratos concluído com sucesso.");
   } catch (err) {

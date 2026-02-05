@@ -2,8 +2,7 @@ require("./database");
 const express = require("express");
 const session = require("express-session");
 const passport = require("passport");
-//const authConfig = require("/var/www/scrt/secret.json");
-const authConfig = require("C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/secret.json");
+const authConfig = require("./config/auth");
 require("./config/passportConfig.js");
 const cors = require("cors");
 const usuarioRoutes = require("./routes/UsuariosRoutes.js");
@@ -24,8 +23,8 @@ const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRou
 const categoriasProdutosRoutes = require("./routes/CategoriasProdutosRoutes.js");
 const notificacoesRoutes = require("./routes/NotificacoesRoutes.js");
 const relatoriosRoutes = require("./routes/RelatoriosRoutes.js");
-const { iniciarCronNotificacoes } = require("./cron/notificacoesContratosDiario.js");
-//require("./cron/reajusteContratosDiario");
+const { iniciarCronNotificacoes } = require("./cron/CronNotificacoes.js");
+//require("./cron/CronReajuste");
 
 const port = 8080;
 const app = express();

@@ -1,5 +1,5 @@
 import axios from "axios";
-import Email from "../services/email.js";
+const EmailService = require("../services/EmailService");
 
 function MailAvisoVencimento(
   clienteNome,

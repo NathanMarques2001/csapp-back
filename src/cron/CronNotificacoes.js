@@ -1,6 +1,6 @@
 // src/cron/notificacoesContratosDiario.js
 const cron = require("node-cron");
-const { processarNotificacoesContratos } = require("../services/servicoNotificacoes");
+const { processarNotificacoesContratos } = require("../services/NotificacaoService");
 
 function iniciarCronNotificacoes() {
   const schedule = "2 * * * *"; // roda todo minuto 18 de cada hora

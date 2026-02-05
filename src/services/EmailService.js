@@ -13,7 +13,7 @@ class Email {
     });
   }
 
-  async sendEmail(data) {
+  async enviarEmail(data) {
     try {
       const res = await this.email.post(Email.baseUrl + "/send", data);
       return res.data;

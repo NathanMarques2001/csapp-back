@@ -28,9 +28,10 @@ module.exports = {
         order: [["nome", "ASC"]],
       });
 
-      if (produtos.length == 0) {
-        return res.status(404).send({ message: "Nenhum produto cadastrado!" });
-      }
+      // if (produtos.length == 0) {
+      //   return res.status(404).send({ message: "Nenhum produto cadastrado!" });
+      // }
+      return res.status(200).send({ produtos });
 
       return res.status(200).send({ produtos });
     } catch (error) {

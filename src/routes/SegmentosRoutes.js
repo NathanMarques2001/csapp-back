@@ -1,7 +1,7 @@
 const express = require("express");
 const SegmentoController = require("../controllers/SegmentoController.js");
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth.js");
+const authMiddleware = require("../middlewares/autenticacao.js");
 
 router.use(authMiddleware);
 router.get("/", SegmentoController.indexAll);

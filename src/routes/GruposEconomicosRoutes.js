@@ -1,7 +1,7 @@
 const express = require("express");
 const GrupoEconomicoController = require("../controllers/GrupoEconomicoController.js");
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth.js");
+const authMiddleware = require("../middlewares/autenticacao.js");
 
 router.use(authMiddleware);
 router.get("/", GrupoEconomicoController.indexAll);

@@ -26,11 +26,12 @@ module.exports = {
         order: [["nome", "ASC"]],
       });
 
-      if (fabricantes.length == 0) {
-        return res
-          .status(404)
-          .send({ message: "Nenhum fabricante cadastrado!" });
-      }
+      // if (fabricantes.length == 0) {
+      //   return res
+      //     .status(404)
+      //     .send({ message: "Nenhum fabricante cadastrado!" });
+      // }
+      return res.status(200).send({ fabricantes });
 
       return res.status(200).send({ fabricantes });
     } catch (error) {

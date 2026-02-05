@@ -1,7 +1,7 @@
 const express = require("express");
 const FaturadosController = require("../controllers/FaturadosController.js");
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth.js");
+const authMiddleware = require("../middlewares/autenticacao.js");
 
 router.use(authMiddleware);
 router.get("/", FaturadosController.indexAll);

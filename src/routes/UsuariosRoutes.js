@@ -2,7 +2,7 @@ const express = require("express");
 const UsuarioController = require("../controllers/UsuarioController.js");
 const router = express.Router();
 const passport = require("passport");
-const authMiddleware = require("../middlewares/auth.js");
+const authMiddleware = require("../middlewares/autenticacao.js");
 
 router.post("/login", UsuarioController.login);
 router.post("/", UsuarioController.store);

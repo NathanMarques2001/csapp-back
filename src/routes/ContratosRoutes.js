@@ -1,7 +1,7 @@
 const express = require("express");
 const ContratoController = require("../controllers/ContratoController.js");
-const authMiddleware = require("../middlewares/auth.js");
-const upload = require("../middlewares/upload.js"); // novo
+const authMiddleware = require("../middlewares/autenticacao.js");
+const middlewareUpload = require("../middlewares/uploadMiddleware.js");
 
 const router = express.Router();
 
@@ -16,7 +16,7 @@ router.put("/:id", ContratoController.update);
 
 router.post(
   "/importar-excel",
-  upload.single("file"), // nome do campo do form frontend
+  middlewareUpload.single("file"), // nome do campo do form frontend
   ContratoController.importarContratosExcel
 );
 

@@ -40,8 +40,6 @@ module.exports = {
         ),
       );
 
-      // startOfDay.setDate(startOfDay.getDate() - 1);
-      // endOfDay.setDate(endOfDay.getDate() - 1);
 
       const vencimentos = await VencimentoContratos.findAll({
         where: {

@@ -1,7 +1,8 @@
 const Cliente = require("../models/Cliente");
 const GrupoEconomico = require("../models/GrupoEconomico");
 const Contrato = require("../models/Contrato");
-const classifyCustomers = require("../utils/classifyCustomers");
+const classificarClientes = require("../utils/classificacaoClientes");
+
 
 module.exports = {
   async index(req, res) {
@@ -76,7 +77,7 @@ module.exports = {
             );
           }
         }
-        await classifyCustomers();
+        await classificarClientes();
       } else {
         await GrupoEconomico.update({ status: "ativo" }, { where: { id: id } });
       }

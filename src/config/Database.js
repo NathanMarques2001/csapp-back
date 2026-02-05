@@ -1,29 +1,11 @@
-const fs = require("fs");
-const path = require("path");
-
-//const secretsPath = path.join("/var/www/scrt/db.json");
-const secretsPath = path.join(
-  "C:/Users/nathan.brandao/OneDrive - FUNDAFFEMG/Documentos/dev/scrts/db.json",
-);
-
-function loadSecrets() {
-  try {
-    const rawData = fs.readFileSync(secretsPath, "utf8");
-    return JSON.parse(rawData);
-  } catch (error) {
-    console.error("Erro ao carregar secrets.json:", error.message);
-    process.exit(1);
-  }
-}
-
-const secrets = loadSecrets();
+require("dotenv").config();
 
 module.exports = {
-  host: secrets.DB_HOST,
+  host: process.env.DB_HOST,
   dialect: "mysql",
-  username: secrets.DB_USER,
-  password: secrets.DB_PASS,
-  database: secrets.DB_NAME,
+  username: process.env.DB_USER,
+  password: process.env.DB_PASS,
+  database: process.env.DB_NAME,
   timezone: "-03:00", // fuso fixo do servidor
   dialectOptions: {
     useUTC: false,

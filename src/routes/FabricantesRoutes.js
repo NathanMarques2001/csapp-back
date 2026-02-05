@@ -1,7 +1,7 @@
 const express = require("express");
 const FabricanteController = require("../controllers/FabricanteController.js");
 const router = express.Router();
-const authMiddleware = require("../middlewares/auth.js");
+const authMiddleware = require("../middlewares/autenticacao.js");
 
 router.use(authMiddleware);
 router.get("/", FabricanteController.indexAll);

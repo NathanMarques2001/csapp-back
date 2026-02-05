@@ -1,5 +1,5 @@
 const ClassificacaoCliente = require("../models/ClassificacaoCliente");
-const classifyCustomers = require("../utils/classifyCustomers");
+const classificarClientes = require("../utils/classificacaoClientes");
 
 module.exports = {
   async index(req, res) {
@@ -87,7 +87,7 @@ module.exports = {
         valor,
       });
 
-      await classifyCustomers();
+      await classificarClientes();
 
       return res.status(201).send({
         message: "Classificação criada com sucesso!",
@@ -148,7 +148,7 @@ module.exports = {
         valor,
       });
 
-      await classifyCustomers();
+      await classificarClientes();
 
       return res
         .status(200)

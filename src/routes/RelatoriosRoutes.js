@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const RelatorioController = require("../controllers/RelatorioController");
-const authMiddleware = require("../middlewares/auth");
+const authMiddleware = require("../middlewares/autenticacao");
 
 router.get(
     "/geral",
