@@ -23,7 +23,9 @@ const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRou
 const categoriasProdutosRoutes = require("./routes/CategoriasProdutosRoutes.js");
 const notificacoesRoutes = require("./routes/NotificacoesRoutes.js");
 const relatoriosRoutes = require("./routes/RelatoriosRoutes.js");
+const historicoRoutes = require("./routes/historicoRoutes.js");
 const { iniciarCronNotificacoes } = require("./cron/CronNotificacoes.js");
+require("./cron/CronHistorico.js");
 //require("./cron/CronReajuste");
 
 const port = 8080;
@@ -69,6 +71,7 @@ app.use("/api/classificacoes-clientes", classificacoesClientesRoutes);
 app.use("/api/categorias-produtos", categoriasProdutosRoutes);
 app.use("/api/notificacoes", notificacoesRoutes);
 app.use("/api/relatorios", relatoriosRoutes);
+app.use("/api/historico", historicoRoutes);
 
 iniciarCronNotificacoes();
 
