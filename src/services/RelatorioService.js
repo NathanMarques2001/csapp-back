@@ -31,7 +31,8 @@ class RelatorioService {
           con.data_inicio,
           con.duracao,
           con.tipo_faturamento,
-          con.proximo_reajuste
+          con.proximo_reajuste,
+          cli.created_at as data_criacao_cliente
         FROM contratos con
         INNER JOIN clientes cli ON con.id_cliente = cli.id
         INNER JOIN produtos sol ON con.id_produto = sol.id
