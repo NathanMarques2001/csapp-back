@@ -115,6 +115,7 @@ module.exports = {
         link_contrato,
         data_inicio,
         tipo_faturamento,
+        renovacao_automatica,
       } = req.body;
 
       const { quantidadeFinal, aviso } = await ContratoService.tratarQuantidade(
@@ -140,6 +141,7 @@ module.exports = {
         link_contrato,
         data_inicio,
         tipo_faturamento,
+        renovacao_automatica,
         valor_antigo
       });
 

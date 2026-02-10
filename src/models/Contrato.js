@@ -82,6 +82,10 @@ class Contrato extends Model {
           type: DataTypes.DECIMAL(10, 2),
           allowNull: false,
         },
+        renovacao_automatica: {
+          type: DataTypes.BOOLEAN,
+          defaultValue: false,
+        },
       },
       {
         sequelize,
