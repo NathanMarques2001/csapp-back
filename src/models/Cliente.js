@@ -30,6 +30,10 @@ class Cliente extends Model {
           allowNull: false,
           unique: true,
         },
+        vp: {
+          type: DataTypes.INTEGER,
+          allowNull: true,
+        },
         id_usuario: { type: DataTypes.INTEGER, allowNull: false },
         nps: DataTypes.INTEGER,
         id_segmento: { type: DataTypes.INTEGER, allowNull: false },
@@ -115,6 +119,10 @@ class Cliente extends Model {
     this.belongsTo(models.Usuario, {
       foreignKey: "id_usuario",
       as: "usuarios",
+    });
+    this.belongsTo(models.Usuario, {
+      foreignKey: "vp",
+      as: "vp_usuario",
     });
     this.belongsTo(models.Segmento, {
       foreignKey: "id_segmento",
