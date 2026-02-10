@@ -1,4 +1,12 @@
-require("dotenv").config();
+const path = require("path");
+const dotenvResult = require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+
+if (dotenvResult.error) {
+  console.error("[Index.js] Error loading .env:", dotenvResult.error);
+} else {
+  console.log("[Index.js] .env loaded successfully. Keys found:", Object.keys(dotenvResult.parsed || {}).length);
+}
+
 require("./database");
 const express = require("express");
 const session = require("express-session");
