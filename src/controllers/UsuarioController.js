@@ -27,7 +27,7 @@ module.exports = {
     try {
       const usuario = req.user;
 
-      const token = AuthService.gerarToken({
+      const token = AutenticacaoService.gerarToken({
         id: usuario.id,
         nome: usuario.nome,
         tipo: usuario.tipo,
