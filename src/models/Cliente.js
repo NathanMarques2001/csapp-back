@@ -51,6 +51,7 @@ class Cliente extends Model {
         data_criacao: {
           type: DataTypes.DATE,
           allowNull: false,
+          defaultValue: DataTypes.NOW,
           validate: {
             isDate: {
               msg: "Data de criação inválida",
