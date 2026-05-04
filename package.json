@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/index.js",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "build": "echo 'No build step'",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start-csapp": "concurrently \"node src\" \"cd ../csapp-front && npm start\" \"cd ../csapp-email && node index.js\"",
-    "restart-db": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all && npm run start-csapp"
+    "restart-db": "npx sequelize db:drop && npx sequelize db:create && npx sequelize db:migrate && npx sequelize db:seed:all"
   },
   "keywords": [],
   "author": "",
@@ -16,6 +17,7 @@
     "axios": "^1.7.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
+    "dotenv": "^16.6.1",
     "express": "^4.19.2",
     "express-session": "^1.18.1",
     "fs": "^0.0.1-security",
@@ -27,10 +29,10 @@
     "passport": "^0.7.0",
     "passport-azure-ad": "^4.3.5",
     "sequelize": "^6.37.3",
-    "uuid": "^11.1.0"
+    "uuid": "^11.1.0",
+    "zod": "^4.3.6"
   },
   "devDependencies": {
-    "concurrently": "^9.1.2",
     "nodemon": "^3.1.0",
     "sequelize-cli": "^6.6.2"
   }

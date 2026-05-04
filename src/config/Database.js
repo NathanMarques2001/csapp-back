@@ -1,26 +1,21 @@
 const fs = require('fs');
-const path = require('path');
+require('dotenv').config();
 
-const secretsPath = path.join('/var/www/scrt/db.json');
-
-function loadSecrets() {
-  try {
-    const rawData = fs.readFileSync(secretsPath, 'utf8');
-    return JSON.parse(rawData);
-  } catch (error) {
-    console.error('Erro ao carregar secrets.json:', error.message);
-    process.exit(1);
+let dbSecrets = {};
+try {
+  if (fs.existsSync('/run/secrets/db.json')) {
+    dbSecrets = JSON.parse(fs.readFileSync('/run/secrets/db.json', 'utf8'));
   }
+} catch (e) {
+  console.warn("Aviso: Falha ao ler /run/secrets/db.json, usando process.env", e.message);
 }
 
-const secrets = loadSecrets();
-
 module.exports = {
-  host: secrets.DB_HOST,
+  host: dbSecrets.DB_HOST || process.env.DB_HOST || '127.0.0.1',
   dialect: "mysql",
-  username: secrets.DB_USER,
-  password: secrets.DB_PASS,
-  database: secrets.DB_NAME,
+  username: dbSecrets.DB_USER || process.env.DB_USER || 'root',
+  password: dbSecrets.DB_PASS || process.env.DB_PASS || 'root',
+  database: dbSecrets.DB_NAME || process.env.DB_NAME || 'csapp_db',
   timezone: '-03:00',
   dialectOptions: {
     useUTC: false,
