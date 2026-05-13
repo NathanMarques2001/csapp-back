@@ -14,28 +14,26 @@ const passport = require("passport");
 const authConfig = require("./config/auth");
 require("./config/passportConfig.js");
 const cors = require("cors");
-const usuarioRoutes = require("./routes/UsuariosRoutes.js");
-const produtoRoutes = require("./routes/ProdutosRoutes.js");
-const logsRoutes = require("./routes/LogsRoutes.js");
-const fatosImportantesRoutes = require("./routes/FatosImportantesRoutes.js");
-const fabricantesRoutes = require("./routes/FabricantesRoutes.js");
-const contratosRoutes = require("./routes/ContratosRoutes.js");
-const contatosTecnicosRoutes = require("./routes/ContatosTecnicosRoutes.js");
-const contatosComerciaisRoutes = require("./routes/ContatosComerciaisRoutes.js");
-const clienteRoutes = require("./routes/ClientesRoutes.js");
-const segmentosRoutes = require("./routes/SegmentosRoutes.js");
-const faturadosRoutes = require("./routes/FaturadosRoutes.js");
-const resetSenhaRoutes = require("./routes/ResetSenhaRoutes.js");
-const vencimentoContratos = require("./routes/VencimentoContratosRoute.js");
-const gruposEconomicosRoutes = require("./routes/GruposEconomicosRoutes.js");
-const classificacoesClientesRoutes = require("./routes/ClassificacoesClientesRoutes.js");
-const categoriasProdutosRoutes = require("./routes/CategoriasProdutosRoutes.js");
-const notificacoesRoutes = require("./routes/NotificacoesRoutes.js");
-const relatoriosRoutes = require("./routes/RelatoriosRoutes.js");
-const historicoRoutes = require("./routes/historicoRoutes.js");
+const usuarioRoutes = require("./modules/usuario/usuario.routes.js");
+const produtoRoutes = require("./modules/produto/produto.routes.js");
+const logsRoutes = require("./modules/log/log.routes.js");
+const fatosImportantesRoutes = require("./modules/fatos-importantes/fatos-importantes.routes.js");
+const fabricantesRoutes = require("./modules/fabricante/fabricante.routes.js");
+const contratosRoutes = require("./modules/contrato/contrato.routes.js");
+const contatosTecnicosRoutes = require("./modules/contato-tecnico/contato-tecnico.routes.js");
+const contatosComerciaisRoutes = require("./modules/contato-comercial/contato-comercial.routes.js");
+const clienteRoutes = require("./modules/cliente/cliente.routes.js");
+const segmentosRoutes = require("./modules/segmento/segmento.routes.js");
+const faturadosRoutes = require("./modules/faturado/faturado.routes.js");
+const resetSenhaRoutes = require("./modules/reset-senha/reset-senha.routes.js");
+const vencimentoContratos = require("./modules/vencimento-contrato/vencimento-contrato.routes.js");
+const gruposEconomicosRoutes = require("./modules/grupo-economico/grupo-economico.routes.js");
+const classificacoesClientesRoutes = require("./modules/classificacao-cliente/classificacao-cliente.routes.js");
+const categoriasProdutosRoutes = require("./modules/categoria-produto/categoria-produto.routes.js");
+const notificacoesRoutes = require("./modules/notificacao/notificacao.routes.js");
+const relatoriosRoutes = require("./modules/relatorio/relatorio.routes.js");
+const historicoRoutes = require("./modules/historico/historico.routes.js");
 const { iniciarCronNotificacoes } = require("./cron/CronNotificacoes.js");
-require("./cron/CronHistorico.js");
-//require("./cron/CronReajuste");
 
 const port = 8080;
 const app = express();
@@ -82,12 +80,22 @@ app.use("/api/notificacoes", notificacoesRoutes);
 app.use("/api/relatorios", relatoriosRoutes);
 app.use("/api/historico", historicoRoutes);
 
-iniciarCronNotificacoes();
+if (process.env.NODE_ENV !== "test") {
+  require("./cron/CronHistorico.js");
+  iniciarCronNotificacoes();
+}
 
-app.listen(port, () => {
-  const agora = new Date().toLocaleString("pt-BR", {
-    timeZone: "America/Sao_Paulo",
+const errorHandler = require("./middlewares/errorHandler");
+app.use(errorHandler);
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(port, () => {
+    const agora = new Date().toLocaleString("pt-BR", {
+      timeZone: "America/Sao_Paulo",
+    });
+    console.log(`Servidor rodando na porta ${port}`);
+    console.log(`Iniciado em: ${agora}`);
   });
-  console.log(`Servidor rodando na porta ${port}`);
-  console.log(`Iniciado em: ${agora}`);
-});
+}
+
+module.exports = app;

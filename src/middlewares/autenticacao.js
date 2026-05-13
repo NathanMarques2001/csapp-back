@@ -9,7 +9,7 @@ module.exports = (req, res, next) => {
 
     const partes = cabecalhoAuth.split(" ");
 
-    if (!partes.length === 2)
+    if (partes.length !== 2)
         return res.status(401).send({ error: "Erro no token!" });
 
     const [esquema, token] = partes;

@@ -1,0 +1,67 @@
+
+> back-sistema-gerenciamento-contratos@1.0.0 test
+> cross-env NODE_ENV=test jest --detectOpenHandles --forceExit src/modules/vencimento-contrato/
+
+{"name":"AzureAD: OIDC Passport Strategy","hostname":"TI-05","pid":20328,"level":40,"msg":"Using http for redirectUrl is not recommended, please consider using https","time":"2026-03-31T22:40:35.095Z","v":0}
+FAIL src/modules/vencimento-contrato/vencimento-contrato.controller.test.js
+  ● Console
+
+    console.log
+      [dotenv@17.2.3] injecting env (12) from .env -- tip: ⚙️  suppress all logs with { quiet: true }
+
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+
+    console.log
+      [Index.js] .env loaded successfully. Keys found: 12
+
+      at Object.log (src/index.js:7:11)
+
+    console.log
+      [dotenv@17.2.3] injecting env (0) from .env -- tip: ⚙️  override existing env vars with { override: true }
+
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+
+    console.log
+      [dotenv@17.2.3] injecting env (0) from .env -- tip: 🔑 add access controls to secrets: https://dotenvx.com/ops
+
+      at _log (node_modules/dotenv/lib/main.js:142:11)
+
+    console.warn
+      [Auth Config] WARN: JWT_SECRET not set. Using unsafe default.
+
+    [0m [90m 15 |[39m
+     [90m 16 |[39m [36mif[39m ([33m![39mprocess[33m.[39menv[33m.[39m[33mJWT_SECRET[39m) {
+    [31m[1m>[22m[39m[90m 17 |[39m     console[33m.[39mwarn([32m"[Auth Config] WARN: JWT_SECRET not set. Using unsafe default."[39m)[33m;[39m
+     [90m    |[39m             [31m[1m^[22m[39m
+     [90m 18 |[39m }
+     [90m 19 |[39m
+     [90m 20 |[39m module[33m.[39mexports [33m=[39m {[0m
+
+      at Object.warn (src/config/auth.js:17:13)
+      at Object.require (src/index.js:14:20)
+      at Object.require (src/modules/vencimento-contrato/vencimento-contrato.controller.test.js:2:13)
+
+  ● VencimentoContratoController E2E › [GET] /api/vencimento-contratos/email-data/:id_contrato
+
+    expect(received).toBe(expected) // Object.is equality
+
+    Expected: 200
+    Received: 404
+
+    [0m [90m 31 |[39m     [33mVencimentoContratoService[39m[33m.[39mgetEmailData[33m.[39mmockResolvedValue({ usuario_nome[33m:[39m [32m'Teste'[39m })[33m;[39m
+     [90m 32 |[39m     [36mconst[39m res [33m=[39m [36mawait[39m request(app)[33m.[39m[36mget[39m([32m'/api/vencimento-contratos/email-data/1'[39m)[33m.[39m[36mset[39m([32m'Authorization'[39m[33m,[39m [32m`Bearer ${tokenAuth}`[39m)[33m;[39m
+    [31m[1m>[22m[39m[90m 33 |[39m     expect(res[33m.[39mstatus)[33m.[39mtoBe([35m200[39m)[33m;[39m
+     [90m    |[39m                        [31m[1m^[22m[39m
+     [90m 34 |[39m   })[33m;[39m
+     [90m 35 |[39m
+     [90m 36 |[39m   it([32m'[POST] /api/vencimento-contratos'[39m[33m,[39m [36masync[39m () [33m=>[39m {[0m
+
+      at Object.toBe (src/modules/vencimento-contrato/vencimento-contrato.controller.test.js:33:24)
+
+PASS src/modules/vencimento-contrato/vencimento-contrato.service.test.js
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       1 failed, 13 passed, 14 total
+Snapshots:   0 total
+Time:        1.543 s, estimated 2 s
+Ran all test suites matching src/modules/vencimento-contrato/.

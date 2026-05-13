@@ -29,6 +29,61 @@ class Cliente extends Model {
           type: DataTypes.STRING,
           allowNull: false,
           unique: true,
+          validate: {
+            isValidCpfCnpj(value) {
+              if (!value) return;
+              const numbers = value.replace(/[^\d]/g, '');
+              
+              if (numbers.length !== 11 && numbers.length !== 14) {
+                throw new Error("A quantidade de dígitos numéricos para CPF ou CNPJ está incorreta");
+              }
+              
+              // Verifica todos os dígitos iguais (ex: 00000000000)
+              if (/^(\d)\1+$/.test(numbers)) {
+                throw new Error("O CPF/CNPJ informado é inválido");
+              }
+
+              // Validação de CPF
+              if (numbers.length === 11) {
+                let sum = 0;
+                for (let i = 0; i < 9; i++) sum += parseInt(numbers.charAt(i)) * (10 - i);
+                let rev = 11 - (sum % 11);
+                if (rev === 10 || rev === 11) rev = 0;
+                if (rev !== parseInt(numbers.charAt(9))) throw new Error("Dígito verificador do CPF inválido");
+                
+                sum = 0;
+                for (let i = 0; i < 10; i++) sum += parseInt(numbers.charAt(i)) * (11 - i);
+                rev = 11 - (sum % 11);
+                if (rev === 10 || rev === 11) rev = 0;
+                if (rev !== parseInt(numbers.charAt(10))) throw new Error("Dígito verificador do CPF inválido");
+              } 
+              // Validação de CNPJ
+              else if (numbers.length === 14) {
+                let tamanho = numbers.length - 2;
+                let digitos = numbers.substring(tamanho);
+                let calculoCNPJ = numbers.substring(0, tamanho);
+                let soma = 0;
+                let pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) {
+                  soma += parseInt(calculoCNPJ.charAt(tamanho - i)) * pos--;
+                  if (pos < 2) pos = 9;
+                }
+                let resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+                if (resultado !== parseInt(digitos.charAt(0))) throw new Error("Dígito verificador do CNPJ inválido");
+                
+                tamanho = tamanho + 1;
+                calculoCNPJ = numbers.substring(0, tamanho);
+                soma = 0;
+                pos = tamanho - 7;
+                for (let i = tamanho; i >= 1; i--) {
+                  soma += parseInt(calculoCNPJ.charAt(tamanho - i)) * pos--;
+                  if (pos < 2) pos = 9;
+                }
+                resultado = soma % 11 < 2 ? 0 : 11 - (soma % 11);
+                if (resultado !== parseInt(digitos.charAt(1))) throw new Error("Dígito verificador do CNPJ inválido");
+              }
+            }
+          }
         },
         vp: {
           type: DataTypes.INTEGER,
