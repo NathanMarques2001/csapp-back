@@ -4,7 +4,7 @@
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.changeColumn("contratos", "quantidade", {
-      type: Sequelize.DECIMAL(10, 1),
+      type: Sequelize.DECIMAL(10, 2),
       allowNull: true,
       validate: {
         min: 0,

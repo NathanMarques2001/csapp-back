@@ -31,8 +31,8 @@ class ContratoService {
             aviso = `A quantidade '${quantidade}' foi removida (definida como nula), pois o produto '${produto.nome}' não utiliza este campo.`;
             quantidadeFinal = null;
         } else {
-            // Garante no máximo uma casa decimal
-            quantidadeFinal = parseFloat(parseFloat(quantidade).toFixed(1));
+            // Garante no máximo duas casas decimais
+            quantidadeFinal = parseFloat(parseFloat(quantidade).toFixed(2));
         }
 
         return { quantidadeFinal, aviso };
