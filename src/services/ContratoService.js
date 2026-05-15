@@ -11,9 +11,6 @@ const removeAccents = require("remove-accents");
 
 class ContratoService {
     async tratarQuantidade(id_produto, quantidade) {
-        let quantidadeFinal = quantidade;
-        let aviso = null;
-
         if (quantidade === undefined || quantidade === null || !id_produto) {
             return { quantidadeFinal: quantidade, aviso: null };
         }
@@ -27,9 +24,15 @@ class ContratoService {
         const permiteQuantidade =
             nomeNormalizado.includes("backup") || nomeNormalizado.includes("antivirus");
 
+        let quantidadeFinal = quantidade;
+        let aviso = null;
+
         if (!permiteQuantidade) {
             aviso = `A quantidade '${quantidade}' foi removida (definida como nula), pois o produto '${produto.nome}' não utiliza este campo.`;
             quantidadeFinal = null;
+        } else {
+            // Garante no máximo uma casa decimal
+            quantidadeFinal = parseFloat(parseFloat(quantidade).toFixed(1));
         }
 
         return { quantidadeFinal, aviso };
@@ -200,15 +203,18 @@ class ContratoService {
                     continue;
                 }
 
-                const nomeNormalizado = produto.nome.toLowerCase();
-                const permiteQuantidade = nomeNormalizado.includes("backup") || nomeNormalizado.includes("antivirus");
+                const quantidadeParsed = this.parseDecimalCell(quantidade);
+                const { quantidadeFinal, aviso: avisoQuantidade } = await this.tratarQuantidade(
+                    produto.id,
+                    quantidadeParsed
+                );
+                quantidade = quantidadeFinal;
 
-                if (quantidade !== undefined && quantidade !== null && !permiteQuantidade) {
+                if (avisoQuantidade) {
                     avisos.push({
                         linha: linhaExcel,
-                        motivo: `A quantidade '${quantidade}' foi removida (nula), pois o produto '${produto.nome}' não utiliza este campo.`,
+                        motivo: avisoQuantidade,
                     });
-                    quantidade = null;
                 }
 
                 const contratoExistente = await Contrato.findOne({

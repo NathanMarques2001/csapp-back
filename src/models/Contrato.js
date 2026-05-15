@@ -60,7 +60,7 @@ class Contrato extends Model {
           },
         },
         quantidade: {
-          type: DataTypes.INTEGER,
+          type: DataTypes.DECIMAL(10, 1),
           validate: {
             min: {
               args: [0],
