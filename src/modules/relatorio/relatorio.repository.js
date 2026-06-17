@@ -11,6 +11,7 @@ class RelatorioRepository {
         sol.nome AS solucao,
         con.valor_mensal AS valor_contrato,
         usu.nome AS vendedor,
+        vp_usu.nome AS vp,
         cli.status,
         cli.gestor_chamados_nome,
         cli.gestor_chamados_email,
@@ -36,7 +37,8 @@ class RelatorioRepository {
       FROM contratos con
       INNER JOIN clientes cli ON con.id_cliente = cli.id
       INNER JOIN produtos sol ON con.id_produto = sol.id
-      INNER JOIN usuarios usu ON cli.id_usuario = usu.id;
+      INNER JOIN usuarios usu ON cli.id_usuario = usu.id
+      LEFT JOIN usuarios vp_usu ON cli.vp = vp_usu.id;
     `;
 
     return await connection.query(query, {
