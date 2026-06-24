@@ -7,6 +7,7 @@ const XLSX = require('xlsx');
 jest.mock('./contrato.repository');
 jest.mock('../../utils/classificacaoClientes');
 jest.mock('xlsx');
+jest.mock('../../services/NotificacaoService');
 
 describe('ContratoService', () => {
   beforeEach(() => {

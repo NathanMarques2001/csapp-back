@@ -88,6 +88,9 @@ async function processarNotificacoesContratos(options = {}) {
   });
 
   for (const contrato of contratos) {
+    if (contrato.duracao && Number(contrato.duracao) === 12000) {
+      continue;
+    }
     const cliente = await Cliente.findByPk(contrato.id_cliente);
     const produto = await Produto.findByPk(contrato.id_produto);
     if (!cliente || !produto) continue;
@@ -140,4 +143,124 @@ async function processarNotificacoesContratos(options = {}) {
   }
 }
 
-module.exports = { processarNotificacoesContratos };
+async function atualizarNotificacoesAtivasDoContrato(id_contrato) {
+  const notificacoes = await Notificacao.findAll({
+    where: {
+      id_contrato,
+      confirmado_sn: false,
+    },
+  });
+
+  if (!notificacoes || notificacoes.length === 0) {
+    return;
+  }
+
+  const contrato = await Contrato.findByPk(id_contrato, {
+    include: [
+      { model: Cliente, as: "clientes" },
+      { model: Produto, as: "produtos" },
+    ],
+  });
+
+  if (!contrato) {
+    return;
+  }
+
+  if (contrato.duracao && Number(contrato.duracao) === 12000) {
+    await Notificacao.update(
+      { confirmado_sn: true },
+      { where: { id_contrato, confirmado_sn: false } }
+    );
+    return;
+  }
+
+  const cliente = contrato.clientes;
+  const produto = contrato.produtos;
+  if (!cliente || !produto) {
+    return;
+  }
+
+  const agora = new Date();
+
+  for (const notificacao of notificacoes) {
+    notificacao.id_usuario = cliente.id_usuario || 2;
+
+    if (notificacao.modulo === "Contrato") {
+      if (contrato.data_inicio && contrato.duracao) {
+        const proximoVencimento = getProximoVencimento(
+          contrato.data_inicio,
+          Number(contrato.duracao),
+          agora
+        );
+        if (proximoVencimento) {
+          const diasVenc = diffDays(proximoVencimento, agora);
+          notificacao.descricao =
+            diasVenc === 0
+              ? `O contrato de ${produto.nome} do cliente ${cliente.razao_social} vence hoje.`
+              : `O contrato de ${produto.nome} do cliente ${cliente.razao_social} vence em ${diasVenc} dia(s).`;
+        }
+      }
+    } else if (notificacao.modulo === "Reajuste") {
+      if (contrato.proximo_reajuste) {
+        const diasReaj = diffDays(new Date(contrato.proximo_reajuste), agora);
+        notificacao.descricao =
+          diasReaj === 0
+            ? `O contrato de ${produto.nome} do cliente ${cliente.razao_social} tem reajuste hoje.`
+            : `O contrato de ${produto.nome} do cliente ${cliente.razao_social} terá reajuste em ${diasReaj} dia(s).`;
+      }
+    }
+
+    await notificacao.save();
+  }
+}
+
+async function atualizarNotificacoesAtivasDoCliente(id_cliente) {
+  const contratos = await Contrato.findAll({ where: { id_cliente } });
+  for (const contrato of contratos) {
+    await atualizarNotificacoesAtivasDoContrato(contrato.id);
+  }
+}
+
+async function validarNotificacoesAtivas() {
+  console.log("[VALIDACAO_NOTIF] Iniciando validação de notificações ativas...");
+  const activeNotifications = await Notificacao.findAll({
+    where: { confirmado_sn: false },
+  });
+
+  if (!activeNotifications || activeNotifications.length === 0) {
+    console.log("[VALIDACAO_NOTIF] Nenhuma notificação ativa encontrada.");
+    return;
+  }
+
+  const contratosIds = [...new Set(activeNotifications
+    .map(n => n.id_contrato)
+    .filter(id => id !== null && id !== undefined)
+  )];
+
+  for (const id_contrato of contratosIds) {
+    try {
+      const contrato = await Contrato.findByPk(id_contrato);
+      if (!contrato) {
+        console.log(`[VALIDACAO_NOTIF] Contrato ${id_contrato} não encontrado. Confirmando notificações órfãs.`);
+        await Notificacao.update(
+          { confirmado_sn: true },
+          { where: { id_contrato, confirmado_sn: false } }
+        );
+        continue;
+      }
+
+      await atualizarNotificacoesAtivasDoContrato(id_contrato);
+    } catch (err) {
+      console.error(`[VALIDACAO_NOTIF] Erro ao validar notificações do contrato ${id_contrato}:`, err);
+    }
+  }
+
+  console.log("[VALIDACAO_NOTIF] Validação de notificações concluída!");
+}
+
+module.exports = {
+  processarNotificacoesContratos,
+  atualizarNotificacoesAtivasDoContrato,
+  atualizarNotificacoesAtivasDoCliente,
+  validarNotificacoesAtivas
+};

@@ -1,6 +1,8 @@
 const ClienteRepository = require('./cliente.repository');
 const classificarClientes = require('../../utils/classificacaoClientes');
 const AppError = require('../../utils/AppError');
+const NotificacaoService = require('../../services/NotificacaoService');
+const Notificacao = require('../../models/Notificacao');
 
 class ClienteService {
   async findById(id) {
@@ -35,7 +37,16 @@ class ClienteService {
   }
 
   async migrate(antigo_vendedor, novo_vendedor) {
-    return await ClienteRepository.migrate(antigo_vendedor, novo_vendedor);
+    const res = await ClienteRepository.migrate(antigo_vendedor, novo_vendedor);
+    try {
+      await Notificacao.update(
+        { id_usuario: novo_vendedor },
+        { where: { id_usuario: antigo_vendedor, confirmado_sn: false } }
+      );
+    } catch (err) {
+      console.error('[NOTIF_SYNC] Erro ao migrar notificações ativas do vendedor:', err);
+    }
+    return res;
   }
 
   async toggleStatus(id) {
@@ -65,6 +76,11 @@ class ClienteService {
     try {
       await ClienteRepository.update(id, data);
       await classificarClientes();
+      try {
+        await NotificacaoService.atualizarNotificacoesAtivasDoCliente(cliente.id);
+      } catch (err) {
+        console.error('[NOTIF_SYNC] Erro ao sincronizar notificações ativas do cliente:', err);
+      }
       return await ClienteRepository.findById(id);
     } catch (error) {
       if (error.message && error.message.includes('inválido')) {

@@ -3,6 +3,7 @@ const classificarClientes = require('../../utils/classificacaoClientes');
 const AppError = require('../../utils/AppError');
 const XLSX = require('xlsx');
 const removeAccents = require('remove-accents');
+const NotificacaoService = require('../../services/NotificacaoService');
 
 class ContratoService {
   async tratarQuantidade(id_produto, quantidade) {
@@ -139,6 +140,11 @@ class ContratoService {
     };
 
     await ContratoRepository.update(contrato, dataToUpdate);
+    try {
+      await NotificacaoService.atualizarNotificacoesAtivasDoContrato(contrato.id);
+    } catch (err) {
+      console.error('[NOTIF_SYNC] Erro ao sincronizar notificações ativas do contrato:', err);
+    }
     const dadosNovos = contrato.toJSON();
 
     const alteracoes = [];
@@ -258,6 +264,11 @@ class ContratoService {
 
           if (Object.keys(dadosParaAtualizar).length > 0) {
             await ContratoRepository.update(contratoExistente, dadosParaAtualizar);
+            try {
+              await NotificacaoService.atualizarNotificacoesAtivasDoContrato(contratoExistente.id);
+            } catch (err) {
+              console.error('[NOTIF_SYNC] Erro ao sincronizar notificações ativas do contrato:', err);
+            }
             sucessos.push({ linha: linhaExcel, acao: `Contrato ID ${contratoExistente.id} atualizado.` });
           } else {
             sucessos.push({ linha: linhaExcel, acao: 'Nenhum dado novo para atualizar.' });

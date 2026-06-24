@@ -5,6 +5,8 @@ const classificarClientes = require('../../utils/classificacaoClientes');
 
 jest.mock('./cliente.repository');
 jest.mock('../../utils/classificacaoClientes');
+jest.mock('../../services/NotificacaoService');
+jest.mock('../../models/Notificacao');
 
 describe('ClienteService', () => {
   beforeEach(() => {

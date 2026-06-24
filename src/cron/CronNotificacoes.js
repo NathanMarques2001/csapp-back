@@ -1,6 +1,6 @@
 // src/cron/notificacoesContratosDiario.js
 const cron = require("node-cron");
-const { processarNotificacoesContratos } = require("../services/NotificacaoService");
+const { processarNotificacoesContratos, validarNotificacoesAtivas } = require("../services/NotificacaoService");
 
 function iniciarCronNotificacoes() {
   const schedule = "2 * * * *"; // roda todo minuto 18 de cada hora
@@ -19,6 +19,25 @@ function iniciarCronNotificacoes() {
         console.log("[CRON] Notificações geradas/verificadas com sucesso!");
       } catch (error) {
         console.error("[CRON] Erro ao processar notificações:", error);
+      }
+    },
+    { timezone }
+  );
+
+  const cronValidacao = "0 3 * * *"; // roda às 03:00 de todos os dias
+  console.log(`[CRON] Agendamento de validação de notificações ativas iniciado (${cronValidacao}, TZ=${timezone})`);
+
+  cron.schedule(
+    cronValidacao,
+    async () => {
+      const agora = new Date().toLocaleString("pt-BR", { timeZone: timezone });
+      console.log(`[CRON] Executando validação de notificações ativas em ${agora}...`);
+
+      try {
+        await validarNotificacoesAtivas();
+        console.log("[CRON] Validação de notificações ativas concluída!");
+      } catch (error) {
+        console.error("[CRON] Erro ao validar notificações ativas:", error);
       }
     },
     { timezone }
