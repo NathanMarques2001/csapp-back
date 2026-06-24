@@ -88,7 +88,7 @@ describe("NotificacaoService - Novas Funções de Sincronização", () => {
 
       expect(Notificacao.update).toHaveBeenCalledWith(
         { confirmado_sn: true },
-        { where: { id_contrato: 1, confirmado_sn: false } }
+        { where: { id_contrato: 1, modulo: "Contrato", confirmado_sn: false } }
       );
     });
   });

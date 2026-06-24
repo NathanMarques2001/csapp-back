@@ -88,15 +88,12 @@ async function processarNotificacoesContratos(options = {}) {
   });
 
   for (const contrato of contratos) {
-    if (contrato.duracao && Number(contrato.duracao) === 12000) {
-      continue;
-    }
     const cliente = await Cliente.findByPk(contrato.id_cliente);
     const produto = await Produto.findByPk(contrato.id_produto);
     if (!cliente || !produto) continue;
 
     // --- VENCIMENTO RECORRENTE: ciclos de "duracao" meses a partir de data_inicio
-    if (contrato.data_inicio && contrato.duracao) {
+    if (contrato.data_inicio && contrato.duracao && Number(contrato.duracao) !== 12000) {
       const proximoVencimento = getProximoVencimento(
         contrato.data_inicio,
         Number(contrato.duracao),
@@ -169,9 +166,8 @@ async function atualizarNotificacoesAtivasDoContrato(id_contrato) {
   if (contrato.duracao && Number(contrato.duracao) === 12000) {
     await Notificacao.update(
       { confirmado_sn: true },
-      { where: { id_contrato, confirmado_sn: false } }
+      { where: { id_contrato, modulo: "Contrato", confirmado_sn: false } }
     );
-    return;
   }
 
   const cliente = contrato.clientes;
@@ -183,6 +179,9 @@ async function atualizarNotificacoesAtivasDoContrato(id_contrato) {
   const agora = new Date();
 
   for (const notificacao of notificacoes) {
+    if (contrato.duracao && Number(contrato.duracao) === 12000 && notificacao.modulo === "Contrato") {
+      continue;
+    }
     notificacao.id_usuario = cliente.id_usuario || 2;
 
     if (notificacao.modulo === "Contrato") {
