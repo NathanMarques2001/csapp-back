@@ -287,20 +287,42 @@ def main():
         print("-" * 80)
 
         # Geração do arquivo Excel consolidado
-        caminho_saida = diretorio_sql / args.output
-        print(f"▶ Gerando pasta de trabalho Excel: {caminho_saida.name} ...")
+        saida_arg = Path(args.output)
+        if saida_arg.is_absolute():
+            caminho_saida = saida_arg
+        else:
+            caminho_saida = diretorio_sql / saida_arg
 
-        with pd.ExcelWriter(caminho_saida, engine='openpyxl') as writer:
-            df_r1.to_excel(writer, sheet_name="1 - Contratos", index=False)
-            df_r2.to_excel(writer, sheet_name="2 - Gestores", index=False)
-            if df_r2_horizontal is not None:
-                df_r2_horizontal.to_excel(writer, sheet_name="2 - Gestores (Horizontal)", index=False)
-            df_r3.to_excel(writer, sheet_name="3 - Clientes e Segmentos", index=False)
+        print(f"▶ Gerando pasta de trabalho Excel: {caminho_saida} ...")
 
-        # Aplica estilos executivos via openpyxl
-        wb = openpyxl.load_workbook(caminho_saida)
-        estilizar_planilha(wb)
-        wb.save(caminho_saida)
+        def salvar_com_fallback(caminho_alvo, escritor_callback):
+            try:
+                escritor_callback(caminho_alvo)
+                return caminho_alvo
+            except PermissionError:
+                # Se não tem permissão na pasta sql, tenta em /tmp ou na home do usuário
+                if os.name != 'nt':
+                    caminho_alt = Path("/tmp") / caminho_alvo.name
+                else:
+                    caminho_alt = Path.home() / caminho_alvo.name
+                print(f"   ⚠️ Permissão negada para gravar em: {caminho_alvo}")
+                print(f"   🔄 Salvando automaticamente em local com permissão: {caminho_alt}")
+                escritor_callback(caminho_alt)
+                return caminho_alt
+
+        def gravar_consolidado(destino):
+            with pd.ExcelWriter(destino, engine='openpyxl') as writer:
+                df_r1.to_excel(writer, sheet_name="1 - Contratos", index=False)
+                df_r2.to_excel(writer, sheet_name="2 - Gestores", index=False)
+                if df_r2_horizontal is not None:
+                    df_r2_horizontal.to_excel(writer, sheet_name="2 - Gestores (Horizontal)", index=False)
+                df_r3.to_excel(writer, sheet_name="3 - Clientes e Segmentos", index=False)
+            wb = openpyxl.load_workbook(destino)
+            estilizar_planilha(wb)
+            wb.save(destino)
+
+        caminho_saida = salvar_com_fallback(caminho_saida, gravar_consolidado)
+
         print(f" ✔ Arquivo consolidado salvo com sucesso em:")
         print(f"   👉 {caminho_saida}")
 
@@ -316,13 +338,16 @@ def main():
             ]
             
             for nome_arq, nome_aba, df_ind in arquivos_individuais:
-                caminho_ind = diretorio_sql / nome_arq
-                with pd.ExcelWriter(caminho_ind, engine='openpyxl') as writer:
-                    df_ind.to_excel(writer, sheet_name=nome_aba, index=False)
-                wb_ind = openpyxl.load_workbook(caminho_ind)
-                estilizar_planilha(wb_ind)
-                wb_ind.save(caminho_ind)
-                print(f"   ✔ Salvo: {caminho_ind.name} ({len(df_ind)} linhas)")
+                caminho_ind_base = caminho_saida.parent / nome_arq
+                def gravar_ind(dest, n_aba=nome_aba, df=df_ind):
+                    with pd.ExcelWriter(dest, engine='openpyxl') as writer:
+                        df.to_excel(writer, sheet_name=n_aba, index=False)
+                    wb_ind = openpyxl.load_workbook(dest)
+                    estilizar_planilha(wb_ind)
+                    wb_ind.save(dest)
+                
+                caminho_ind_salvo = salvar_com_fallback(caminho_ind_base, gravar_ind)
+                print(f"   ✔ Salvo: {caminho_ind_salvo} ({len(df_ind)} linhas)")
 
         print("=" * 80)
         print(" 🎉 PROCESSO CONCLUÍDO COM SUCESSO!")
